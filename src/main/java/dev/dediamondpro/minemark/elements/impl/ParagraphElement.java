@@ -1,11 +1,10 @@
 package dev.dediamondpro.minemark.elements.impl;
 
-import dev.dediamondpro.minemark.config.LayoutConfig;
-import dev.dediamondpro.minemark.config.RenderConfig;
+import dev.dediamondpro.minemark.LayoutConfig;
 import dev.dediamondpro.minemark.elements.Element;
 import org.xml.sax.Attributes;
 
-public class ParagraphElement<L extends LayoutConfig, R extends RenderConfig> extends Element<L, R> {
+public class ParagraphElement<L extends LayoutConfig, R> extends Element<L, R> {
     public ParagraphElement(Element<L, R> parent, Attributes attributes) {
         super(parent, attributes);
     }

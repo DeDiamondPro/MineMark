@@ -1,7 +1,5 @@
 package dev.dediamondpro.minemark;
 
-import dev.dediamondpro.minemark.config.LayoutConfig;
-import dev.dediamondpro.minemark.config.RenderConfig;
 import dev.dediamondpro.minemark.elements.Element;
 import dev.dediamondpro.minemark.elements.ElementLoader;
 import dev.dediamondpro.minemark.elements.MineMarkElement;
@@ -11,7 +9,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.util.List;
 import java.util.Map;
 
-public class MineMarkHtmlParser<L extends LayoutConfig, R extends RenderConfig> extends DefaultHandler {
+public class MineMarkHtmlParser<L extends LayoutConfig, R> extends DefaultHandler {
     private final Map<List<String>, ElementLoader<L, R>> elements;
     private MineMarkElement<L, R> markDown;
     private Element<L, R> currentElement;

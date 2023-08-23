@@ -1,13 +1,12 @@
 package dev.dediamondpro.minemark.elements;
 
-import dev.dediamondpro.minemark.config.LayoutConfig;
-import dev.dediamondpro.minemark.config.RenderConfig;
+import dev.dediamondpro.minemark.LayoutConfig;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
 
 import java.util.ArrayList;
 
-public abstract class Element<L extends LayoutConfig, R extends RenderConfig> {
+public abstract class Element<L extends LayoutConfig, R> {
     private final @Nullable Element<L, R> parent;
     protected final ArrayList<Element<L, R>> children = new ArrayList<>();
     protected final Attributes attributes;

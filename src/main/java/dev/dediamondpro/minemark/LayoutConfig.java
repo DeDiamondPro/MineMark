@@ -1,4 +1,4 @@
-package dev.dediamondpro.minemark.config;
+package dev.dediamondpro.minemark;
 
 /**
  * Class that will be given to an element at parsing time

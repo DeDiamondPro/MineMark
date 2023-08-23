@@ -1,7 +1,5 @@
 package dev.dediamondpro.minemark;
 
-import dev.dediamondpro.minemark.config.LayoutConfig;
-import dev.dediamondpro.minemark.config.RenderConfig;
 import dev.dediamondpro.minemark.elements.ElementLoader;
 import dev.dediamondpro.minemark.elements.Elements;
 import dev.dediamondpro.minemark.elements.impl.ParagraphElement;
@@ -13,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MineMarkCoreBuilder<L extends LayoutConfig, R extends RenderConfig> {
+public class MineMarkCoreBuilder<L extends LayoutConfig, R> {
     protected MineMarkCoreBuilder() {
     }
 

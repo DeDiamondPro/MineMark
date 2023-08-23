@@ -1,7 +1,5 @@
 package dev.dediamondpro.minemark;
 
-import dev.dediamondpro.minemark.config.LayoutConfig;
-import dev.dediamondpro.minemark.config.RenderConfig;
 import dev.dediamondpro.minemark.elements.ElementLoader;
 import dev.dediamondpro.minemark.elements.MineMarkElement;
 import org.commonmark.Extension;
@@ -21,7 +19,7 @@ import java.util.Map;
 /**
  * Class responsible for integrating parsing, layout and rendering
  */
-public class MineMarkCore<L extends LayoutConfig, R extends RenderConfig> {
+public class MineMarkCore<L extends LayoutConfig, R> {
     private final Parser markdownParser;
     private final HtmlRenderer htmlRenderer;
     private final MineMarkHtmlParser<L, R> htmlParser;
@@ -65,7 +63,7 @@ public class MineMarkCore<L extends LayoutConfig, R extends RenderConfig> {
      * @param <R> A class that is given to elements at render time
      * @return The builder used to create the core
      */
-    public static <L extends LayoutConfig, R extends RenderConfig> MineMarkCoreBuilder<L, R> builder() {
+    public static <L extends LayoutConfig, R> MineMarkCoreBuilder<L, R> builder() {
         return new MineMarkCoreBuilder<>();
     }
 }
