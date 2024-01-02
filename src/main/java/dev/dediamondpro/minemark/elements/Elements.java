@@ -5,8 +5,16 @@ import java.util.List;
 
 public enum Elements {
     PARAGRAPH(listOf("p")),
-    TEXT(listOf()),
-    LINK(listOf("a"));
+    TEXT(listOf("text")),
+    FORMATTING(listOf("strong", "em", "del")),
+    HEADING(listOf("h1", "h2", "h3", "h4", "h5", "h6")),
+    ALIGNMENT(listOf("div", "center")),
+    LINK(listOf("a")),
+    IMAGE(listOf("img")),
+    LIST_PARENT(listOf("ol", "ul")),
+    LIST_ELEMENT(listOf("li")),
+    HORIZONTAL_LINE(listOf("hr"))
+    ;
 
     public final List<String> tags;
 

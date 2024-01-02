@@ -2,8 +2,13 @@ package dev.dediamondpro.minemark;
 
 import dev.dediamondpro.minemark.elements.ElementLoader;
 import dev.dediamondpro.minemark.elements.Elements;
+import dev.dediamondpro.minemark.elements.impl.LinkElement;
 import dev.dediamondpro.minemark.elements.impl.ParagraphElement;
+import dev.dediamondpro.minemark.elements.impl.formatting.AlignmentElement;
+import dev.dediamondpro.minemark.elements.impl.formatting.FormattingElement;
+import dev.dediamondpro.minemark.elements.impl.list.ListHolderElement;
 import org.commonmark.Extension;
+import org.commonmark.renderer.html.UrlSanitizer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -17,7 +22,8 @@ public class MineMarkCoreBuilder<L extends LayoutConfig, R> {
 
     private final HashMap<List<String>, ElementLoader<L, R>> elements = new HashMap<>();
     private final ArrayList<Extension> extensions = new ArrayList<>();
-    private boolean withDefaultExtensions = false;
+    private boolean withDefaultElements = true;
+    private UrlSanitizer urlSanitizer = null;
 
     /**
      * Add a supported element to be used
@@ -76,18 +82,31 @@ public class MineMarkCoreBuilder<L extends LayoutConfig, R> {
     /**
      * Disable default extensions
      */
-    public MineMarkCoreBuilder<L, R> withoutDefaultExtensions() {
-        withDefaultExtensions = false;
+    public MineMarkCoreBuilder<L, R> withoutDefaultElements() {
+        withDefaultElements = false;
         return this;
+    }
+
+    /**
+     * Make the core use an url sanitizer and enable url sanitization
+     *
+     * @param urlSanitizer The url sanitizer
+     */
+    public void setUrlSanitizer(UrlSanitizer urlSanitizer) {
+        this.urlSanitizer = urlSanitizer;
     }
 
     /**
      * @return a MineMarkCore with the given settings
      */
     public MineMarkCore<L, R> build() {
-        if (withDefaultExtensions) {
+        if (withDefaultElements) {
             addElement(Elements.PARAGRAPH, ParagraphElement::new);
+            addElement(Elements.FORMATTING, FormattingElement::new);
+            addElement(Elements.ALIGNMENT, AlignmentElement::new);
+            addElement(Elements.LINK, LinkElement::new);
+            addElement(Elements.LIST_PARENT, ListHolderElement::new);
         }
-        return new MineMarkCore<>(elements, extensions);
+        return new MineMarkCore<>(elements, extensions, urlSanitizer);
     }
 }

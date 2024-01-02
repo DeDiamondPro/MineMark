@@ -1,30 +1,28 @@
 package dev.dediamondpro.minemark.elements.impl;
 
 import dev.dediamondpro.minemark.LayoutConfig;
+import dev.dediamondpro.minemark.LayoutData;
+import dev.dediamondpro.minemark.elements.ChildBasedElement;
 import dev.dediamondpro.minemark.elements.Element;
+import dev.dediamondpro.minemark.elements.Inline;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
 
-public class ParagraphElement<L extends LayoutConfig, R> extends Element<L, R> {
-    public ParagraphElement(Element<L, R> parent, Attributes attributes) {
-        super(parent, attributes);
+public class ParagraphElement<L extends LayoutConfig, R> extends ChildBasedElement<L, R> {
+    public ParagraphElement(@NotNull L layoutConfig, @Nullable Element<L, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
+        super(layoutConfig, parent, qName, attributes);
     }
 
     @Override
-    public void addText(String text) {
-        // TODO: Make text work
-        /*TextElement<L, R> element = new TextElement<>(this, attributes);
-        element.addText(text);*/
-    }
-
-    @Override
-    public void draw(float x, float y, float width,R renderConfig) {
-        for (Element<L, R> child : children) {
-            child.draw(x, y, width, renderConfig);
+    protected void generateLayout(LayoutData layoutData) {
+        if (!layoutData.isLineEmpty()) {
+            layoutData.nextLine();
         }
-    }
-
-    @Override
-    public String toString() {
-        return children.toString();
+        layoutData.setLineHeight(layoutConfig.getPaddingConfig().getParagraphPadding());
+        layoutData.nextLine();
+        super.generateLayout(layoutData);
+        layoutData.setLineHeight(layoutConfig.getPaddingConfig().getParagraphPadding());
+        layoutData.nextLine();
     }
 }
