@@ -15,20 +15,14 @@ public class BasicTest {
     private final MineMarkCore<LayoutConfig, Object> core = MineMarkCore.builder()
             .addExtension(StrikethroughExtension.create())
             .addElement(Elements.TEXT, DummyTextElement::new)
-            /*.addElement(Elements.TEXT, TextElement::new)
-            .addElement(Elements.LINK, LinkElement::new)
-            .addElement(Elements.IMAGE, ImageElement::new)
-            .addElement(Elements.UNORDERED_LIST, UnorderedListElement::new)
-            .addElement(Elements.LIST_ELEMENT, ListElement::new)
-            .addElement(Elements.HEADING, HeadingElement::new)*/
             .build();
 
     private final LayoutConfig config = new LayoutConfig(5, new LayoutConfig.SpacingConfig(1f, 2f, 2f, 5f), new LayoutConfig.HeadingConfig(6, 5, 4, 3, 2, 1));
 
     @Test
     public void test() {
-        MineMarkElement<LayoutConfig, Object> element = core.parse(config, " Test **Test** Text");
-        element.beforeDraw(0f, 0f, 25f, 0f, 0f, new Object());
+        MineMarkElement<LayoutConfig, Object> element = core.parse(config, "```\ntest\n```\nHello<br>World");
+        //element.beforeDraw(0f, 0f, 25f, 0f, 0f, new Object());
         System.out.println(element.getTree());
     }
 

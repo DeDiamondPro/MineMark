@@ -16,7 +16,8 @@ public class MineMarkHtmlParser<L extends LayoutConfig, R> extends DefaultHandle
     private MineMarkElement<L, R> markDown;
     private Element<L, R> currentElement;
     private L layoutConfig;
-    private StringBuilder textBuilder;
+    private StringBuilder textBuilder = new StringBuilder();
+    private boolean isPreFormatted = false;
 
     protected MineMarkHtmlParser(Map<List<String>, ElementLoader<L, R>> elements) {
         this.elements = elements;
@@ -24,16 +25,22 @@ public class MineMarkHtmlParser<L extends LayoutConfig, R> extends DefaultHandle
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        if (qName.equals("minemark")) {
-            markDown = new MineMarkElement<>(layoutConfig, attributes);
-            currentElement = markDown;
-            return;
+        switch (qName) {
+            case "minemark":
+                markDown = new MineMarkElement<>(layoutConfig, attributes);
+                currentElement = markDown;
+                return;
+            case "br":
+                textBuilder.append("\n");
+                return;
+            case "pre":
+                isPreFormatted = true;
+                break;
         }
         addText();
         ElementLoader<L, R> elementCreator = findElement(qName);
         if (elementCreator == null) {
             System.out.println("Unknown element " + qName);
-            //textBuilder.append("<").append(qName).append(">");
             return;
         }
         currentElement = elementCreator.get(currentElement.getLayoutConfig(), currentElement, qName, attributes);
@@ -41,25 +48,51 @@ public class MineMarkHtmlParser<L extends LayoutConfig, R> extends DefaultHandle
 
     @Override
     public void endElement(String uri, String localName, String qName) {
-        boolean hasElement = hasElement(qName);
-        if (qName.equals("minemark")) return;
-        //if (!hasElement) textBuilder.append("</").append(qName).append(">");
+        switch (qName) {
+            case "minemark":
+            case "br":
+                return;
+            case "pre":
+                isPreFormatted = false;
+                break;
+        }
         addText();
-        if (!hasElement) return;
+        if (!hasElement(qName)) return;
         currentElement = currentElement.getParent();
     }
 
     @Override
     public void characters(char[] ch, int start, int length) {
-        if (textBuilder == null) {
-            textBuilder = new StringBuilder();
+        // All newlines are ignored unless this element is preformatted
+        int newLength = length;
+        if (isPreFormatted) {
+            if (ch[start] == '\n') {
+                newLength--;
+            }
+            if (ch[start + length - 1] == '\n') {
+                newLength--;
+            }
+        } else {
+            for (int i = start; i < start + length; i++) {
+                if (ch[i] == '\n') {
+                    newLength--;
+                }
+            }
         }
-        textBuilder.append(ch, start, length);
+
+        char[] modifiedCh = new char[newLength];
+        int index = 0;
+        for (int i = start; i < start + length; i++) {
+            if (ch[i] != '\n' || (isPreFormatted && i != start && i != start + length - 1)) {
+                modifiedCh[index++] = ch[i];
+            }
+        }
+        textBuilder.append(modifiedCh);
     }
 
     private void addText() {
-        String text = textBuilder == null ? null : textBuilder.toString();
-        if (text == null || text.isEmpty()) return;
+        String text = textBuilder.toString();
+        if (text.isEmpty()) return;
         ElementLoader<L, R> textLoader = findElement("text");
         if (textLoader == null) {
             throw new IllegalStateException("No text element provided");
@@ -93,6 +126,7 @@ public class MineMarkHtmlParser<L extends LayoutConfig, R> extends DefaultHandle
         markDown = null;
         currentElement = null;
         layoutConfig = null;
-        textBuilder = null;
+        textBuilder = new StringBuilder();
+        isPreFormatted = false;
     }
 }

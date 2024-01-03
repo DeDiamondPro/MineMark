@@ -8,10 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class TextElement<L extends LayoutConfig, R> extends Element<L, R> implements Inline {
     protected final HashMap<LayoutData.MarkDownElementPosition, String> lines = new HashMap<>();
@@ -24,10 +21,14 @@ public abstract class TextElement<L extends LayoutConfig, R> extends Element<L, 
     public void generateLayout(LayoutData layoutData) {
         lines.clear();
         ArrayList<String> allLines = new ArrayList<>();
-        String[] predefinedLines = text.split("(?=\n)");
+        String[] predefinedLines = text.split("\n", -1);
         for (int i = 0; i < predefinedLines.length; i++) {
             String line = predefinedLines[i].replace("\n", "");
-            allLines.addAll(wrapText(line, i == 0 ? layoutData.getX() : 0f, layoutData.getMaxWidth()));
+            if (layoutConfig.isPreFormatted()) {
+                allLines.add(line);
+            } else {
+                allLines.addAll(wrapText(line, i == 0 ? layoutData.getX() : 0f, layoutData.getMaxWidth()));
+            }
         }
         for (int i = 0; i < allLines.size(); i++) {
             String line = allLines.get(i);

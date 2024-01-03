@@ -6,7 +6,7 @@ import java.util.List;
 public enum Elements {
     PARAGRAPH(listOf("p")),
     TEXT(listOf("text")),
-    FORMATTING(listOf("strong", "em", "del")),
+    FORMATTING(listOf("strong", "em", "del", "pre")),
     HEADING(listOf("h1", "h2", "h3", "h4", "h5", "h6")),
     ALIGNMENT(listOf("div", "center")),
     LINK(listOf("a")),

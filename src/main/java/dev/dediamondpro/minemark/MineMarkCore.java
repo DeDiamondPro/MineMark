@@ -34,7 +34,7 @@ public class MineMarkCore<L extends LayoutConfig, R> {
      */
     protected MineMarkCore(Map<List<String>, ElementLoader<L, R>> elements, Iterable<? extends Extension> extensions, @Nullable UrlSanitizer urlSanitizer) {
         this.markdownParser = Parser.builder().extensions(extensions).build();
-        HtmlRenderer.Builder htmlRendererBuilder = HtmlRenderer.builder().extensions(extensions).softbreak(" ");
+        HtmlRenderer.Builder htmlRendererBuilder = HtmlRenderer.builder().extensions(extensions);
         if (urlSanitizer != null) {
             htmlRendererBuilder.urlSanitizer(urlSanitizer).sanitizeUrls(true);
         }
@@ -55,7 +55,8 @@ public class MineMarkCore<L extends LayoutConfig, R> {
     public MineMarkElement<L, R> parse(@NotNull L layoutConfig, @NotNull String markdown) {
         long start1 = System.currentTimeMillis();
         Node document = markdownParser.parse(markdown);
-        String html = cleanupHtml("<minemark>" + htmlRenderer.render(document) + "</minemark>");
+        String html = "<minemark>\n" + htmlRenderer.render(document) + "</minemark>";
+        System.out.println(html);
         long start2 = System.currentTimeMillis();
         System.out.println("Finished generating html, took " + (start2 - start1) + "ms");
         try {
@@ -68,14 +69,6 @@ public class MineMarkCore<L extends LayoutConfig, R> {
             htmlParser.cleanUp();
             System.out.println("Finished parsing html, took " + (System.currentTimeMillis() - start2) + "ms");
         }
-    }
-
-    private String cleanupHtml(String html) {
-        // Remove all newlines to make parsing easier
-        html = html.replace("\n", "");
-        // Add requested newlines
-        html = html.replaceAll("<(?:br\\s*/?|/br)>", "\n");
-        return html;
     }
 
     /**

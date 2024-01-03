@@ -25,6 +25,9 @@ public class FormattingElement<L extends LayoutConfig, R> extends ChildBasedElem
             case "del":
                 this.layoutConfig.setStrikethrough(true);
                 break;
+            case "pre":
+                this.layoutConfig.setPreFormatted(true);
+                break;
         }
     }
 

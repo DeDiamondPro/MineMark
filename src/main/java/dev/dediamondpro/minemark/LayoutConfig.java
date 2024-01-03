@@ -20,18 +20,21 @@ public class LayoutConfig {
     private boolean underlined;
     private boolean strikethrough;
     private boolean partOfLink;
+    private boolean preFormatted;
     private final SpacingConfig spacingConfig;
     private final HeadingConfig headingConfig;
     private final ImageProvider imageProvider;
     private final BrowserProvider browserProvider;
 
-    public LayoutConfig(Alignment alignment, float fontSize, Color textColor, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean partOfLink, SpacingConfig spacingConfig, HeadingConfig headingConfig, ImageProvider imageProvider, BrowserProvider browserProvider) {
+    public LayoutConfig(Alignment alignment, float fontSize, Color textColor, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean partOfLink, boolean preFormatted, SpacingConfig spacingConfig, HeadingConfig headingConfig, ImageProvider imageProvider, BrowserProvider browserProvider) {
         this.alignment = alignment;
         this.fontSize = fontSize;
         this.textColor = textColor;
         this.bold = bold;
         this.italic = italic;
         this.underlined = underlined;
+        this.partOfLink = partOfLink;
+        this.preFormatted = preFormatted;
         this.strikethrough = strikethrough;
         this.spacingConfig = spacingConfig;
         this.headingConfig = headingConfig;
@@ -40,7 +43,7 @@ public class LayoutConfig {
     }
 
     public LayoutConfig(float defaultFontSize, SpacingConfig spacingConfig, HeadingConfig headingConfig, ImageProvider imageProvider, BrowserProvider browserProvider) {
-        this(Alignment.LEFT, defaultFontSize, Color.WHITE, false, false, false, false, false, spacingConfig, headingConfig, imageProvider, browserProvider);
+        this(Alignment.LEFT, defaultFontSize, Color.WHITE, false, false, false, false, false, false, spacingConfig, headingConfig, imageProvider, browserProvider);
     }
 
     public LayoutConfig(float defaultFontSize, SpacingConfig spacingConfig, HeadingConfig headingConfig) {
@@ -48,7 +51,7 @@ public class LayoutConfig {
     }
 
     public LayoutConfig clone() {
-        return new LayoutConfig(alignment, fontSize, new Color(textColor.getRGB()), bold, italic, underlined, strikethrough, partOfLink, spacingConfig, headingConfig, imageProvider, browserProvider);
+        return new LayoutConfig(alignment, fontSize, new Color(textColor.getRGB()), bold, italic, underlined, strikethrough, partOfLink, preFormatted, spacingConfig, headingConfig, imageProvider, browserProvider);
     }
 
     public Alignment getAlignment() {
@@ -113,6 +116,14 @@ public class LayoutConfig {
 
     public void setPartOfLink(boolean partOfLink) {
         this.partOfLink = partOfLink;
+    }
+
+    public boolean isPreFormatted() {
+        return preFormatted;
+    }
+
+    public void setPreFormatted(boolean preFormatted) {
+        this.preFormatted = preFormatted;
     }
 
     public SpacingConfig getSpacingConfig() {
