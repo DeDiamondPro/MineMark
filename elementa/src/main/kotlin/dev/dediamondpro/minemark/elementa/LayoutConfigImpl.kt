@@ -11,11 +11,18 @@ import java.awt.Color
 
 class LayoutConfigImpl(
     var fontProvider: FontProvider = DefaultFonts.VANILLA_FONT_RENDERER,
-    alignment: Alignment = Alignment.LEFT, fontSize: Float = 1f, textColor: Color = Color.WHITE,
-    bold: Boolean = false, italic: Boolean = false, underlined: Boolean = false, strikethrough: Boolean = false, partOfLink: Boolean = false,
-    paddingConfig: PaddingConfig = PaddingConfig(4f, 4f),
+    alignment: Alignment = Alignment.LEFT,
+    fontSize: Float = 1f,
+    textColor: Color = Color.WHITE,
+    bold: Boolean = false,
+    italic: Boolean = false,
+    underlined: Boolean = false,
+    strikethrough: Boolean = false,
+    partOfLink: Boolean = false,
+    spacingConfig: SpacingConfig = SpacingConfig(4f, 4f, 4f, 16f),
     headingConfig: HeadingConfig = HeadingConfig(2f, 1.66f, 1.33f, 1f, 1.2f, 1f),
-    imageProvider: ImageProvider = DefaultImageProvider.INSTANCE, browserProvider: BrowserProvider = ElementaBrowserProvider
+    imageProvider: ImageProvider = DefaultImageProvider.INSTANCE,
+    browserProvider: BrowserProvider = ElementaBrowserProvider
 ) : LayoutConfig(
     alignment,
     fontSize,
@@ -25,7 +32,7 @@ class LayoutConfigImpl(
     underlined,
     strikethrough,
     partOfLink,
-    paddingConfig,
+    spacingConfig,
     headingConfig,
     imageProvider,
     browserProvider
@@ -41,7 +48,7 @@ class LayoutConfigImpl(
             isUnderlined,
             isStrikethrough,
             isPartOfLink,
-            paddingConfig,
+            spacingConfig,
             headingConfig,
             imageProvider,
             browserProvider

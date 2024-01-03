@@ -23,7 +23,7 @@ public class BasicTest {
             .addElement(Elements.HEADING, HeadingElement::new)*/
             .build();
 
-    private final LayoutConfig config = new LayoutConfig(5, new LayoutConfig.PaddingConfig(1f, 2f), new LayoutConfig.HeadingConfig(6, 5, 4, 3, 2, 1));
+    private final LayoutConfig config = new LayoutConfig(5, new LayoutConfig.SpacingConfig(1f, 2f, 2f, 5f), new LayoutConfig.HeadingConfig(6, 5, 4, 3, 2, 1));
 
     @Test
     public void test() {

@@ -20,12 +20,12 @@ public class LayoutConfig {
     private boolean underlined;
     private boolean strikethrough;
     private boolean partOfLink;
-    private final PaddingConfig paddingConfig;
+    private final SpacingConfig spacingConfig;
     private final HeadingConfig headingConfig;
     private final ImageProvider imageProvider;
     private final BrowserProvider browserProvider;
 
-    public LayoutConfig(Alignment alignment, float fontSize, Color textColor, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean partOfLink, PaddingConfig paddingConfig, HeadingConfig headingConfig, ImageProvider imageProvider, BrowserProvider browserProvider) {
+    public LayoutConfig(Alignment alignment, float fontSize, Color textColor, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean partOfLink, SpacingConfig spacingConfig, HeadingConfig headingConfig, ImageProvider imageProvider, BrowserProvider browserProvider) {
         this.alignment = alignment;
         this.fontSize = fontSize;
         this.textColor = textColor;
@@ -33,22 +33,22 @@ public class LayoutConfig {
         this.italic = italic;
         this.underlined = underlined;
         this.strikethrough = strikethrough;
-        this.paddingConfig = paddingConfig;
+        this.spacingConfig = spacingConfig;
         this.headingConfig = headingConfig;
         this.imageProvider = imageProvider;
         this.browserProvider = browserProvider;
     }
 
-    public LayoutConfig(float defaultFontSize, PaddingConfig paddingConfig, HeadingConfig headingConfig, ImageProvider imageProvider, BrowserProvider browserProvider) {
-        this(Alignment.LEFT, defaultFontSize, Color.WHITE, false, false, false, false, false, paddingConfig, headingConfig, imageProvider, browserProvider);
+    public LayoutConfig(float defaultFontSize, SpacingConfig spacingConfig, HeadingConfig headingConfig, ImageProvider imageProvider, BrowserProvider browserProvider) {
+        this(Alignment.LEFT, defaultFontSize, Color.WHITE, false, false, false, false, false, spacingConfig, headingConfig, imageProvider, browserProvider);
     }
 
-    public LayoutConfig(float defaultFontSize, PaddingConfig paddingConfig, HeadingConfig headingConfig) {
-        this(defaultFontSize, paddingConfig, headingConfig, DefaultImageProvider.INSTANCE, DefaultBrowserProvider.INSTANCE);
+    public LayoutConfig(float defaultFontSize, SpacingConfig spacingConfig, HeadingConfig headingConfig) {
+        this(defaultFontSize, spacingConfig, headingConfig, DefaultImageProvider.INSTANCE, DefaultBrowserProvider.INSTANCE);
     }
 
     public LayoutConfig clone() {
-        return new LayoutConfig(alignment, fontSize, new Color(textColor.getRGB()), bold, italic, underlined, strikethrough, partOfLink, paddingConfig, headingConfig, imageProvider, browserProvider);
+        return new LayoutConfig(alignment, fontSize, new Color(textColor.getRGB()), bold, italic, underlined, strikethrough, partOfLink, spacingConfig, headingConfig, imageProvider, browserProvider);
     }
 
     public Alignment getAlignment() {
@@ -115,8 +115,8 @@ public class LayoutConfig {
         this.partOfLink = partOfLink;
     }
 
-    public PaddingConfig getPaddingConfig() {
-        return paddingConfig;
+    public SpacingConfig getSpacingConfig() {
+        return spacingConfig;
     }
 
     public HeadingConfig getHeadingConfig() {
@@ -135,13 +135,17 @@ public class LayoutConfig {
         CENTER, LEFT, RIGHT
     }
 
-    public static class PaddingConfig {
+    public static class SpacingConfig {
         private final float textSpacing;
         private final float paragraphPadding;
+        private final float listPadding;
+        private final float listIndentSpacing;
 
-        public PaddingConfig(float textSpacing, float paragraphPadding) {
+        public SpacingConfig(float textSpacing, float paragraphPadding, float listPadding, float listIndentSpacing) {
             this.textSpacing = textSpacing;
             this.paragraphPadding = paragraphPadding;
+            this.listPadding = listPadding;
+            this.listIndentSpacing = listIndentSpacing;
         }
 
         public float getTextSpacing() {
@@ -150,6 +154,14 @@ public class LayoutConfig {
 
         public float getParagraphPadding() {
             return paragraphPadding;
+        }
+
+        public float getListPadding() {
+            return listPadding;
+        }
+
+        public float getListIndentSpacing() {
+            return listIndentSpacing;
         }
     }
 

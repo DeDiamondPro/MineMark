@@ -4,7 +4,7 @@ import dev.dediamondpro.minemark.LayoutConfig;
 import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.elements.ChildBasedElement;
 import dev.dediamondpro.minemark.elements.Element;
-import dev.dediamondpro.minemark.elements.Inline;
+import dev.dediamondpro.minemark.elements.NoPadding;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
@@ -15,14 +15,7 @@ public class ParagraphElement<L extends LayoutConfig, R> extends ChildBasedEleme
     }
 
     @Override
-    protected void generateLayout(LayoutData layoutData) {
-        if (!layoutData.isLineEmpty()) {
-            layoutData.nextLine();
-        }
-        layoutData.setLineHeight(layoutConfig.getPaddingConfig().getParagraphPadding());
-        layoutData.nextLine();
-        super.generateLayout(layoutData);
-        layoutData.setLineHeight(layoutConfig.getPaddingConfig().getParagraphPadding());
-        layoutData.nextLine();
+    protected float getPadding(LayoutData layoutData) {
+        return layoutConfig.getSpacingConfig().getParagraphPadding();
     }
 }

@@ -10,7 +10,7 @@ import org.xml.sax.Attributes;
 import java.util.ArrayList;
 
 public abstract class Element<L extends LayoutConfig, R> {
-    private final @Nullable Element<L, R> parent;
+    protected final @Nullable Element<L, R> parent;
     protected final ArrayList<Element<L, R>> children = new ArrayList<>();
     protected final String qName;
     protected final Attributes attributes;

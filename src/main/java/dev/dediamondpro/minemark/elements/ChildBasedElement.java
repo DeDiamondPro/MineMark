@@ -23,11 +23,24 @@ public abstract class ChildBasedElement<L extends LayoutConfig, R> extends Eleme
         if (!(this instanceof Inline) && !layoutData.isLineEmpty()) {
             layoutData.nextLine();
         }
+        float padding = getPadding(layoutData);
+        if (padding != 0 && !(parent instanceof NoPadding)) {
+            layoutData.setLineHeight(padding);
+            layoutData.nextLine();
+        }
         for (Element<L, R> child : children) {
             child.generateLayout(layoutData);
         }
         if (!(this instanceof Inline) && !layoutData.isLineEmpty()) {
             layoutData.nextLine();
         }
+        if (padding != 0 && !(parent instanceof NoPadding)) {
+            layoutData.setLineHeight(padding);
+            layoutData.nextLine();
+        }
+    }
+
+    protected float getPadding(LayoutData layoutData) {
+        return 0f;
     }
 }

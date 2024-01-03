@@ -19,7 +19,7 @@ class MarkdownHorizontalLineComponent(
             renderData.matrixStack,
             Color.WHITE,
             x.toDouble(),
-            y.toDouble(),
+            (y + 2f).toDouble(),
             position!!.line.width.toDouble(),
             2.0
         )
@@ -30,6 +30,6 @@ class MarkdownHorizontalLineComponent(
     }
 
     override fun getHeight(layoutData: LayoutData): Float {
-        return 2f
+        return 6f
     }
 }

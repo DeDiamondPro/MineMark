@@ -24,16 +24,16 @@ public abstract class TextElement<L extends LayoutConfig, R> extends Element<L, 
     public void generateLayout(LayoutData layoutData) {
         lines.clear();
         ArrayList<String> allLines = new ArrayList<>();
-        String[] predefinedLines = text.split("\n");
+        String[] predefinedLines = text.split("(?=\n)");
         for (int i = 0; i < predefinedLines.length; i++) {
-            String line = predefinedLines[i];
+            String line = predefinedLines[i].replace("\n", "");
             allLines.addAll(wrapText(line, i == 0 ? layoutData.getX() : 0f, layoutData.getMaxWidth()));
         }
         for (int i = 0; i < allLines.size(); i++) {
             String line = allLines.get(i);
             lines.put(layoutData.addElement(
                             layoutConfig.getAlignment(), getTextWidth(line),
-                            getTextHeight(line) + layoutConfig.getPaddingConfig().getTextSpacing() * layoutConfig.getFontSize()),
+                            getTextHeight(line) + layoutConfig.getSpacingConfig().getTextSpacing() * layoutConfig.getFontSize()),
                     line);
             if (i != allLines.size() - 1) {
                 layoutData.nextLine();

@@ -16,8 +16,6 @@ import java.util.ArrayList;
 public class LinkElement<L extends LayoutConfig, R> extends ChildBasedElement<L, R> implements Inline {
     protected final ArrayList<LayoutData.MarkDownElementPosition> positions = new ArrayList<>();
     protected final String link;
-    protected boolean wasUnderlined;
-    protected boolean hovered;
 
     public LinkElement(@NotNull L layoutConfig, @Nullable Element<L, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
         super(layoutConfig, parent, qName, attributes);
