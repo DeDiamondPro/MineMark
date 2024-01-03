@@ -14,9 +14,10 @@ import org.xml.sax.SAXException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Class responsible for integrating parsing, layout and rendering
@@ -26,6 +27,7 @@ public class MineMarkCore<L extends LayoutConfig, R> {
     private final HtmlRenderer htmlRenderer;
     private final MineMarkHtmlParser<L, R> htmlParser;
     private final org.ccil.cowan.tagsoup.Parser xmlParser;
+    private final ReentrantLock parsingLock = new ReentrantLock();
 
     /**
      * @param elements     Elements supported to create a layout and render
@@ -50,24 +52,40 @@ public class MineMarkCore<L extends LayoutConfig, R> {
      * @param markdown     The markdown text to parse
      * @param layoutConfig The config used at parsing time to create the layout
      * @return The parsed markdown element
-     * @throws RuntimeException When parsing fails or an error occurs
+     * @throws SAXException An exception during SAX parsing
+     * @throws IOException An IOException during parsing
      */
-    public MineMarkElement<L, R> parse(@NotNull L layoutConfig, @NotNull String markdown) {
-        long start1 = System.currentTimeMillis();
+    public MineMarkElement<L, R> parse(@NotNull L layoutConfig, @NotNull String markdown) throws SAXException, IOException {
         Node document = markdownParser.parse(markdown);
+        return parseDocument(layoutConfig, document);
+    }
+
+    /**
+     * Parse markdown to an element used to render it
+     *
+     * @param markdown     The markdown text to parse
+     * @param layoutConfig The config used at parsing time to create the layout
+     * @return The parsed markdown element
+     * @throws SAXException An exception during SAX parsing
+     * @throws IOException An IOException during parsing
+     */
+    public MineMarkElement<L, R> parse(@NotNull L layoutConfig, @NotNull Reader markdown) throws SAXException, IOException {
+        Node document = markdownParser.parseReader(markdown);
+        return parseDocument(layoutConfig, document);
+    }
+
+    private MineMarkElement<L, R> parseDocument(@NotNull L layoutConfig, Node document) throws SAXException, IOException {
         String html = "<minemark>\n" + htmlRenderer.render(document) + "</minemark>";
         System.out.println(html);
-        long start2 = System.currentTimeMillis();
-        System.out.println("Finished generating html, took " + (start2 - start1) + "ms");
         try {
+            // Acquire the lock to make sure this thread is the only one using the parser
+            parsingLock.lock();
             htmlParser.setLayoutConfig(layoutConfig);
             xmlParser.parse(new InputSource(new ByteArrayInputStream(html.getBytes())));
             return htmlParser.getParsedResult();
-        } catch (SAXException | IOException e) {
-            throw new RuntimeException(e);
         } finally {
             htmlParser.cleanUp();
-            System.out.println("Finished parsing html, took " + (System.currentTimeMillis() - start2) + "ms");
+            parsingLock.unlock();
         }
     }
 

@@ -4,6 +4,7 @@ import dev.dediamondpro.minemark.elements.Elements;
 import dev.dediamondpro.minemark.elements.MineMarkElement;
 import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension;
 import org.junit.jupiter.api.Test;
+import org.xml.sax.SAXException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,14 +21,14 @@ public class BasicTest {
     private final LayoutConfig config = new LayoutConfig(5, new LayoutConfig.SpacingConfig(1f, 2f, 2f, 5f), new LayoutConfig.HeadingConfig(6, 5, 4, 3, 2, 1));
 
     @Test
-    public void test() {
+    public void test() throws IOException, SAXException {
         MineMarkElement<LayoutConfig, Object> element = core.parse(config, "```\ntest\n```\nHello<br>World");
         //element.beforeDraw(0f, 0f, 25f, 0f, 0f, new Object());
         System.out.println(element.getTree());
     }
 
     @Test
-    public void testFile() throws IOException {
+    public void testFile() throws IOException, SAXException {
         MineMarkElement<LayoutConfig, Object> element = core.parse(config, readFromInputStream(getClass().getResourceAsStream("test.md")));
         System.out.println(element.getTree());
     }

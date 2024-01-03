@@ -14,15 +14,19 @@ public class FormattingElement<L extends LayoutConfig, R> extends ChildBasedElem
         this.layoutConfig = cloneLayoutConfig(layoutConfig);
         switch (qName) {
             case "strong":
+            case "b":
                 this.layoutConfig.setBold(true);
                 break;
             case "em":
+            case "i":
                 this.layoutConfig.setItalic(true);
                 break;
             case "ins":
+            case "u":
                 this.layoutConfig.setUnderlined(true);
                 break;
             case "del":
+            case "s":
                 this.layoutConfig.setStrikethrough(true);
                 break;
             case "pre":

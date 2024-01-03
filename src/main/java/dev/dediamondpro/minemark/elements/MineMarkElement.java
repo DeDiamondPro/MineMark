@@ -19,13 +19,11 @@ public final class MineMarkElement<L extends LayoutConfig, R> extends ChildBased
 
     @Override
     public void generateLayout(LayoutData layoutData) {
-        long start = System.currentTimeMillis();
         super.generateLayout(layoutData);
         height = layoutData.getY() + layoutData.getLineHeight();
         for (Consumer<Float> callback : layoutCallbacks) {
             callback.accept(height);
         }
-        System.out.println("Finished generating layout, took " + (System.currentTimeMillis() - start) + "ms");
     }
 
     @Override
