@@ -11,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
 
 import java.awt.image.BufferedImage;
-import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 public abstract class ImageElement<L extends LayoutConfig, R> extends BasicElement<L, R> implements Inline {

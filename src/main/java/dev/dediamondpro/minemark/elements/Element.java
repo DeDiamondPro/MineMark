@@ -2,6 +2,7 @@ package dev.dediamondpro.minemark.elements;
 
 import dev.dediamondpro.minemark.LayoutConfig;
 import dev.dediamondpro.minemark.LayoutData;
+import dev.dediamondpro.minemark.elements.impl.TextElement;
 import dev.dediamondpro.minemark.utils.MouseButton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +24,7 @@ public abstract class Element<L extends LayoutConfig, R> {
      * @param layoutConfig The configuration used to generate the layout positioning
      * @param parent       Parent element, null in top level element {@link MineMarkElement}
      * @param qName        The name of the HTML tag
-     * @param attributes   The attributes of the HTML tag, null for text {@link dev.dediamondpro.minemark.elements.impl.text.TextElement}
+     * @param attributes   The attributes of the HTML tag, null for text {@link TextElement}
      */
     public Element(@NotNull L layoutConfig, @Nullable Element<L, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
         this.layoutConfig = layoutConfig;
@@ -81,10 +82,6 @@ public abstract class Element<L extends LayoutConfig, R> {
         for (Element<L, R> child : children) {
             child.onMouseClicked(button, mouseX, mouseY);
         }
-    }
-
-    public int getChildIndex(Element<L, R> element) {
-        return children.indexOf(element);
     }
 
     /**

@@ -1,7 +1,7 @@
 import dev.dediamondpro.minemark.LayoutConfig;
 import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.elements.Element;
-import dev.dediamondpro.minemark.elements.impl.text.TextElement;
+import dev.dediamondpro.minemark.elements.impl.TextElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;

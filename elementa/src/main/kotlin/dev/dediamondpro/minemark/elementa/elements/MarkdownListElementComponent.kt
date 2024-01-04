@@ -3,13 +3,10 @@ package dev.dediamondpro.minemark.elementa.elements
 import dev.dediamondpro.minemark.LayoutData
 import dev.dediamondpro.minemark.elementa.LayoutConfigImpl
 import dev.dediamondpro.minemark.elementa.RenderData
-import dev.dediamondpro.minemark.elements.BasicElement
 import dev.dediamondpro.minemark.elements.Element
 import dev.dediamondpro.minemark.elements.impl.list.ListElement
 import dev.dediamondpro.minemark.elements.impl.list.ListHolderElement
-import gg.essential.elementa.components.UIBlock
 import org.xml.sax.Attributes
-import java.awt.Color
 
 class MarkdownListElementComponent(
     layoutConfig: LayoutConfigImpl,
@@ -17,7 +14,7 @@ class MarkdownListElementComponent(
     qName: String, attributes: Attributes?
 ) : ListElement<LayoutConfigImpl, RenderData>(layoutConfig, parent, qName, attributes) {
     private val fontProvider = layoutConfig.fontProvider
-    private var marker: String = when (listType) {
+    private var markerStr: String = when (listType) {
         ListHolderElement.ListType.ORDERED -> "${elementIndex + 1}. "
         ListHolderElement.ListType.UNORDERED -> "● "
         else -> "● "
@@ -29,7 +26,7 @@ class MarkdownListElementComponent(
         renderData.matrixStack.scale(scale, scale, 1f)
         fontProvider.drawString(
             renderData.matrixStack,
-            marker,
+            markerStr,
             layoutConfig.textColor,
             x / scale, y / scale,
             1f, 1f
@@ -38,14 +35,10 @@ class MarkdownListElementComponent(
     }
 
     override fun getMarkerWidth(): Float {
-        return fontProvider.getStringWidth(marker, 1f) * layoutConfig.fontSize
+        return fontProvider.getStringWidth(markerStr, 1f) * layoutConfig.fontSize
     }
 
-    override fun getMarkerHeight(): Float {
-        return fontProvider.getStringHeight(marker, 1f) * layoutConfig.fontSize
-    }
-
-    override fun generateLayout(layoutData: LayoutData?) {
-        super.generateLayout(layoutData)
+    override fun getMarkerHeight(layoutData: LayoutData?): Float {
+        return fontProvider.getStringHeight(markerStr, 1f) * layoutConfig.fontSize
     }
 }

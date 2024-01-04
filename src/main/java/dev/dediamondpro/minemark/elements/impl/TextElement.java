@@ -1,4 +1,4 @@
-package dev.dediamondpro.minemark.elements.impl.text;
+package dev.dediamondpro.minemark.elements.impl;
 
 import dev.dediamondpro.minemark.LayoutConfig;
 import dev.dediamondpro.minemark.LayoutData;
@@ -8,7 +8,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public abstract class TextElement<L extends LayoutConfig, R> extends Element<L, R> implements Inline {
     protected final HashMap<LayoutData.MarkDownElementPosition, String> lines = new HashMap<>();

@@ -29,7 +29,7 @@ public abstract class ChildBasedElement<L extends LayoutConfig, R> extends Eleme
             child.generateLayout(layoutData);
         }
         layoutData.updateBottomSpacing(padding);
-        if(!(this instanceof Inline)) {
+        if (!(this instanceof Inline)) {
             layoutData.nextLine();
         }
     }

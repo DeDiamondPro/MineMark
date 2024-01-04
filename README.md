@@ -6,6 +6,6 @@ Java Markdown Rendering library
 
 # TODO
 - [ ] Code blocks
-- [ ] Blockquotes
+- [X] Blockquotes
 - [ ] Tables
 - [ ] \<summary> tags

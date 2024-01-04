@@ -4,7 +4,6 @@ import dev.dediamondpro.minemark.LayoutData
 import dev.dediamondpro.minemark.elementa.LayoutConfigImpl
 import dev.dediamondpro.minemark.elementa.RenderData
 import dev.dediamondpro.minemark.elements.Element
-import dev.dediamondpro.minemark.elements.impl.LinkElement
 import dev.dediamondpro.minemark.elements.impl.formatting.HeadingElement
 import gg.essential.elementa.components.UIBlock
 import org.xml.sax.Attributes

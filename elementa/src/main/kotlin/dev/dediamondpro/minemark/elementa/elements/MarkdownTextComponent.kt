@@ -4,10 +4,9 @@ import dev.dediamondpro.minemark.LayoutData
 import dev.dediamondpro.minemark.elementa.LayoutConfigImpl
 import dev.dediamondpro.minemark.elementa.RenderData
 import dev.dediamondpro.minemark.elements.Element
-import dev.dediamondpro.minemark.elements.impl.text.TextElement
+import dev.dediamondpro.minemark.elements.impl.TextElement
 import gg.essential.universal.UResolution
 import org.xml.sax.Attributes
-import kotlin.math.floor
 import kotlin.math.round
 
 class MarkdownTextComponent(

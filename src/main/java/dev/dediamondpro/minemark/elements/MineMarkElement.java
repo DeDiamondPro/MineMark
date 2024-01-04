@@ -47,9 +47,7 @@ public final class MineMarkElement<L extends LayoutConfig, R> extends ChildBased
             throw new IllegalArgumentException("Width cannot be zero or negative!");
         }
         if (width != lastWidth) {
-            System.out.println("Generating layout during draw, this is not ideal. Please call beforeDraw.");
-            generateLayout(new LayoutData(width));
-            lastWidth = width;
+            throw new IllegalArgumentException("Draw has been called without calling beforeDraw, this is not allowed!");
         }
         this.draw(x, y, mouseX - x, mouseY - y, renderData);
     }

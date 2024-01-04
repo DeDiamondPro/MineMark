@@ -4,8 +4,6 @@ import dev.dediamondpro.minemark.elements.Element;
 import dev.dediamondpro.minemark.elements.ElementLoader;
 import dev.dediamondpro.minemark.elements.MineMarkElement;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.List;
@@ -95,7 +93,7 @@ public class MineMarkHtmlParser<L extends LayoutConfig, R> extends DefaultHandle
         if (text.isEmpty()) return;
         ElementLoader<L, R> textLoader = findElement("text");
         if (textLoader == null) {
-            throw new IllegalStateException("No text element provided");
+            throw new IllegalArgumentException("No text element provided!");
         }
         textLoader.get(currentElement.getLayoutConfig(), currentElement, "text", null).setText(textBuilder.toString());
         textBuilder = new StringBuilder();

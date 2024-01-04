@@ -5,10 +5,7 @@ import dev.dediamondpro.minemark.elementa.RenderData
 import dev.dediamondpro.minemark.elementa.util.EmptyImage
 import dev.dediamondpro.minemark.elements.Element
 import dev.dediamondpro.minemark.elements.impl.ImageElement
-import dev.dediamondpro.minemark.elements.impl.LinkElement
 import gg.essential.elementa.components.UIImage
-import gg.essential.elementa.dsl.constrain
-import gg.essential.elementa.dsl.pixels
 import org.xml.sax.Attributes
 import java.awt.Color
 import java.awt.image.BufferedImage
