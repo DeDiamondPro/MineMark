@@ -83,6 +83,10 @@ public abstract class Element<L extends LayoutConfig, R> {
         }
     }
 
+    public int getChildIndex(Element<L, R> element) {
+        return children.indexOf(element);
+    }
+
     /**
      * Build a tree of elements for debugging purposes
      */

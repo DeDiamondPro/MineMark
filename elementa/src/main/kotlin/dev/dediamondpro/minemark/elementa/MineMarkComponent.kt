@@ -80,6 +80,7 @@ class MineMarkComponent(
                 .addElement(Elements.IMAGE, ::MarkdownImageComponent)
                 .addElement(Elements.HORIZONTAL_LINE, ::MarkdownHorizontalLineComponent)
                 .addElement(Elements.LIST_ELEMENT, ::MarkdownListElementComponent)
+                .addElement(Elements.BLOCKQUOTE, ::MarkdownBlockquoteComponent)
         }
     }
 }

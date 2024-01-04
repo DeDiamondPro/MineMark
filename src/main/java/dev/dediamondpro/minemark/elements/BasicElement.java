@@ -24,11 +24,11 @@ public abstract class BasicElement<L extends LayoutConfig, R> extends Element<L,
     protected void generateLayout(LayoutData layoutData) {
         width = getWidth(layoutData);
         height = getHeight(layoutData);
-        if ((!(this instanceof Inline) && !layoutData.isLineEmpty()) || layoutData.getX() + width > layoutData.getMaxWidth()) {
+        if ((!(this instanceof Inline) && layoutData.isLineOccupied()) || layoutData.getX() + width > layoutData.getMaxWidth()) {
             layoutData.nextLine();
         }
         position = layoutData.addElement(layoutConfig.getAlignment(), width, height);
-        if (!(this instanceof Inline) && !layoutData.isLineEmpty()) {
+        if (!(this instanceof Inline) && layoutData.isLineOccupied()) {
             layoutData.nextLine();
         }
     }

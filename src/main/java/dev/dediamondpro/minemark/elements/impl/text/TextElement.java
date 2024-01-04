@@ -32,10 +32,8 @@ public abstract class TextElement<L extends LayoutConfig, R> extends Element<L, 
         }
         for (int i = 0; i < allLines.size(); i++) {
             String line = allLines.get(i);
-            lines.put(layoutData.addElement(
-                            layoutConfig.getAlignment(), getTextWidth(line),
-                            getTextHeight(line) + layoutConfig.getSpacingConfig().getTextSpacing() * layoutConfig.getFontSize()),
-                    line);
+            layoutData.updatePadding(layoutConfig.getSpacingConfig().getTextPadding() * layoutConfig.getFontSize());
+            lines.put(layoutData.addElement(layoutConfig.getAlignment(), getTextWidth(line), getTextHeight(line)), line);
             if (i != allLines.size() - 1) {
                 layoutData.nextLine();
             }

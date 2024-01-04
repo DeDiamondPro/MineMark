@@ -5,12 +5,11 @@ import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.elements.ChildBasedElement;
 import dev.dediamondpro.minemark.elements.Element;
 import dev.dediamondpro.minemark.elements.Inline;
-import dev.dediamondpro.minemark.elements.NoPadding;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
 
-public abstract class ListElement<L extends LayoutConfig, R> extends ChildBasedElement<L, R> implements Inline, NoPadding {
+public abstract class ListElement<L extends LayoutConfig, R> extends ChildBasedElement<L, R> implements Inline {
     protected final ListHolderElement.ListType listType;
     protected final int elementIndex;
     protected LayoutData.MarkDownElementPosition markerPosition;
@@ -25,7 +24,7 @@ public abstract class ListElement<L extends LayoutConfig, R> extends ChildBasedE
         }
         ListHolderElement<L, R> holder = (ListHolderElement<L, R>) parent;
         listType = holder.getListType();
-        elementIndex = holder.getElementPosition(this);
+        elementIndex = holder.getChildIndex(this);
     }
 
     @Override
@@ -34,16 +33,26 @@ public abstract class ListElement<L extends LayoutConfig, R> extends ChildBasedE
         markerWidth = getMarkerWidth();
         markerHeight = getMarkerHeight();
         indentX = Math.max(markerWidth, layoutConfig.getSpacingConfig().getListIndentSpacing());
+        layoutData.updatePadding(layoutConfig.getSpacingConfig().getTextPadding());
         markerPosition = layoutData.addElement(LayoutConfig.Alignment.LEFT, indentX, markerHeight);
+
         LayoutData newLayoutData = new LayoutData(layoutData.getMaxWidth() - indentX);
+        newLayoutData.setTopSpacing(layoutData.getCurrentLine().getTopSpacing());
+        newLayoutData.lockTopSpacing();
         newLayoutData.updateLineHeight(layoutData.getLineHeight());
+        newLayoutData.setBottomSpacing(layoutData.getCurrentLine().getBottomSpacing());
         LayoutData.MarkDownLine firstLine = newLayoutData.getCurrentLine();
+
         super.generateLayout(newLayoutData);
-        layoutData.updateLineHeight(firstLine.getHeight());
-        layoutData.addX(firstLine.getWidth());
+
+        newLayoutData.setBottomSpacing(layoutData.getCurrentLine().getBottomSpacing());
+        layoutData.updateTopSpacing(firstLine.getTopSpacing());
+        layoutData.updateLineHeight(firstLine.getRawHeight());
+        layoutData.updateBottomSpacing(firstLine.getBottomSpacing());
         layoutData.nextLine();
+
         if (newLayoutData.getCurrentLine() != firstLine) {
-            layoutData.setLineHeight(newLayoutData.getY() + newLayoutData.getLineHeight() - firstLine.getHeight());
+            layoutData.setLineHeight(newLayoutData.getCurrentLine().getBottomY() - firstLine.getHeight());
             layoutData.nextLine();
         }
     }

@@ -13,7 +13,8 @@ public enum Elements {
     IMAGE(listOf("img")),
     LIST_PARENT(listOf("ol", "ul")),
     LIST_ELEMENT(listOf("li")),
-    HORIZONTAL_LINE(listOf("hr"))
+    HORIZONTAL_LINE(listOf("hr")),
+    BLOCKQUOTE(listOf("blockquote"))
     ;
 
     public final List<String> tags;

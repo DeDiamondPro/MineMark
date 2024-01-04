@@ -18,11 +18,11 @@ public class BasicTest {
             .addElement(Elements.TEXT, DummyTextElement::new)
             .build();
 
-    private final LayoutConfig config = new LayoutConfig(5, new LayoutConfig.SpacingConfig(1f, 2f, 2f, 5f), new LayoutConfig.HeadingConfig(6, 5, 4, 3, 2, 1));
+    private final LayoutConfig config = new LayoutConfig(5, new LayoutConfig.SpacingConfig(1f, 2f, 5f), new LayoutConfig.HeadingConfig(6, 5, 4, 3, 2, 1));
 
     @Test
     public void test() throws IOException, SAXException {
-        MineMarkElement<LayoutConfig, Object> element = core.parse(config, "```\ntest\n```\nHello<br>World");
+        MineMarkElement<LayoutConfig, Object> element = core.parse(config, "> Test");
         //element.beforeDraw(0f, 0f, 25f, 0f, 0f, new Object());
         System.out.println(element.getTree());
     }

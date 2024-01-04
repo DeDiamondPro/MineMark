@@ -7,6 +7,8 @@ public class LayoutData {
     private final ArrayList<Consumer<MarkDownElementPosition>> elementListeners = new ArrayList<>();
     private MarkDownLine currentLine = new MarkDownLine(0f);
     private final float maxWidth;
+    private boolean topSpacingLocked = false;
+    private boolean bottomSpacingLocked = false;
 
     public LayoutData(float maxWidth) {
         this.maxWidth = maxWidth;
@@ -16,8 +18,14 @@ public class LayoutData {
         return currentLine.width == 0f;
     }
 
+    public boolean isLineOccupied() {
+        return currentLine.width != 0f;
+    }
+
     public void nextLine() {
         currentLine = new MarkDownLine(currentLine.getBottomY());
+        topSpacingLocked = false;
+        bottomSpacingLocked = false;
     }
 
     public MarkDownElementPosition addElement(LayoutConfig.Alignment alignment, float width, float height) {
@@ -79,6 +87,39 @@ public class LayoutData {
         return currentLine;
     }
 
+    public void updateTopSpacing(float spacing) {
+        if (topSpacingLocked) return;
+        currentLine.topSpacing = Math.max(currentLine.topSpacing, spacing);
+    }
+
+    public void updateBottomSpacing(float spacing) {
+        if (bottomSpacingLocked) return;
+        currentLine.bottomSpacing = Math.max(currentLine.bottomSpacing, spacing);
+    }
+
+    public void updatePadding(float padding) {
+        updateTopSpacing(padding);
+        updateBottomSpacing(padding);
+    }
+
+    public void setTopSpacing(float spacing) {
+        if (topSpacingLocked) return;
+        currentLine.topSpacing = spacing;
+    }
+
+    public void setBottomSpacing(float spacing) {
+        if (bottomSpacingLocked) return;
+        currentLine.bottomSpacing = spacing;
+    }
+
+    public void lockTopSpacing() {
+        topSpacingLocked = true;
+    }
+
+    public void lockBottomSpacing() {
+        bottomSpacingLocked = true;
+    }
+
     public static class MarkDownElementPosition {
         private final MarkDownLine line;
         private final float x;
@@ -121,7 +162,7 @@ public class LayoutData {
         }
 
         public float getBottomY() {
-            return line.getBottomY();
+            return line.getBottomY() - line.getBottomSpacing();
         }
 
         public float getHeight() {
@@ -130,10 +171,6 @@ public class LayoutData {
 
         public float getWidth() {
             return width;
-        }
-
-        public float getLineHeight() {
-            return line.getHeight();
         }
 
         public boolean isInside(float x, float y) {
@@ -146,6 +183,8 @@ public class LayoutData {
         private final float y;
         private float width = 0f;
         private float height = 0f;
+        private float topSpacing = 0f;
+        private float bottomSpacing = 0f;
 
         public MarkDownLine(float y) {
             this.y = y;
@@ -160,11 +199,23 @@ public class LayoutData {
         }
 
         public float getHeight() {
+            return topSpacing + height + bottomSpacing;
+        }
+
+        public float getRawHeight() {
             return height;
         }
 
         public float getBottomY() {
-            return y + height;
+            return y + getHeight();
+        }
+
+        public float getBottomSpacing() {
+            return bottomSpacing;
+        }
+
+        public float getTopSpacing() {
+            return topSpacing;
         }
     }
 }

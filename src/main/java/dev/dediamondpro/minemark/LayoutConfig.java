@@ -147,20 +147,26 @@ public class LayoutConfig {
     }
 
     public static class SpacingConfig {
-        private final float textSpacing;
+        private final float textPadding;
         private final float paragraphPadding;
         private final float listPadding;
         private final float listIndentSpacing;
+        private final float blockQuotePadding;
 
-        public SpacingConfig(float textSpacing, float paragraphPadding, float listPadding, float listIndentSpacing) {
-            this.textSpacing = textSpacing;
+        public SpacingConfig(float textPadding, float paragraphPadding, float listIndentSpacing, float listPadding, float blockQuotePadding) {
+            this.textPadding = textPadding;
             this.paragraphPadding = paragraphPadding;
-            this.listPadding = listPadding;
             this.listIndentSpacing = listIndentSpacing;
+            this.listPadding = listPadding;
+            this.blockQuotePadding = blockQuotePadding;
         }
 
-        public float getTextSpacing() {
-            return textSpacing;
+        public SpacingConfig(float textPadding, float paragraphPadding, float listIndentSpacing) {
+            this(textPadding, paragraphPadding, listIndentSpacing, paragraphPadding, paragraphPadding);
+        }
+
+        public float getTextPadding() {
+            return textPadding;
         }
 
         public float getParagraphPadding() {
@@ -173,6 +179,10 @@ public class LayoutConfig {
 
         public float getListIndentSpacing() {
             return listIndentSpacing;
+        }
+
+        public float getBlockQuotePadding() {
+            return blockQuotePadding;
         }
     }
 

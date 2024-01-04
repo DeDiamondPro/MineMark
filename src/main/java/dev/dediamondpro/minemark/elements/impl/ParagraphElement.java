@@ -4,7 +4,6 @@ import dev.dediamondpro.minemark.LayoutConfig;
 import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.elements.ChildBasedElement;
 import dev.dediamondpro.minemark.elements.Element;
-import dev.dediamondpro.minemark.elements.NoPadding;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;

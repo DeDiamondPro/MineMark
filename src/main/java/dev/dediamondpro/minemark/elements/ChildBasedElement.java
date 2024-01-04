@@ -20,22 +20,16 @@ public abstract class ChildBasedElement<L extends LayoutConfig, R> extends Eleme
 
     @Override
     protected void generateLayout(LayoutData layoutData) {
-        if (!(this instanceof Inline) && !layoutData.isLineEmpty()) {
+        if (!(this instanceof Inline) && layoutData.isLineOccupied()) {
             layoutData.nextLine();
         }
         float padding = getPadding(layoutData);
-        if (padding != 0 && !(parent instanceof NoPadding)) {
-            layoutData.setLineHeight(padding);
-            layoutData.nextLine();
-        }
+        layoutData.updateTopSpacing(padding);
         for (Element<L, R> child : children) {
             child.generateLayout(layoutData);
         }
-        if (!(this instanceof Inline) && !layoutData.isLineEmpty()) {
-            layoutData.nextLine();
-        }
-        if (padding != 0 && !(parent instanceof NoPadding)) {
-            layoutData.setLineHeight(padding);
+        layoutData.updateBottomSpacing(padding);
+        if(!(this instanceof Inline)) {
             layoutData.nextLine();
         }
     }

@@ -20,7 +20,7 @@ class LayoutConfigImpl(
     strikethrough: Boolean = false,
     partOfLink: Boolean = false,
     preFormatted: Boolean = false,
-    spacingConfig: SpacingConfig = SpacingConfig(4f, 4f, 4f, 16f),
+    spacingConfig: SpacingConfig = SpacingConfig(2f, 6f, 16f),
     headingConfig: HeadingConfig = HeadingConfig(2f, 1.66f, 1.33f, 1f, 1.2f, 1f),
     imageProvider: ImageProvider = DefaultImageProvider.INSTANCE,
     browserProvider: BrowserProvider = ElementaBrowserProvider

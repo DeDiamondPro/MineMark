@@ -32,7 +32,7 @@ public class AlignmentElement<L extends LayoutConfig, R> extends ChildBasedEleme
 
     @Override
     protected void generateLayout(LayoutData layoutData) {
-        if (!layoutData.isLineEmpty()) layoutData.nextLine();
+        if (layoutData.isLineOccupied()) layoutData.nextLine();
         super.generateLayout(layoutData);
     }
 

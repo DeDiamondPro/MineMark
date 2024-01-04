@@ -2,7 +2,7 @@ Oh, so **test**<br> test
 
 that's an issue?
 
-<div align="left">
+<div align="center">
 
 > hello
 > 
@@ -15,4 +15,5 @@ that's an issue?
 
 </div>
 
-<s>taco</s>
+hello
+<blockquote>hello<p>hello</p></blockquote>
