@@ -8,4 +8,4 @@ Java Markdown Rendering library
 - [ ] Code blocks
 - [X] Blockquotes
 - [ ] Tables
-- [ ] \<summary> tags
+- [ ] \<details> and \<summary> tags

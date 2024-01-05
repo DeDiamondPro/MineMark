@@ -1,7 +1,7 @@
 package dev.dediamondpro.minemark.elements;
 
-import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.LayoutData;
+import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.style.Style;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,25 +18,34 @@ public abstract class BasicElement<S extends Style, R> extends Element<S, R> {
 
     @Override
     protected void draw(float xOffset, float yOffset, float mouseX, float mouseY, R renderData) {
-        drawElement(position.getX() + xOffset, position.getBottomY() - height + yOffset, renderData);
+        drawElement(
+                position.getX() + xOffset, position.getBottomY() - height + yOffset,
+                position.getWidth(), position.getHeight(), renderData
+        );
     }
 
     @Override
     protected void generateLayout(LayoutData layoutData) {
         width = getWidth(layoutData);
         height = getHeight(layoutData);
+        float padding = getPadding(layoutData);
         if ((!(this instanceof Inline) && layoutData.isLineOccupied()) || layoutData.getX() + width > layoutData.getMaxWidth()) {
             layoutData.nextLine();
         }
+        layoutData.updatePadding(padding);
         position = layoutData.addElement(layoutStyle.getAlignment(), width, height);
         if (!(this instanceof Inline) && layoutData.isLineOccupied()) {
             layoutData.nextLine();
         }
     }
 
-    protected abstract void drawElement(float x, float y, R renderData);
+    protected abstract void drawElement(float x, float y, float width, float height, R renderData);
 
     protected abstract float getWidth(LayoutData layoutData);
 
     protected abstract float getHeight(LayoutData layoutData);
+
+    protected float getPadding(LayoutData layoutData) {
+        return 0f;
+    }
 }

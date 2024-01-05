@@ -8,9 +8,13 @@ public interface Style {
 
     LinkStyleConfig getLinkStyle();
 
-    HeaderStyleConfig getHeaderStyle();
+    HeadingStyleConfig getHeadingStyle();
+
+    HorizontalRuleStyleConfig getHorizontalRuleStyle();
 
     ImageStyleConfig getImageStyle();
 
     ListStyleConfig getListStyle();
+
+    BlockquoteStyleConfig getBlockquoteStyle();
 }

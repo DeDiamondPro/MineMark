@@ -1,7 +1,7 @@
 package dev.dediamondpro.minemark.elements.impl;
 
-import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.LayoutData;
+import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.elements.ChildBasedElement;
 import dev.dediamondpro.minemark.elements.Element;
 import dev.dediamondpro.minemark.elements.Inline;
@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public class LinkElement<S extends Style, R> extends ChildBasedElement<S, R> implements Inline {

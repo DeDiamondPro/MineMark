@@ -1,7 +1,7 @@
 package dev.dediamondpro.minemark.elements.impl;
 
-import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.LayoutData;
+import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.elements.Element;
 import dev.dediamondpro.minemark.elements.Inline;
 import dev.dediamondpro.minemark.style.Style;
@@ -25,7 +25,7 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
     public void generateLayout(LayoutData layoutData) {
         lines.clear();
         ArrayList<String> allLines = new ArrayList<>();
-        String[] predefinedLines = text.split("\n", -1);
+        String[] predefinedLines = text.replaceAll(" +", " ").split("\n", -1);
         for (int i = 0; i < predefinedLines.length; i++) {
             String line = predefinedLines[i].replace("\n", "");
             if (layoutStyle.isPreFormatted()) {
@@ -36,7 +36,7 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
         }
         for (int i = 0; i < allLines.size(); i++) {
             String line = allLines.get(i);
-            layoutData.updatePadding(style.getTextStyle().getPadding() * layoutStyle.getFontSize());
+            layoutData.updatePadding(style.getTextStyle().getPadding());
             lines.put(layoutData.addElement(layoutStyle.getAlignment(), getTextWidth(line), getTextHeight(line)), line);
             if (i != allLines.size() - 1) {
                 layoutData.nextLine();

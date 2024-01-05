@@ -1,9 +1,5 @@
 package dev.dediamondpro.minemark;
 
-import dev.dediamondpro.minemark.providers.BrowserProvider;
-import dev.dediamondpro.minemark.providers.DefaultBrowserProvider;
-import dev.dediamondpro.minemark.providers.DefaultImageProvider;
-import dev.dediamondpro.minemark.providers.ImageProvider;
 import dev.dediamondpro.minemark.style.Style;
 
 import java.awt.*;

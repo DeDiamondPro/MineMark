@@ -13,7 +13,7 @@ public enum Elements {
     IMAGE(listOf("img")),
     LIST_PARENT(listOf("ol", "ul")),
     LIST_ELEMENT(listOf("li")),
-    HORIZONTAL_LINE(listOf("hr")),
+    HORIZONTAL_RULE(listOf("hr")),
     BLOCKQUOTE(listOf("blockquote"))
     ;
 

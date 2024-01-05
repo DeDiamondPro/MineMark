@@ -3,7 +3,7 @@ package dev.dediamondpro.minemark.style;
 
 import java.awt.*;
 
-public class HeaderLevelStyleConfig {
+public class HeadingLevelStyleConfig {
     private final float fontSize;
     private final float padding;
     private final boolean hasDivider;
@@ -11,7 +11,7 @@ public class HeaderLevelStyleConfig {
     private final float dividerHeight;
     private final float spaceBeforeDivider;
 
-    public HeaderLevelStyleConfig(float fontSize, float padding, boolean hasDivider, Color dividerColor, float dividerHeight, float spaceBeforeDivider) {
+    public HeadingLevelStyleConfig(float fontSize, float padding, boolean hasDivider, Color dividerColor, float dividerHeight, float spaceBeforeDivider) {
         this.fontSize = fontSize;
         this.padding = padding;
         this.hasDivider = hasDivider;
@@ -20,7 +20,7 @@ public class HeaderLevelStyleConfig {
         this.spaceBeforeDivider = spaceBeforeDivider;
     }
 
-    public HeaderLevelStyleConfig(float fontSize, float padding) {
+    public HeadingLevelStyleConfig(float fontSize, float padding) {
         this(fontSize, padding, false, null, 0f, 0f);
     }
 
@@ -32,7 +32,7 @@ public class HeaderLevelStyleConfig {
         return padding;
     }
 
-    public boolean isHasDivider() {
+    public boolean hasDivider() {
         return hasDivider;
     }
 

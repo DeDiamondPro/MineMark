@@ -1,7 +1,7 @@
 package dev.dediamondpro.minemark.elements.impl;
 
-import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.LayoutData;
+import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.elements.BasicElement;
 import dev.dediamondpro.minemark.elements.Element;
 import dev.dediamondpro.minemark.elements.Inline;
@@ -47,7 +47,7 @@ public abstract class ImageElement<S extends Style, R> extends BasicElement<S, R
     }
 
     @Override
-    protected void drawElement(float x, float y, R renderData) {
+    protected void drawElement(float x, float y, float width, float height, R renderData) {
         if (image == null) return;
         drawImage(image, x, y, width, height, renderData);
     }

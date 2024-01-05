@@ -1,7 +1,7 @@
 package dev.dediamondpro.minemark.elements.impl.list;
 
-import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.LayoutData;
+import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.elements.ChildMovingElement;
 import dev.dediamondpro.minemark.elements.Element;
 import dev.dediamondpro.minemark.style.Style;

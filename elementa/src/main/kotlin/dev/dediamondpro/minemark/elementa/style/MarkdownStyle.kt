@@ -12,29 +12,34 @@ data class MarkdownStyle @JvmOverloads constructor(
         1f, Color.WHITE, 2f, DefaultFonts.VANILLA_FONT_RENDERER
     ),
     private val paragraphStyle: ParagraphStyleConfig = ParagraphStyleConfig(6f),
-    private val linkStyle: LinkStyleConfig = LinkStyleConfig(Color(65, 105, 225), true, ElementaBrowserProvider),
-    private val headerStyle: HeaderStyleConfig = HeaderStyleConfig(
-        HeaderLevelStyleConfig(2f, 12f, true, Color(80, 80, 80), 2f, 5f),
-        HeaderLevelStyleConfig(1.66f, 10f, true, Color(80, 80, 80), 2f, 5f),
-        HeaderLevelStyleConfig(1.33f, 8f),
-        HeaderLevelStyleConfig(1f, 6f),
-        HeaderLevelStyleConfig(0.7f, 4f),
-        HeaderLevelStyleConfig(0.7f, 4f)
+    private val linkStyle: LinkStyleConfig = LinkStyleConfig(Color(65, 105, 225), ElementaBrowserProvider),
+    private val headerStyle: HeadingStyleConfig = HeadingStyleConfig(
+        HeadingLevelStyleConfig(2f, 12f, true, LINE_COLOR, 2f, 5f),
+        HeadingLevelStyleConfig(1.66f, 10f, true, LINE_COLOR, 2f, 5f),
+        HeadingLevelStyleConfig(1.33f, 8f),
+        HeadingLevelStyleConfig(1f, 6f),
+        HeadingLevelStyleConfig(0.7f, 4f),
+        HeadingLevelStyleConfig(0.7f, 4f)
     ),
+    private val horizontalRuleStyle: HorizontalRuleStyleConfig = HorizontalRuleStyleConfig(2f, 4f, LINE_COLOR),
     private val imageStyle: ImageStyleConfig = ImageStyleConfig(DefaultImageProvider.INSTANCE),
-    private val listStyle: ListStyleConfig = ListStyleConfig(16f, 6f)
+    private val listStyle: ListStyleConfig = ListStyleConfig(16f, 6f),
+    private val blockquoteBlockStyle: BlockquoteStyleConfig = BlockquoteStyleConfig(6f, 4f, 2f, 10f, LINE_COLOR),
 ) : Style {
     override fun getTextStyle(): MarkdownTextStyle = textStyle
     override fun getParagraphStyle(): ParagraphStyleConfig = paragraphStyle
     override fun getLinkStyle(): LinkStyleConfig = linkStyle
-    override fun getHeaderStyle(): HeaderStyleConfig = headerStyle
+    override fun getHeadingStyle(): HeadingStyleConfig = headerStyle
+    override fun getHorizontalRuleStyle(): HorizontalRuleStyleConfig = horizontalRuleStyle
     override fun getImageStyle(): ImageStyleConfig = imageStyle
     override fun getListStyle(): ListStyleConfig = listStyle
+    override fun getBlockquoteStyle(): BlockquoteStyleConfig = blockquoteBlockStyle
+
+    companion object {
+        private val LINE_COLOR = Color(80, 80, 80);
+    }
 }
 
 class MarkdownTextStyle(
-    defaultFontSize: Float,
-    defaultTextColor: Color?,
-    padding: Float,
-    val font: FontProvider
+    defaultFontSize: Float, defaultTextColor: Color?, padding: Float, val font: FontProvider
 ) : TextStyleConfig(defaultFontSize, defaultTextColor, padding)

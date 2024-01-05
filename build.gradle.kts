@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "dev.dediamondpro"
-version = "1.0-SNAPSHOT77"
+version = "1.0-SNAPSHOT80"
 
 repositories {
     mavenCentral()

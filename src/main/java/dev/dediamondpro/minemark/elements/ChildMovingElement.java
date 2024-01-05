@@ -1,7 +1,7 @@
 package dev.dediamondpro.minemark.elements;
 
-import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.LayoutData;
+import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.style.Style;
 import dev.dediamondpro.minemark.utils.MouseButton;
 import org.jetbrains.annotations.NotNull;
