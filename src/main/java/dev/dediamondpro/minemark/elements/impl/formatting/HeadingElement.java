@@ -1,20 +1,21 @@
 package dev.dediamondpro.minemark.elements.impl.formatting;
 
-import dev.dediamondpro.minemark.LayoutConfig;
+import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.elements.ChildBasedElement;
 import dev.dediamondpro.minemark.elements.Element;
+import dev.dediamondpro.minemark.style.Style;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
 
-public class HeadingElement<L extends LayoutConfig, R> extends ChildBasedElement<L, R> {
+public class HeadingElement<S extends Style, R> extends ChildBasedElement<S, R> {
     protected final HeadingType headingType;
 
-    public HeadingElement(@NotNull L layoutConfig, @Nullable Element<L, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
-        super(layoutConfig, parent, qName, attributes);
+    public HeadingElement(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
+        super(style, layoutStyle, parent, qName, attributes);
         this.headingType = HeadingType.getFromHtmlTag(qName);
-        this.layoutConfig = cloneLayoutConfig(layoutConfig);
-        this.layoutConfig.setFontSize(headingType.getFontSize(this.layoutConfig.getHeadingConfig()));
+        this.layoutStyle = this.layoutStyle.clone();
+        this.layoutStyle.setFontSize(headingType.getFontSize(style));
     }
 
     @Override
@@ -25,20 +26,20 @@ public class HeadingElement<L extends LayoutConfig, R> extends ChildBasedElement
     public enum HeadingType {
         H1, H2, H3, H4, H5, H6;
 
-        public float getFontSize(LayoutConfig.HeadingConfig config) {
+        public float getFontSize(Style style) {
             switch (this) {
                 case H1:
-                    return config.getH1FontSize();
+                    return style.getHeaderStyle().getH1().getFontSize();
                 case H2:
-                    return config.getH2FontSize();
+                    return style.getHeaderStyle().getH2().getFontSize();
                 case H3:
-                    return config.getH3FontSize();
+                    return style.getHeaderStyle().getH3().getFontSize();
                 case H4:
-                    return config.getH4FontSize();
+                    return style.getHeaderStyle().getH4().getFontSize();
                 case H5:
-                    return config.getH5FontSize();
+                    return style.getHeaderStyle().getH5().getFontSize();
                 case H6:
-                    return config.getH6FontSize();
+                    return style.getHeaderStyle().getH6().getFontSize();
             }
             throw new IllegalStateException("This should literally never be thrown.");
         }

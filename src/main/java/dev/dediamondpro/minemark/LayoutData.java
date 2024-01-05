@@ -28,7 +28,7 @@ public class LayoutData {
         bottomSpacingLocked = false;
     }
 
-    public MarkDownElementPosition addElement(LayoutConfig.Alignment alignment, float width, float height) {
+    public MarkDownElementPosition addElement(LayoutStyle.Alignment alignment, float width, float height) {
         MarkDownElementPosition position = new MarkDownElementPosition(currentLine, currentLine.width, width, height, maxWidth, alignment);
         if (!elementListeners.isEmpty()) {
             elementListeners.get(0).accept(position);
@@ -126,9 +126,9 @@ public class LayoutData {
         private final float width;
         private final float height;
         private final float maxWidth;
-        private final LayoutConfig.Alignment alignment;
+        private final LayoutStyle.Alignment alignment;
 
-        public MarkDownElementPosition(MarkDownLine line, float x, float width, float height, float maxWidth, LayoutConfig.Alignment alignment) {
+        public MarkDownElementPosition(MarkDownLine line, float x, float width, float height, float maxWidth, LayoutStyle.Alignment alignment) {
             this.line = line;
             this.x = x;
             this.width = width;

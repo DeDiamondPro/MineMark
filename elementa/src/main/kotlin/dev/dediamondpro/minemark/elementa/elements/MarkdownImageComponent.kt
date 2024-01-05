@@ -1,7 +1,8 @@
 package dev.dediamondpro.minemark.elementa.elements
 
-import dev.dediamondpro.minemark.elementa.LayoutConfigImpl
+import dev.dediamondpro.minemark.LayoutStyle
 import dev.dediamondpro.minemark.elementa.RenderData
+import dev.dediamondpro.minemark.elementa.style.MarkdownStyle
 import dev.dediamondpro.minemark.elementa.util.EmptyImage
 import dev.dediamondpro.minemark.elements.Element
 import dev.dediamondpro.minemark.elements.impl.ImageElement
@@ -12,10 +13,11 @@ import java.awt.image.BufferedImage
 import java.util.concurrent.CompletableFuture
 
 class MarkdownImageComponent(
-    layoutConfig: LayoutConfigImpl,
-    parent: Element<LayoutConfigImpl, RenderData>?,
+    style: MarkdownStyle,
+    layoutStyle: LayoutStyle,
+    parent: Element<MarkdownStyle, RenderData>?,
     qName: String, attributes: Attributes?
-) : ImageElement<LayoutConfigImpl, RenderData>(layoutConfig, parent, qName, attributes) {
+) : ImageElement<MarkdownStyle, RenderData>(style, layoutStyle, parent, qName, attributes) {
     private var uiImage: UIImage? = null
 
     override fun drawImage(

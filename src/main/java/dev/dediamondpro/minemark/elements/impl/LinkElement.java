@@ -1,10 +1,11 @@
 package dev.dediamondpro.minemark.elements.impl;
 
-import dev.dediamondpro.minemark.LayoutConfig;
+import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.elements.ChildBasedElement;
 import dev.dediamondpro.minemark.elements.Element;
 import dev.dediamondpro.minemark.elements.Inline;
+import dev.dediamondpro.minemark.style.Style;
 import dev.dediamondpro.minemark.utils.MouseButton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,24 +14,24 @@ import org.xml.sax.Attributes;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class LinkElement<L extends LayoutConfig, R> extends ChildBasedElement<L, R> implements Inline {
+public class LinkElement<S extends Style, R> extends ChildBasedElement<S, R> implements Inline {
     protected final ArrayList<LayoutData.MarkDownElementPosition> positions = new ArrayList<>();
     protected final String link;
 
-    public LinkElement(@NotNull L layoutConfig, @Nullable Element<L, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
-        super(layoutConfig, parent, qName, attributes);
+    public LinkElement(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
+        super(style, layoutStyle, parent, qName, attributes);
         this.link = attributes != null ? attributes.getValue("href") : null;
         if (link != null) {
-            this.layoutConfig = cloneLayoutConfig(this.layoutConfig);
-            this.layoutConfig.setTextColor(new Color(65, 105, 225));
-            this.layoutConfig.setPartOfLink(true);
+            this.layoutStyle = this.layoutStyle.clone();
+            this.layoutStyle.setTextColor(style.getLinkStyle().getTextColor());
+            this.layoutStyle.setPartOfLink(true);
         }
     }
 
     @Override
     protected void onMouseClicked(MouseButton button, float mouseX, float mouseY) {
         if ((button == MouseButton.LEFT || button == MouseButton.MIDDLE) && isAnyInside(mouseX, mouseY) && link != null) {
-            layoutConfig.getBrowserProvider().browse(link);
+            style.getLinkStyle().getBrowserProvider().browse(link);
         } else {
             super.onMouseClicked(button, mouseX, mouseY);
         }

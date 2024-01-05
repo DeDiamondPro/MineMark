@@ -1,11 +1,12 @@
 package dev.dediamondpro.minemark.elements.impl;
 
-import dev.dediamondpro.minemark.LayoutConfig;
+import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.elements.BasicElement;
 import dev.dediamondpro.minemark.elements.Element;
 import dev.dediamondpro.minemark.elements.Inline;
 import dev.dediamondpro.minemark.providers.ImageProvider;
+import dev.dediamondpro.minemark.style.Style;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
@@ -13,7 +14,7 @@ import org.xml.sax.Attributes;
 import java.awt.image.BufferedImage;
 import java.util.regex.Pattern;
 
-public abstract class ImageElement<L extends LayoutConfig, R> extends BasicElement<L, R> implements Inline {
+public abstract class ImageElement<S extends Style, R> extends BasicElement<S, R> implements Inline {
     private static final Pattern pixelPattern = Pattern.compile("^\\d+(px)?$");
     protected float imageWidth = -1;
     protected float imageHeight = -1;
@@ -22,11 +23,11 @@ public abstract class ImageElement<L extends LayoutConfig, R> extends BasicEleme
     protected final String src;
     protected BufferedImage image = null;
 
-    public ImageElement(@NotNull L layoutConfig, @Nullable Element<L, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
-        super(layoutConfig, parent, qName, attributes);
+    public ImageElement(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
+        super(style, layoutStyle, parent, qName, attributes);
         assert attributes != null;
         this.src = attributes.getValue("src");
-        layoutConfig.getImageProvider().getImage(src, this::onDimensionsReceived, this::onImageReceived);
+        style.getImageStyle().getImageProvider().getImage(src, this::onDimensionsReceived, this::onImageReceived);
     }
 
     protected void onDimensionsReceived(ImageProvider.Dimension dimension) {

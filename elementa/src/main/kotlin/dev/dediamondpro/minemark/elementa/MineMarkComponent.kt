@@ -3,6 +3,7 @@ package dev.dediamondpro.minemark.elementa
 import dev.dediamondpro.minemark.MineMarkCore
 import dev.dediamondpro.minemark.MineMarkCoreBuilder
 import dev.dediamondpro.minemark.elementa.elements.*
+import dev.dediamondpro.minemark.elementa.style.MarkdownStyle
 import dev.dediamondpro.minemark.elements.Elements
 import dev.dediamondpro.minemark.utils.MouseButton
 import gg.essential.elementa.UIComponent
@@ -12,11 +13,11 @@ import gg.essential.universal.UMatrixStack
 
 class MineMarkComponent(
     markdown: String,
-    layoutConfig: LayoutConfigImpl = LayoutConfigImpl(),
-    core: MineMarkCore<LayoutConfigImpl, RenderData> = defaultCore
+    style: MarkdownStyle = MarkdownStyle(),
+    core: MineMarkCore<MarkdownStyle, RenderData> = defaultCore
 ) : UIComponent() {
 
-    private val parsedMarkdown = core.parse(layoutConfig, markdown).apply {
+    private val parsedMarkdown = core.parse(style, markdown).apply {
         addLayoutCallback(this@MineMarkComponent::layoutCallback)
     }
 
@@ -70,11 +71,11 @@ class MineMarkComponent(
 
     companion object {
         private val defaultCore = MineMarkCore
-            .builder<LayoutConfigImpl, RenderData>()
+            .builder<MarkdownStyle, RenderData>()
             .addElementaExtensions()
             .build()
 
-        fun MineMarkCoreBuilder<LayoutConfigImpl, RenderData>.addElementaExtensions(): MineMarkCoreBuilder<LayoutConfigImpl, RenderData> {
+        fun MineMarkCoreBuilder<MarkdownStyle, RenderData>.addElementaExtensions(): MineMarkCoreBuilder<MarkdownStyle, RenderData> {
             return this.addElement(Elements.TEXT, ::MarkdownTextComponent)
                 .addElement(Elements.HEADING, ::MarkdownHeadingComponent)
                 .addElement(Elements.IMAGE, ::MarkdownImageComponent)

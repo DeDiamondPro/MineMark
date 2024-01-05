@@ -1,8 +1,9 @@
 package dev.dediamondpro.minemark.elementa.elements
 
 import dev.dediamondpro.minemark.LayoutData
-import dev.dediamondpro.minemark.elementa.LayoutConfigImpl
+import dev.dediamondpro.minemark.LayoutStyle
 import dev.dediamondpro.minemark.elementa.RenderData
+import dev.dediamondpro.minemark.elementa.style.MarkdownStyle
 import dev.dediamondpro.minemark.elements.BasicElement
 import dev.dediamondpro.minemark.elements.Element
 import gg.essential.elementa.components.UIBlock
@@ -10,10 +11,11 @@ import org.xml.sax.Attributes
 import java.awt.Color
 
 class MarkdownHorizontalLineComponent(
-    layoutConfig: LayoutConfigImpl,
-    parent: Element<LayoutConfigImpl, RenderData>?,
+    style: MarkdownStyle,
+    layoutStyle: LayoutStyle,
+    parent: Element<MarkdownStyle, RenderData>?,
     qName: String, attributes: Attributes?
-) : BasicElement<LayoutConfigImpl, RenderData>(layoutConfig, parent, qName, attributes) {
+) : BasicElement<MarkdownStyle, RenderData>(style, layoutStyle, parent, qName, attributes) {
     override fun drawElement(x: Float, y: Float, renderData: RenderData) {
         UIBlock.drawBlockSized(
             renderData.matrixStack,

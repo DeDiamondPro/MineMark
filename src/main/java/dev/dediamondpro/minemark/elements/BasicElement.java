@@ -1,18 +1,19 @@
 package dev.dediamondpro.minemark.elements;
 
-import dev.dediamondpro.minemark.LayoutConfig;
+import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.LayoutData;
+import dev.dediamondpro.minemark.style.Style;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
 
-public abstract class BasicElement<L extends LayoutConfig, R> extends Element<L, R> {
+public abstract class BasicElement<S extends Style, R> extends Element<S, R> {
     private float width;
     private float height;
     protected LayoutData.MarkDownElementPosition position;
 
-    public BasicElement(@NotNull L layoutConfig, @Nullable Element<L, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
-        super(layoutConfig, parent, qName, attributes);
+    public BasicElement(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
+        super(style, layoutStyle, parent, qName, attributes);
     }
 
     @Override
@@ -27,7 +28,7 @@ public abstract class BasicElement<L extends LayoutConfig, R> extends Element<L,
         if ((!(this instanceof Inline) && layoutData.isLineOccupied()) || layoutData.getX() + width > layoutData.getMaxWidth()) {
             layoutData.nextLine();
         }
-        position = layoutData.addElement(layoutConfig.getAlignment(), width, height);
+        position = layoutData.addElement(layoutStyle.getAlignment(), width, height);
         if (!(this instanceof Inline) && layoutData.isLineOccupied()) {
             layoutData.nextLine();
         }

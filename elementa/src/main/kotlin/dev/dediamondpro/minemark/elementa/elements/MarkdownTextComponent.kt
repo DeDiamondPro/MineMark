@@ -1,8 +1,9 @@
 package dev.dediamondpro.minemark.elementa.elements
 
 import dev.dediamondpro.minemark.LayoutData
-import dev.dediamondpro.minemark.elementa.LayoutConfigImpl
+import dev.dediamondpro.minemark.LayoutStyle
 import dev.dediamondpro.minemark.elementa.RenderData
+import dev.dediamondpro.minemark.elementa.style.MarkdownStyle
 import dev.dediamondpro.minemark.elements.Element
 import dev.dediamondpro.minemark.elements.impl.TextElement
 import gg.essential.universal.UResolution
@@ -10,31 +11,32 @@ import org.xml.sax.Attributes
 import kotlin.math.round
 
 class MarkdownTextComponent(
-    layoutConfig: LayoutConfigImpl,
-    parent: Element<LayoutConfigImpl, RenderData>?,
+    style: MarkdownStyle,
+    layoutStyle: LayoutStyle,
+    parent: Element<MarkdownStyle, RenderData>?,
     qName: String, attributes: Attributes?
-) : TextElement<LayoutConfigImpl, RenderData>(layoutConfig, parent, qName, attributes) {
-    private val font = layoutConfig.fontProvider
-    private var scale = layoutConfig.fontSize
+) : TextElement<MarkdownStyle, RenderData>(style, layoutStyle, parent, qName, attributes) {
+    private val font = style.textStyle.font
+    private var scale = layoutStyle.fontSize
     private var prefix = buildString {
-        if (layoutConfig.isBold) append("§l")
-        if (layoutConfig.isItalic) append("§o")
-        if (layoutConfig.isUnderlined) append("§n")
-        if (layoutConfig.isStrikethrough) append("§m")
+        if (layoutStyle.isBold) append("§l")
+        if (layoutStyle.isItalic) append("§o")
+        if (layoutStyle.isUnderlined) append("§n")
+        if (layoutStyle.isStrikethrough) append("§m")
     }
 
     override fun generateLayout(layoutData: LayoutData?) {
         val mcScale = UResolution.scaleFactor.toFloat()
-        scale = round(layoutConfig.fontSize * mcScale) / mcScale
+        scale = round(layoutStyle.fontSize * mcScale) / mcScale
         super.generateLayout(layoutData)
     }
 
     override fun drawText(text: String, x: Float, bottomY: Float, hovered: Boolean, renderData: RenderData) {
         prefix = buildString {
-            if (layoutConfig.isBold) append("§l")
-            if (layoutConfig.isItalic) append("§o")
-            if (layoutConfig.isStrikethrough) append("§m")
-            if (layoutConfig.isUnderlined || layoutConfig.isPartOfLink && hovered) append("§n")
+            if (layoutStyle.isBold) append("§l")
+            if (layoutStyle.isItalic) append("§o")
+            if (layoutStyle.isStrikethrough) append("§m")
+            if (layoutStyle.isUnderlined || layoutStyle.isPartOfLink && hovered) append("§n")
         }
 
         val y = bottomY - getTextHeight(text)
@@ -43,7 +45,7 @@ class MarkdownTextComponent(
         font.drawString(
             renderData.matrixStack,
             prefix + text,
-            layoutConfig.textColor,
+            layoutStyle.textColor,
             x / scale, y / scale,
             1f, 1f
         )

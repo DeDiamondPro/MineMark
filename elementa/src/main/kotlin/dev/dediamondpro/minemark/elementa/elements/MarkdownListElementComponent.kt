@@ -1,19 +1,21 @@
 package dev.dediamondpro.minemark.elementa.elements
 
 import dev.dediamondpro.minemark.LayoutData
-import dev.dediamondpro.minemark.elementa.LayoutConfigImpl
+import dev.dediamondpro.minemark.LayoutStyle
 import dev.dediamondpro.minemark.elementa.RenderData
+import dev.dediamondpro.minemark.elementa.style.MarkdownStyle
 import dev.dediamondpro.minemark.elements.Element
 import dev.dediamondpro.minemark.elements.impl.list.ListElement
 import dev.dediamondpro.minemark.elements.impl.list.ListHolderElement
 import org.xml.sax.Attributes
 
 class MarkdownListElementComponent(
-    layoutConfig: LayoutConfigImpl,
-    parent: Element<LayoutConfigImpl, RenderData>?,
+    style: MarkdownStyle,
+    layoutStyle: LayoutStyle,
+    parent: Element<MarkdownStyle, RenderData>?,
     qName: String, attributes: Attributes?
-) : ListElement<LayoutConfigImpl, RenderData>(layoutConfig, parent, qName, attributes) {
-    private val fontProvider = layoutConfig.fontProvider
+) : ListElement<MarkdownStyle, RenderData>(style, layoutStyle, parent, qName, attributes) {
+    private val fontProvider = style.textStyle.font
     private var markerStr: String = when (listType) {
         ListHolderElement.ListType.ORDERED -> "${elementIndex + 1}. "
         ListHolderElement.ListType.UNORDERED -> "● "
@@ -21,13 +23,13 @@ class MarkdownListElementComponent(
     }
 
     override fun drawMarker(x: Float, y: Float, renderData: RenderData) {
-        val scale = layoutConfig.fontSize
+        val scale = layoutStyle.fontSize
         renderData.matrixStack.push()
         renderData.matrixStack.scale(scale, scale, 1f)
         fontProvider.drawString(
             renderData.matrixStack,
             markerStr,
-            layoutConfig.textColor,
+            layoutStyle.textColor,
             x / scale, y / scale,
             1f, 1f
         )
@@ -35,10 +37,10 @@ class MarkdownListElementComponent(
     }
 
     override fun getMarkerWidth(): Float {
-        return fontProvider.getStringWidth(markerStr, 1f) * layoutConfig.fontSize
+        return fontProvider.getStringWidth(markerStr, 1f) * layoutStyle.fontSize
     }
 
     override fun getMarkerHeight(layoutData: LayoutData?): Float {
-        return fontProvider.getStringHeight(markerStr, 1f) * layoutConfig.fontSize
+        return fontProvider.getStringHeight(markerStr, 1f) * layoutStyle.fontSize
     }
 }

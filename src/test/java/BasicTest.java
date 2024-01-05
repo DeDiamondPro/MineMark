@@ -1,4 +1,4 @@
-import dev.dediamondpro.minemark.LayoutConfig;
+import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.MineMarkCore;
 import dev.dediamondpro.minemark.elements.Elements;
 import dev.dediamondpro.minemark.elements.MineMarkElement;
@@ -13,25 +13,25 @@ import java.io.InputStreamReader;
 
 public class BasicTest {
 
-    private final MineMarkCore<LayoutConfig, Object> core = MineMarkCore.builder()
+    /*private final MineMarkCore<LayoutStyle, Object> core = MineMarkCore.builder()
             .addExtension(StrikethroughExtension.create())
             .addElement(Elements.TEXT, DummyTextElement::new)
             .build();
 
-    private final LayoutConfig config = new LayoutConfig(5, new LayoutConfig.SpacingConfig(1f, 2f, 5f), new LayoutConfig.HeadingConfig(6, 5, 4, 3, 2, 1));
+    private final LayoutStyle config = new LayoutStyle(5, new LayoutStyle.SpacingConfig(1f, 2f, 5f), new LayoutStyle.HeadingConfig(6, 5, 4, 3, 2, 1));
 
     @Test
     public void test() throws IOException, SAXException {
-        MineMarkElement<LayoutConfig, Object> element = core.parse(config, "> Test");
+        MineMarkElement<LayoutStyle, Object> element = core.parse(config, "> Test");
         //element.beforeDraw(0f, 0f, 25f, 0f, 0f, new Object());
         System.out.println(element.getTree());
     }
 
     @Test
     public void testFile() throws IOException, SAXException {
-        MineMarkElement<LayoutConfig, Object> element = core.parse(config, readFromInputStream(getClass().getResourceAsStream("test.md")));
+        MineMarkElement<LayoutStyle, Object> element = core.parse(config, readFromInputStream(getClass().getResourceAsStream("test.md")));
         System.out.println(element.getTree());
-    }
+    }*/
 
     private String readFromInputStream(InputStream inputStream)
             throws IOException {

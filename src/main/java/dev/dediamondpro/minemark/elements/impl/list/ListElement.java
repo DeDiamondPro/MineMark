@@ -1,24 +1,25 @@
 package dev.dediamondpro.minemark.elements.impl.list;
 
-import dev.dediamondpro.minemark.LayoutConfig;
+import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.elements.ChildMovingElement;
 import dev.dediamondpro.minemark.elements.Element;
+import dev.dediamondpro.minemark.style.Style;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
 
-public abstract class ListElement<L extends LayoutConfig, R> extends ChildMovingElement<L, R> {
+public abstract class ListElement<S extends Style, R> extends ChildMovingElement<S, R> {
     protected final ListHolderElement.ListType listType;
     protected final int elementIndex;
     protected float markerWidth;
 
-    public ListElement(@NotNull L layoutConfig, @Nullable Element<L, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
-        super(layoutConfig, parent, qName, attributes);
+    public ListElement(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
+        super(style, layoutStyle, parent, qName, attributes);
         if (!(parent instanceof ListHolderElement)) {
             throw new IllegalArgumentException("List element has no surrounding list holder!");
         }
-        ListHolderElement<L, R> holder = (ListHolderElement<L, R>) parent;
+        ListHolderElement<S, R> holder = (ListHolderElement<S, R>) parent;
         listType = holder.getListType();
         elementIndex = holder.getChildren().indexOf(this);
     }
@@ -26,7 +27,7 @@ public abstract class ListElement<L extends LayoutConfig, R> extends ChildMoving
 
     @Override
     protected float getPadding(LayoutData layoutData) {
-        return layoutConfig.getSpacingConfig().getTextPadding();
+        return style.getTextStyle().getPadding();
     }
 
     @Override
@@ -42,7 +43,7 @@ public abstract class ListElement<L extends LayoutConfig, R> extends ChildMoving
     @Override
     protected final float getMarkerWidth(LayoutData layoutData) {
         markerWidth = getMarkerWidth();
-        return Math.max(markerWidth, layoutConfig.getSpacingConfig().getListIndentSpacing());
+        return Math.max(markerWidth, style.getListStyle().getIndentation());
     }
 
     protected abstract void drawMarker(float x, float y, R renderData);

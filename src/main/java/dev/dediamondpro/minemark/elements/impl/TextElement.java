@@ -1,9 +1,10 @@
 package dev.dediamondpro.minemark.elements.impl;
 
-import dev.dediamondpro.minemark.LayoutConfig;
+import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.elements.Element;
 import dev.dediamondpro.minemark.elements.Inline;
+import dev.dediamondpro.minemark.style.Style;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
@@ -13,11 +14,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class TextElement<L extends LayoutConfig, R> extends Element<L, R> implements Inline {
+public abstract class TextElement<S extends Style, R> extends Element<S, R> implements Inline {
     protected final HashMap<LayoutData.MarkDownElementPosition, String> lines = new HashMap<>();
 
-    public TextElement(@NotNull L layoutConfig, @Nullable Element<L, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
-        super(layoutConfig, parent, qName, attributes);
+    public TextElement(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
+        super(style, layoutStyle, parent, qName, attributes);
     }
 
     @Override
@@ -27,7 +28,7 @@ public abstract class TextElement<L extends LayoutConfig, R> extends Element<L, 
         String[] predefinedLines = text.split("\n", -1);
         for (int i = 0; i < predefinedLines.length; i++) {
             String line = predefinedLines[i].replace("\n", "");
-            if (layoutConfig.isPreFormatted()) {
+            if (layoutStyle.isPreFormatted()) {
                 allLines.add(line);
             } else {
                 allLines.addAll(wrapText(line, i == 0 ? layoutData.getX() : 0f, layoutData.getMaxWidth()));
@@ -35,8 +36,8 @@ public abstract class TextElement<L extends LayoutConfig, R> extends Element<L, 
         }
         for (int i = 0; i < allLines.size(); i++) {
             String line = allLines.get(i);
-            layoutData.updatePadding(layoutConfig.getSpacingConfig().getTextPadding() * layoutConfig.getFontSize());
-            lines.put(layoutData.addElement(layoutConfig.getAlignment(), getTextWidth(line), getTextHeight(line)), line);
+            layoutData.updatePadding(style.getTextStyle().getPadding() * layoutStyle.getFontSize());
+            lines.put(layoutData.addElement(layoutStyle.getAlignment(), getTextWidth(line), getTextHeight(line)), line);
             if (i != allLines.size() - 1) {
                 layoutData.nextLine();
             }

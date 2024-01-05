@@ -2,6 +2,7 @@ package dev.dediamondpro.minemark;
 
 import dev.dediamondpro.minemark.elements.ElementLoader;
 import dev.dediamondpro.minemark.elements.MineMarkElement;
+import dev.dediamondpro.minemark.style.Style;
 import org.commonmark.Extension;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
@@ -22,10 +23,10 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Class responsible for integrating parsing, layout and rendering
  */
-public class MineMarkCore<L extends LayoutConfig, R> {
+public class MineMarkCore<S extends Style, R> {
     private final Parser markdownParser;
     private final HtmlRenderer htmlRenderer;
-    private final MineMarkHtmlParser<L, R> htmlParser;
+    private final MineMarkHtmlParser<S, R> htmlParser;
     private final org.ccil.cowan.tagsoup.Parser xmlParser;
     private final ReentrantLock parsingLock = new ReentrantLock();
 
@@ -34,7 +35,7 @@ public class MineMarkCore<L extends LayoutConfig, R> {
      * @param extensions   Markdown extensions that should be used when parsing
      * @param urlSanitizer An optional urlSanitizer
      */
-    protected MineMarkCore(Map<List<String>, ElementLoader<L, R>> elements, Iterable<? extends Extension> extensions, @Nullable UrlSanitizer urlSanitizer) {
+    protected MineMarkCore(Map<List<String>, ElementLoader<S, R>> elements, Iterable<? extends Extension> extensions, @Nullable UrlSanitizer urlSanitizer) {
         this.markdownParser = Parser.builder().extensions(extensions).build();
         HtmlRenderer.Builder htmlRendererBuilder = HtmlRenderer.builder().extensions(extensions);
         if (urlSanitizer != null) {
@@ -49,38 +50,38 @@ public class MineMarkCore<L extends LayoutConfig, R> {
     /**
      * Parse markdown to an element used to render it
      *
-     * @param markdown     The markdown text to parse
-     * @param layoutConfig The config used at parsing time to create the layout
+     * @param markdown The markdown text to parse
+     * @param style    The style passed to all elements
      * @return The parsed markdown element
      * @throws SAXException An exception during SAX parsing
-     * @throws IOException An IOException during parsing
+     * @throws IOException  An IOException during parsing
      */
-    public MineMarkElement<L, R> parse(@NotNull L layoutConfig, @NotNull String markdown) throws SAXException, IOException {
+    public MineMarkElement<S, R> parse(@NotNull S style, @NotNull String markdown) throws SAXException, IOException {
         Node document = markdownParser.parse(markdown);
-        return parseDocument(layoutConfig, document);
+        return parseDocument(style, document);
     }
 
     /**
      * Parse markdown to an element used to render it
      *
-     * @param markdown     The markdown text to parse
-     * @param layoutConfig The config used at parsing time to create the layout
+     * @param markdown The markdown text to parse
+     * @param style    The style passed to all elements
      * @return The parsed markdown element
      * @throws SAXException An exception during SAX parsing
-     * @throws IOException An IOException during parsing
+     * @throws IOException  An IOException during parsing
      */
-    public MineMarkElement<L, R> parse(@NotNull L layoutConfig, @NotNull Reader markdown) throws SAXException, IOException {
+    public MineMarkElement<S, R> parse(@NotNull S style, @NotNull Reader markdown) throws SAXException, IOException {
         Node document = markdownParser.parseReader(markdown);
-        return parseDocument(layoutConfig, document);
+        return parseDocument(style, document);
     }
 
-    private MineMarkElement<L, R> parseDocument(@NotNull L layoutConfig, Node document) throws SAXException, IOException {
+    private MineMarkElement<S, R> parseDocument(@NotNull S style, Node document) throws SAXException, IOException {
         String html = "<minemark>\n" + htmlRenderer.render(document) + "</minemark>";
         System.out.println(html);
         try {
             // Acquire the lock to make sure this thread is the only one using the parser
             parsingLock.lock();
-            htmlParser.setLayoutConfig(layoutConfig);
+            htmlParser.setStyle(style, new LayoutStyle(style));
             xmlParser.parse(new InputSource(new ByteArrayInputStream(html.getBytes())));
             return htmlParser.getParsedResult();
         } finally {
@@ -90,11 +91,11 @@ public class MineMarkCore<L extends LayoutConfig, R> {
     }
 
     /**
-     * @param <L> A class that is given to elements at parse time
+     * @param <S> The style object passed to each element
      * @param <R> A class that is given to elements at render time
      * @return The builder used to create the core
      */
-    public static <L extends LayoutConfig, R> MineMarkCoreBuilder<L, R> builder() {
+    public static <S extends Style, R> MineMarkCoreBuilder<S, R> builder() {
         return new MineMarkCoreBuilder<>();
     }
 }

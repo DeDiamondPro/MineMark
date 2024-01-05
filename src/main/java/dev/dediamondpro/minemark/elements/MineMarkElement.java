@@ -1,20 +1,21 @@
 package dev.dediamondpro.minemark.elements;
 
-import dev.dediamondpro.minemark.LayoutConfig;
+import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.LayoutData;
+import dev.dediamondpro.minemark.style.Style;
 import dev.dediamondpro.minemark.utils.MouseButton;
 import org.xml.sax.Attributes;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-public final class MineMarkElement<L extends LayoutConfig, R> extends ChildBasedElement<L, R> {
+public final class MineMarkElement<S extends Style, R> extends ChildBasedElement<S, R> {
     private final ArrayList<Consumer<Float>> layoutCallbacks = new ArrayList<>();
     private float lastWidth = -1;
     private float height;
 
-    public MineMarkElement(L layoutConfig, Attributes attributes) {
-        super(layoutConfig, null, null, attributes);
+    public MineMarkElement(S style, LayoutStyle layoutStyle, Attributes attributes) {
+        super(style, layoutStyle, null, null, attributes);
     }
 
     @Override

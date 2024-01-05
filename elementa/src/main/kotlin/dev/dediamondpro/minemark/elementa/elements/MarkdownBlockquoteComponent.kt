@@ -1,8 +1,9 @@
 package dev.dediamondpro.minemark.elementa.elements
 
 import dev.dediamondpro.minemark.LayoutData
-import dev.dediamondpro.minemark.elementa.LayoutConfigImpl
+import dev.dediamondpro.minemark.LayoutStyle
 import dev.dediamondpro.minemark.elementa.RenderData
+import dev.dediamondpro.minemark.elementa.style.MarkdownStyle
 import dev.dediamondpro.minemark.elements.ChildMovingElement
 import dev.dediamondpro.minemark.elements.Element
 import gg.essential.elementa.components.UIBlock
@@ -10,10 +11,11 @@ import org.xml.sax.Attributes
 import java.awt.Color
 
 class MarkdownBlockquoteComponent(
-    layoutConfig: LayoutConfigImpl,
-    parent: Element<LayoutConfigImpl, RenderData>?,
+    style: MarkdownStyle,
+    layoutStyle: LayoutStyle,
+    parent: Element<MarkdownStyle, RenderData>?,
     qName: String, attributes: Attributes?
-) : ChildMovingElement<LayoutConfigImpl, RenderData>(layoutConfig, parent, qName, attributes) {
+) : ChildMovingElement<MarkdownStyle, RenderData>(style, layoutStyle, parent, qName, attributes) {
     override fun drawMarker(x: Float, y: Float, height: Float, renderData: RenderData) {
         UIBlock.drawBlockSized(
             renderData.matrixStack,
@@ -28,6 +30,7 @@ class MarkdownBlockquoteComponent(
     }
 
     override fun getPadding(layoutData: LayoutData?): Float {
-        return layoutConfig.spacingConfig.blockQuotePadding
+        // TODO: give blockquote own styling
+        return style.getParagraphStyle().padding
     }
 }

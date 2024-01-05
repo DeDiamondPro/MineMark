@@ -7,6 +7,7 @@ import dev.dediamondpro.minemark.elements.impl.ParagraphElement;
 import dev.dediamondpro.minemark.elements.impl.formatting.AlignmentElement;
 import dev.dediamondpro.minemark.elements.impl.formatting.FormattingElement;
 import dev.dediamondpro.minemark.elements.impl.list.ListHolderElement;
+import dev.dediamondpro.minemark.style.Style;
 import org.commonmark.Extension;
 import org.commonmark.renderer.html.UrlSanitizer;
 import org.jetbrains.annotations.NotNull;
@@ -16,11 +17,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MineMarkCoreBuilder<L extends LayoutConfig, R> {
+public class MineMarkCoreBuilder<S extends Style, R> {
     protected MineMarkCoreBuilder() {
     }
 
-    private final HashMap<List<String>, ElementLoader<L, R>> elements = new HashMap<>();
+    private final HashMap<List<String>, ElementLoader<S, R>> elements = new HashMap<>();
     private final ArrayList<Extension> extensions = new ArrayList<>();
     private boolean withDefaultElements = true;
     private UrlSanitizer urlSanitizer = null;
@@ -31,7 +32,7 @@ public class MineMarkCoreBuilder<L extends LayoutConfig, R> {
      * @param elementName Tags the element should use
      * @param element     An ElementLoader of that element
      */
-    public MineMarkCoreBuilder<L, R> addElement(@NotNull Elements elementName, @NotNull ElementLoader<L, R> element) {
+    public MineMarkCoreBuilder<S, R> addElement(@NotNull Elements elementName, @NotNull ElementLoader<S, R> element) {
         this.elements.put(elementName.tags, element);
         return this;
     }
@@ -42,7 +43,7 @@ public class MineMarkCoreBuilder<L extends LayoutConfig, R> {
      * @param tags    Tags the element should use
      * @param element An ElementLoader of that element
      */
-    public MineMarkCoreBuilder<L, R> addElement(@NotNull List<String> tags, @NotNull ElementLoader<L, R> element) {
+    public MineMarkCoreBuilder<S, R> addElement(@NotNull List<String> tags, @NotNull ElementLoader<S, R> element) {
         this.elements.put(tags, element);
         return this;
     }
@@ -52,8 +53,8 @@ public class MineMarkCoreBuilder<L extends LayoutConfig, R> {
      *
      * @param elements A Map with all elements that should be added
      */
-    public MineMarkCoreBuilder<L, R> addElements(@NotNull Map<Elements, ElementLoader<L, R>> elements) {
-        for (Map.Entry<Elements, ElementLoader<L, R>> element : elements.entrySet()) {
+    public MineMarkCoreBuilder<S, R> addElements(@NotNull Map<Elements, ElementLoader<S, R>> elements) {
+        for (Map.Entry<Elements, ElementLoader<S, R>> element : elements.entrySet()) {
             addElement(element.getKey(), element.getValue());
         }
         return this;
@@ -64,7 +65,7 @@ public class MineMarkCoreBuilder<L extends LayoutConfig, R> {
      *
      * @param elements A Map with all elements that should be added
      */
-    public MineMarkCoreBuilder<L, R> addElementsString(@NotNull Map<List<String>, ElementLoader<L, R>> elements) {
+    public MineMarkCoreBuilder<S, R> addElementsString(@NotNull Map<List<String>, ElementLoader<S, R>> elements) {
         this.elements.putAll(elements);
         return this;
     }
@@ -74,7 +75,7 @@ public class MineMarkCoreBuilder<L extends LayoutConfig, R> {
      *
      * @param extension The extension
      */
-    public MineMarkCoreBuilder<L, R> addExtension(Extension extension) {
+    public MineMarkCoreBuilder<S, R> addExtension(Extension extension) {
         extensions.add(extension);
         return this;
     }
@@ -82,7 +83,7 @@ public class MineMarkCoreBuilder<L extends LayoutConfig, R> {
     /**
      * Disable default extensions
      */
-    public MineMarkCoreBuilder<L, R> withoutDefaultElements() {
+    public MineMarkCoreBuilder<S, R> withoutDefaultElements() {
         withDefaultElements = false;
         return this;
     }
@@ -99,7 +100,7 @@ public class MineMarkCoreBuilder<L extends LayoutConfig, R> {
     /**
      * @return a MineMarkCore with the given settings
      */
-    public MineMarkCore<L, R> build() {
+    public MineMarkCore<S, R> build() {
         if (withDefaultElements) {
             addElement(Elements.PARAGRAPH, ParagraphElement::new);
             addElement(Elements.FORMATTING, FormattingElement::new);
