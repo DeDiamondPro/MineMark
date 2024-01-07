@@ -10,6 +10,8 @@ import gg.essential.elementa.UIComponent
 import gg.essential.elementa.dsl.constrain
 import gg.essential.elementa.dsl.pixels
 import gg.essential.universal.UMatrixStack
+import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension
+import org.commonmark.ext.gfm.tables.TablesExtension
 
 class MineMarkComponent(
     markdown: String,
@@ -72,6 +74,8 @@ class MineMarkComponent(
     companion object {
         private val defaultCore = MineMarkCore
             .builder<MarkdownStyle, RenderData>()
+            .addExtension(StrikethroughExtension.create())
+            .addExtension(TablesExtension.create())
             .addElementaExtensions()
             .build()
     }

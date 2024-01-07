@@ -1,0 +1,25 @@
+[versions]
+# Core
+commonmark = "0.21.0"
+tagsoup = "1.2.1"
+
+# Annotations
+jetbrains_annotations = "24.0.0"
+
+# Elementa
+elementa = "619"
+
+[libraries]
+# Commonmark
+commonmark = { module = "org.commonmark:commonmark", version.ref = "commonmark" }
+commonmark_ext_striketrough = { module = "org.commonmark:commonmark-ext-gfm-strikethrough", version.ref = "commonmark" }
+commonmark_ext_tables = { module = "org.commonmark:commonmark-ext-gfm-tables", version.ref = "commonmark" }
+
+# Tagsoup
+tagsoup = { module = "org.ccil.cowan.tagsoup:tagsoup", version.ref = "tagsoup" }
+
+# Annotations
+jetbrains_annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains_annotations" }
+
+# Elementa
+elementa = { module = "gg.essential:elementa-1.8.9-forge", version.ref = "elementa" }
