@@ -36,11 +36,11 @@ class MarkdownListElementComponent(
         renderData.matrixStack.pop()
     }
 
-    override fun getMarkerWidth(): Float {
+    override fun getListMarkerWidth(layoutData: LayoutData?, renderData: RenderData?): Float {
         return fontProvider.getStringWidth(markerStr, 1f) * layoutStyle.fontSize
     }
 
-    override fun getMarkerHeight(layoutData: LayoutData?): Float {
+    override fun getMarkerHeight(layoutData: LayoutData?, renderData: RenderData?): Float {
         return (fontProvider.getBaseLineHeight() + fontProvider.getShadowHeight()) * layoutStyle.fontSize
     }
 }

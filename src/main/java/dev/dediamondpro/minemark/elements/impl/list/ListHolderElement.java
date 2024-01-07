@@ -25,7 +25,7 @@ public class ListHolderElement<S extends Style, R> extends ChildBasedElement<S, 
     }
 
     @Override
-    protected float getPadding(LayoutData layoutData) {
+    protected float getPadding(LayoutData layoutData, R renderData) {
         return style.getListStyle().getPadding();
     }
 

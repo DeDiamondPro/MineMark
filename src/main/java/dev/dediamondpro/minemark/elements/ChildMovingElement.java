@@ -23,14 +23,14 @@ public abstract class ChildMovingElement<S extends Style, R> extends Element<S, 
     }
 
     @Override
-    protected void generateLayout(LayoutData layoutData) {
+    protected void generateLayout(LayoutData layoutData, R renderData) {
         if (layoutData.isLineOccupied()) {
             layoutData.nextLine();
         }
 
-        float markerWidth = getMarkerWidth(layoutData);
-        float outsidePadding = getOutsidePadding(layoutData);
-        float insidePadding = getInsidePadding(layoutData);
+        float markerWidth = getMarkerWidth(layoutData, renderData);
+        float outsidePadding = getOutsidePadding(layoutData, renderData);
+        float insidePadding = getInsidePadding(layoutData, renderData);
         layoutData.updatePadding(outsidePadding);
 
         LayoutData newLayoutData = new LayoutData(
@@ -38,7 +38,7 @@ public abstract class ChildMovingElement<S extends Style, R> extends Element<S, 
         );
 
         if (markerType == MarkerType.ONE_LINE) {
-            marker = layoutData.addElement(LayoutStyle.Alignment.LEFT, markerWidth, getMarkerHeight(layoutData));
+            marker = layoutData.addElement(LayoutStyle.Alignment.LEFT, markerWidth, getMarkerHeight(layoutData, renderData));
             newLayoutData.setTopSpacing(layoutData.getCurrentLine().getTopSpacing());
             newLayoutData.lockTopSpacing();
             newLayoutData.setLineHeight(layoutData.getLineHeight());
@@ -46,7 +46,7 @@ public abstract class ChildMovingElement<S extends Style, R> extends Element<S, 
         }
         LayoutData.MarkDownLine firstLine = newLayoutData.getCurrentLine();
 
-        generateNewLayout(newLayoutData);
+        generateNewLayout(newLayoutData, renderData);
 
         totalHeight = newLayoutData.getY() + newLayoutData.getCurrentLine().getHeight();
 
@@ -70,9 +70,9 @@ public abstract class ChildMovingElement<S extends Style, R> extends Element<S, 
         extraYOffset = (markerType == MarkerType.ONE_LINE ? marker.getLine().getY() : marker.getY()) + insidePadding;
     }
 
-    protected void generateNewLayout(LayoutData layoutData) {
+    protected void generateNewLayout(LayoutData layoutData, R renderData) {
         for (Element<S, R> child : children) {
-            child.generateLayout(layoutData);
+            child.generateLayout(layoutData, renderData);
         }
     }
 
@@ -108,20 +108,20 @@ public abstract class ChildMovingElement<S extends Style, R> extends Element<S, 
         return MarkerType.FULL;
     }
 
-    protected abstract float getMarkerWidth(LayoutData layoutData);
+    protected abstract float getMarkerWidth(LayoutData layoutData, R renderData);
 
     /**
      * @return The height of the marker, this only has to be implemented with {@link MarkerType#ONE_LINE}
      */
-    protected float getMarkerHeight(LayoutData layoutData) {
+    protected float getMarkerHeight(LayoutData layoutData, R renderData) {
         throw new IllegalStateException("\"getMarkerHeight\" should be implemented for \"MarkerType.ONE_LINE\"!");
     }
 
-    protected float getOutsidePadding(LayoutData layoutData) {
+    protected float getOutsidePadding(LayoutData layoutData, R renderData) {
         return 0f;
     }
 
-    protected float getInsidePadding(LayoutData layoutData) {
+    protected float getInsidePadding(LayoutData layoutData, R renderData) {
         return 0f;
     }
 

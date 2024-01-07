@@ -16,7 +16,7 @@ public class ParagraphElement<S extends Style, R> extends ChildBasedElement<S, R
     }
 
     @Override
-    protected float getPadding(LayoutData layoutData) {
+    protected float getPadding(LayoutData layoutData, R renderData) {
         return style.getParagraphStyle().getPadding();
     }
 }

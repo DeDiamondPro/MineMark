@@ -25,10 +25,10 @@ public abstract class BasicElement<S extends Style, R> extends Element<S, R> {
     }
 
     @Override
-    protected void generateLayout(LayoutData layoutData) {
-        width = getWidth(layoutData);
-        height = getHeight(layoutData);
-        float padding = getPadding(layoutData);
+    protected void generateLayout(LayoutData layoutData, R renderData) {
+        width = getWidth(layoutData, renderData);
+        height = getHeight(layoutData, renderData);
+        float padding = getPadding(layoutData, renderData);
         if ((!(this instanceof Inline) && layoutData.isLineOccupied()) || layoutData.getX() + width > layoutData.getMaxWidth()) {
             layoutData.nextLine();
         }
@@ -41,11 +41,11 @@ public abstract class BasicElement<S extends Style, R> extends Element<S, R> {
 
     protected abstract void drawElement(float x, float y, float width, float height, R renderData);
 
-    protected abstract float getWidth(LayoutData layoutData);
+    protected abstract float getWidth(LayoutData layoutData, R renderData);
 
-    protected abstract float getHeight(LayoutData layoutData);
+    protected abstract float getHeight(LayoutData layoutData, R renderData);
 
-    protected float getPadding(LayoutData layoutData) {
+    protected float getPadding(LayoutData layoutData, R renderData) {
         return 0f;
     }
 }

@@ -26,7 +26,7 @@ public abstract class ListElement<S extends Style, R> extends ChildMovingElement
 
 
     @Override
-    protected float getOutsidePadding(LayoutData layoutData) {
+    protected float getOutsidePadding(LayoutData layoutData, R renderData) {
         return style.getTextStyle().getPadding();
     }
 
@@ -41,12 +41,12 @@ public abstract class ListElement<S extends Style, R> extends ChildMovingElement
     }
 
     @Override
-    protected final float getMarkerWidth(LayoutData layoutData) {
-        actualMarkerWidth = getMarkerWidth();
+    protected final float getMarkerWidth(LayoutData layoutData, R renderData) {
+        actualMarkerWidth = getListMarkerWidth(layoutData, renderData);
         return Math.max(actualMarkerWidth, style.getListStyle().getIndentation());
     }
 
     protected abstract void drawMarker(float x, float y, R renderData);
 
-    protected abstract float getMarkerWidth();
+    protected abstract float getListMarkerWidth(LayoutData layoutData, R renderData);
 }

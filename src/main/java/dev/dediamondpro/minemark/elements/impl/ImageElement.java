@@ -41,9 +41,9 @@ public abstract class ImageElement<S extends Style, R> extends BasicElement<S, R
     }
 
     @Override
-    protected void generateLayout(LayoutData layoutData) {
+    protected void generateLayout(LayoutData layoutData, R renderData) {
         calculateDimensions(layoutData);
-        super.generateLayout(layoutData);
+        super.generateLayout(layoutData, renderData);
     }
 
     @Override
@@ -55,12 +55,12 @@ public abstract class ImageElement<S extends Style, R> extends BasicElement<S, R
     public abstract void drawImage(BufferedImage image, float x, float y, float width, float height, R renderData);
 
     @Override
-    protected float getWidth(LayoutData layoutData) {
+    protected float getWidth(LayoutData layoutData, R renderData) {
         return width;
     }
 
     @Override
-    protected float getHeight(LayoutData layoutData) {
+    protected float getHeight(LayoutData layoutData, R renderData) {
         return height;
     }
 

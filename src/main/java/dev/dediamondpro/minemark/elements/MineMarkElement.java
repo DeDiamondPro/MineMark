@@ -19,8 +19,8 @@ public final class MineMarkElement<S extends Style, R> extends ChildBasedElement
     }
 
     @Override
-    public void generateLayout(LayoutData layoutData) {
-        super.generateLayout(layoutData);
+    public void generateLayout(LayoutData layoutData, R renderData) {
+        super.generateLayout(layoutData, renderData);
         height = layoutData.getY() + layoutData.getLineHeight();
         for (Consumer<Float> callback : layoutCallbacks) {
             callback.accept(height);
@@ -37,7 +37,7 @@ public final class MineMarkElement<S extends Style, R> extends ChildBasedElement
             throw new IllegalArgumentException("Width cannot be zero or negative!");
         }
         if (width != lastWidth) {
-            generateLayout(new LayoutData(width));
+            generateLayout(new LayoutData(width), renderData);
             lastWidth = width;
         }
         this.beforeDraw(x, y, mouseX - x, mouseY - y, renderData);

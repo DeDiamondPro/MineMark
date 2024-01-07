@@ -27,13 +27,21 @@ class MarkdownTextComponent(
         if (layoutStyle.isStrikethrough) append("§m")
     }
 
-    override fun generateLayout(layoutData: LayoutData?) {
+    override fun generateLayout(layoutData: LayoutData?, renderData: RenderData) {
         val mcScale = UResolution.scaleFactor.toFloat()
         scale = round(layoutStyle.fontSize * mcScale) / mcScale
-        super.generateLayout(layoutData)
+        super.generateLayout(layoutData, renderData)
     }
 
-    override fun drawText(text: String, x: Float, y: Float, hovered: Boolean, renderData: RenderData) {
+    override fun drawText(
+        text: String,
+        x: Float,
+        y: Float,
+        fontSize: Float,
+        color: Color,
+        hovered: Boolean,
+        renderData: RenderData
+    ) {
         prefix = buildString {
             if (layoutStyle.isBold) append("§l")
             if (layoutStyle.isItalic) append("§o")
@@ -68,19 +76,15 @@ class MarkdownTextComponent(
         )
     }
 
-    override fun getTextWidth(text: String, fontSize: Float): Float {
+    override fun getTextWidth(text: String, fontSize: Float, renderData: RenderData?): Float {
         return font.getStringWidth(prefix + text, 1f) * scale
     }
 
-    override fun getBaselineHeight(fontSize: Float): Float {
+    override fun getBaselineHeight(fontSize: Float, renderData: RenderData?): Float {
         return (font.getBaseLineHeight() + font.getShadowHeight()) * scale
     }
 
-    override fun getAscender(fontSize: Float): Float {
-        return 0f
-    }
-
-    override fun getDescender(fontSize: Float): Float {
+    override fun getDescender(fontSize: Float, renderData: RenderData?): Float {
         return font.getBelowLineHeight() * scale
     }
 }

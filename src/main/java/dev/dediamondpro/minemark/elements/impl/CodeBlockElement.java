@@ -24,13 +24,13 @@ public abstract class CodeBlockElement<S extends Style, R> extends ChildMovingEl
     }
 
     @Override
-    protected void generateLayout(LayoutData layoutData) {
+    protected void generateLayout(LayoutData layoutData, R renderData) {
         switch (codeBlockType) {
             case BLOCK:
-                super.generateLayout(layoutData);
+                super.generateLayout(layoutData, renderData);
                 break;
             case INLINE:
-                generateNewLayout(layoutData);
+                generateNewLayout(layoutData, renderData);
                 break;
         }
     }
@@ -43,17 +43,17 @@ public abstract class CodeBlockElement<S extends Style, R> extends ChildMovingEl
     protected abstract void drawBlock(float x, float y, float width, float height, Color color, R renderData);
 
     @Override
-    protected float getMarkerWidth(LayoutData layoutData) {
+    protected float getMarkerWidth(LayoutData layoutData, R renderData) {
         return 0f;
     }
 
     @Override
-    protected float getOutsidePadding(LayoutData layoutData) {
+    protected float getOutsidePadding(LayoutData layoutData, R renderData) {
         return style.getCodeBlockStyle().getBlockOutsidePadding();
     }
 
     @Override
-    protected float getInsidePadding(LayoutData layoutData) {
+    protected float getInsidePadding(LayoutData layoutData, R renderData) {
         return style.getCodeBlockStyle().getBlockInsidePadding();
     }
 

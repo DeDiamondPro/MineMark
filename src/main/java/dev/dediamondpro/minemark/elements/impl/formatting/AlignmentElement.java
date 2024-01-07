@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
 
-public class AlignmentElement<S extends Style, R> extends ChildBasedElement<S, R> implements Inline {
+public class AlignmentElement<S extends Style, R> extends ChildBasedElement<S, R> {
     protected String alignment;
 
     public AlignmentElement(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
@@ -29,12 +29,6 @@ public class AlignmentElement<S extends Style, R> extends ChildBasedElement<S, R
                 this.layoutStyle.setAlignment(LayoutStyle.Alignment.RIGHT);
                 break;
         }
-    }
-
-    @Override
-    protected void generateLayout(LayoutData layoutData) {
-        if (layoutData.isLineOccupied()) layoutData.nextLine();
-        super.generateLayout(layoutData);
     }
 
     @Override

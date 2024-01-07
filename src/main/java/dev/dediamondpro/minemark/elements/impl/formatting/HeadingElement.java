@@ -38,11 +38,11 @@ public abstract class HeadingElement<S extends Style, R> extends ChildBasedEleme
     }
 
     @Override
-    protected void generateLayout(LayoutData layoutData) {
+    protected void generateLayout(LayoutData layoutData, R renderData) {
         if (layoutData.isLineOccupied()) {
             layoutData.nextLine();
         }
-        super.generateLayout(layoutData);
+        super.generateLayout(layoutData, renderData);
         if (headingStyle.hasDivider()) {
             layoutData.setBottomSpacing(headingStyle.getSpaceBeforeDivider());
             layoutData.nextLine();
@@ -53,7 +53,7 @@ public abstract class HeadingElement<S extends Style, R> extends ChildBasedEleme
     }
 
     @Override
-    protected float getPadding(LayoutData layoutData) {
+    protected float getPadding(LayoutData layoutData, R renderData) {
         return headingStyle.getPadding();
     }
 

@@ -56,7 +56,7 @@ public abstract class Element<S extends Style, R> {
         return layoutStyle;
     }
 
-    protected abstract void generateLayout(LayoutData layoutData);
+    protected abstract void generateLayout(LayoutData layoutData, R renderData);
 
     public void regenerateLayout() {
         if (parent == null) {

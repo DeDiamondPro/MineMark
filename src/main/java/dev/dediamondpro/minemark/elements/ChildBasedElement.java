@@ -20,14 +20,14 @@ public abstract class ChildBasedElement<S extends Style, R> extends Element<S, R
     }
 
     @Override
-    protected void generateLayout(LayoutData layoutData) {
+    protected void generateLayout(LayoutData layoutData, R renderData) {
         if (!(this instanceof Inline) && layoutData.isLineOccupied()) {
             layoutData.nextLine();
         }
-        float padding = getPadding(layoutData);
+        float padding = getPadding(layoutData, renderData);
         layoutData.updateTopSpacing(padding);
         for (Element<S, R> child : children) {
-            child.generateLayout(layoutData);
+            child.generateLayout(layoutData, renderData);
         }
         layoutData.updateBottomSpacing(padding);
         if (!(this instanceof Inline)) {
@@ -35,7 +35,7 @@ public abstract class ChildBasedElement<S extends Style, R> extends Element<S, R
         }
     }
 
-    protected float getPadding(LayoutData layoutData) {
+    protected float getPadding(LayoutData layoutData, R renderData) {
         return 0f;
     }
 }

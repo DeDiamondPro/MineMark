@@ -26,7 +26,7 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
     }
 
     @Override
-    public void generateLayout(LayoutData layoutData) {
+    public void generateLayout(LayoutData layoutData, R renderData) {
         lines.clear();
         ArrayList<String> allLines = new ArrayList<>();
         String[] predefinedLines = text.replaceAll(" +", " ").split("\n", -1);
@@ -35,19 +35,19 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
             if (layoutStyle.isPreFormatted()) {
                 allLines.add(line);
             } else {
-                allLines.addAll(wrapText(line, i == 0 ? layoutData.getX() : 0f, layoutData.getMaxWidth()));
+                allLines.addAll(wrapText(line, i == 0 ? layoutData.getX() : 0f, layoutData.getMaxWidth(), renderData));
             }
         }
         float codeBlockPadding = layoutStyle.isPartOfCodeBlock() ? style.getCodeBlockStyle().getInlinePaddingTopBottom() : 0f;
         float padding = Math.max(style.getTextStyle().getPadding(), codeBlockPadding);
         float fontSize = layoutStyle.getFontSize();
-        baseLineHeight = getBaselineHeight(fontSize);
-        ascender = getAscender(fontSize);
-        descender = getDescender(fontSize);
+        baseLineHeight = getBaselineHeight(fontSize, renderData);
+        ascender = getAscender(fontSize, renderData);
+        descender = getDescender(fontSize, renderData);
         for (int i = 0; i < allLines.size(); i++) {
             String line = allLines.get(i);
             layoutData.updatePadding(padding);
-            lines.put(layoutData.addElement(layoutStyle.getAlignment(), getAdjustedTextWidth(line, fontSize), baseLineHeight), line);
+            lines.put(layoutData.addElement(layoutStyle.getAlignment(), getAdjustedTextWidth(line, fontSize, renderData), baseLineHeight), line);
             if (i != allLines.size() - 1) {
                 layoutData.nextLine();
             }
@@ -77,14 +77,14 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
             }
             drawText(
                     text, position.getX() + xOffset + paddingLeftRight,
-                    position.getY() + yOffset - ascender,
-                    hovered, renderData
+                    position.getY() + yOffset - ascender, layoutStyle.getFontSize(),
+                    layoutStyle.getTextColor(), hovered, renderData
             );
         }
     }
 
 
-    protected List<String> wrapText(String text, float startX, float maxWidth) {
+    protected List<String> wrapText(String text, float startX, float maxWidth, R renderData) {
         ArrayList<String> lines = new ArrayList<>();
         StringBuilder currentLine = new StringBuilder();
         float fontSize = layoutStyle.getFontSize();
@@ -93,19 +93,19 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
         float actualMaxWidth = maxWidth - startX;
         for (String word : words) {
             word = word.replace('\u00A0', ' ');
-            if (getAdjustedTextWidth(currentLine + word, fontSize) <= actualMaxWidth) {
+            if (getAdjustedTextWidth(currentLine + word, fontSize, renderData) <= actualMaxWidth) {
                 currentLine.append(word);
             } else {
                 lines.add(currentLine.toString());
                 String cleanedWord = word.replaceAll("^ ", "");
                 currentLine = new StringBuilder();
                 actualMaxWidth = maxWidth;
-                if (getAdjustedTextWidth(cleanedWord, fontSize) > actualMaxWidth) {
+                if (getAdjustedTextWidth(cleanedWord, fontSize, renderData) > actualMaxWidth) {
                     String wordCarry = cleanedWord;
                     while (!wordCarry.isEmpty()) {
                         if (currentLine.length() != 0) lines.add(currentLine.toString());
                         currentLine = new StringBuilder(wordCarry);
-                        while (getAdjustedTextWidth(currentLine.toString(), fontSize) > actualMaxWidth && currentLine.length() > 1) {
+                        while (getAdjustedTextWidth(currentLine.toString(), fontSize, renderData) > actualMaxWidth && currentLine.length() > 1) {
                             currentLine.deleteCharAt(currentLine.length() - 1);
                         }
                         wordCarry = wordCarry.substring(currentLine.length());
@@ -120,21 +120,25 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
         return lines;
     }
 
-    protected float getAdjustedTextWidth(@NotNull String text, float fontSize) {
-        return getTextWidth(text, fontSize) + (layoutStyle.isPartOfCodeBlock() ? (style.getCodeBlockStyle().getInlinePaddingLeftRight() * 2f) : 0);
+    protected float getAdjustedTextWidth(@NotNull String text, float fontSize, R renderData) {
+        return getTextWidth(text, fontSize, renderData) + (layoutStyle.isPartOfCodeBlock() ? (style.getCodeBlockStyle().getInlinePaddingLeftRight() * 2f) : 0);
     }
 
-    protected abstract void drawText(@NotNull String text, float x, float y, boolean hovered, @NotNull R renderData);
+    protected abstract void drawText(@NotNull String text, float x, float y, float fontSize, Color color, boolean hovered, @NotNull R renderData);
 
     protected abstract void drawInlineCodeBlock(float x, float y, float width, float height, Color color, @NotNull R renderData);
 
-    protected abstract float getTextWidth(@NotNull String text, float fontSize);
+    protected abstract float getTextWidth(@NotNull String text, float fontSize, R renderData);
 
-    protected abstract float getBaselineHeight(float fontSize);
+    protected abstract float getBaselineHeight(float fontSize, R renderData);
 
-    protected abstract float getAscender(float fontSize);
+    protected float getAscender(float fontSize, R renderData) {
+        return 0f;
+    }
 
-    protected abstract float getDescender(float fontSize);
+    protected float getDescender(float fontSize, R renderData) {
+        return 0f;
+    }
 
     @Override
     public String toString() {

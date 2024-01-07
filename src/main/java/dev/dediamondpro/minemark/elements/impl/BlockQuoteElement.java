@@ -26,14 +26,14 @@ public abstract class BlockQuoteElement<S extends Style, R> extends ChildMovingE
     }
 
     @Override
-    protected float getMarkerWidth(LayoutData layoutData) {
+    protected float getMarkerWidth(LayoutData layoutData, R renderData) {
         return style.getBlockquoteStyle().getSpacingLeft()
                 + style.getBlockquoteStyle().getBlockWidth()
                 + style.getBlockquoteStyle().getSpacingRight();
     }
 
     @Override
-    protected float getOutsidePadding(LayoutData layoutData) {
+    protected float getOutsidePadding(LayoutData layoutData, R renderData) {
         return style.getBlockquoteStyle().getPadding();
     }
 

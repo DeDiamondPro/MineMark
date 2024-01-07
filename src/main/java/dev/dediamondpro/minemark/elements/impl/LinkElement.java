@@ -42,10 +42,10 @@ public class LinkElement<S extends Style, R> extends ChildBasedElement<S, R> imp
     }
 
     @Override
-    protected void generateLayout(LayoutData layoutData) {
+    protected void generateLayout(LayoutData layoutData, R renderData) {
         positions.clear();
         layoutData.addElementListener(this::onElementAdded);
-        super.generateLayout(layoutData);
+        super.generateLayout(layoutData, renderData);
         layoutData.removeElementListener();
     }
 

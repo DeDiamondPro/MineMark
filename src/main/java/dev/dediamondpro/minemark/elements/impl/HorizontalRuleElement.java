@@ -25,17 +25,17 @@ public abstract class HorizontalRuleElement<S extends Style, R> extends BasicEle
     protected abstract void drawLine(float x, float y, float width, float height, Color color, R renderData);
 
     @Override
-    protected float getWidth(LayoutData layoutData) {
+    protected float getWidth(LayoutData layoutData, R renderData) {
         return layoutData.getMaxWidth();
     }
 
     @Override
-    protected float getHeight(LayoutData layoutData) {
+    protected float getHeight(LayoutData layoutData, R renderData) {
         return style.getHorizontalRuleStyle().getHeight();
     }
 
     @Override
-    protected float getPadding(LayoutData layoutData) {
+    protected float getPadding(LayoutData layoutData, R renderData) {
         return style.getHorizontalRuleStyle().getPadding();
     }
 }
