@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,10 +35,12 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
                 allLines.addAll(wrapText(line, i == 0 ? layoutData.getX() : 0f, layoutData.getMaxWidth()));
             }
         }
+        float codeBlockPadding = layoutStyle.isPartOfCodeBlock() ? style.getCodeBlockStyle().getInlinePadding() : 0f;
+        float padding = Math.max(style.getTextStyle().getPadding(), codeBlockPadding);
         for (int i = 0; i < allLines.size(); i++) {
             String line = allLines.get(i);
-            layoutData.updatePadding(style.getTextStyle().getPadding());
-            lines.put(layoutData.addElement(layoutStyle.getAlignment(), getTextWidth(line), getTextHeight(line)), line);
+            layoutData.updatePadding(padding);
+            lines.put(layoutData.addElement(layoutStyle.getAlignment(), getAdjustedTextWidth(line), getTextHeight(line)), line);
             if (i != allLines.size() - 1) {
                 layoutData.nextLine();
             }
@@ -53,11 +56,19 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
                 break;
             }
         }
+        float codeBlockPadding = layoutStyle.isPartOfCodeBlock() ? style.getCodeBlockStyle().getInlinePadding() : 0f;
         for (Map.Entry<LayoutData.MarkDownElementPosition, String> line : lines.entrySet()) {
             LayoutData.MarkDownElementPosition position = line.getKey();
             String text = line.getValue();
+            if (layoutStyle.isPartOfCodeBlock()) {
+                drawInlineCodeBlock(
+                        position.getX() + xOffset, position.getY() + yOffset - codeBlockPadding,
+                        position.getWidth(), position.getHeight() + codeBlockPadding * 2,
+                        style.getCodeBlockStyle().getColor(), renderData
+                );
+            }
             drawText(
-                    text, position.getX() + xOffset,
+                    text, position.getX() + xOffset + codeBlockPadding,
                     position.getBottomY() + yOffset,
                     hovered, renderData
             );
@@ -73,19 +84,19 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
         float actualMaxWidth = maxWidth - startX;
         for (String word : words) {
             word = word.replace('\u00A0', ' ');
-            if (getTextWidth(currentLine + word) <= actualMaxWidth) {
+            if (getAdjustedTextWidth(currentLine + word) <= actualMaxWidth) {
                 currentLine.append(word);
             } else {
                 lines.add(currentLine.toString());
                 String cleanedWord = word.replaceAll("^ ", "");
                 currentLine = new StringBuilder();
                 actualMaxWidth = maxWidth;
-                if (getTextWidth(cleanedWord) > actualMaxWidth) {
+                if (getAdjustedTextWidth(cleanedWord) > actualMaxWidth) {
                     String wordCarry = cleanedWord;
                     while (!wordCarry.isEmpty()) {
                         if (currentLine.length() != 0) lines.add(currentLine.toString());
                         currentLine = new StringBuilder(wordCarry);
-                        while (getTextWidth(currentLine.toString()) > actualMaxWidth && currentLine.length() > 1) {
+                        while (getAdjustedTextWidth(currentLine.toString()) > actualMaxWidth && currentLine.length() > 1) {
                             currentLine.deleteCharAt(currentLine.length() - 1);
                         }
                         wordCarry = wordCarry.substring(currentLine.length());
@@ -100,11 +111,17 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
         return lines;
     }
 
-    public abstract void drawText(@NotNull String text, float x, float bottomY, boolean hovered, @NotNull R renderData);
+    protected float getAdjustedTextWidth(@NotNull String text) {
+        return getTextWidth(text) + (layoutStyle.isPartOfCodeBlock() ? (style.getCodeBlockStyle().getInlinePadding() * 2f) : 0);
+    }
 
-    public abstract float getTextWidth(@NotNull String text);
+    protected abstract void drawText(@NotNull String text, float x, float bottomY, boolean hovered, @NotNull R renderData);
 
-    public abstract float getTextHeight(@NotNull String text);
+    protected abstract void drawInlineCodeBlock(float x, float y, float width, float height, Color color, @NotNull R renderData);
+
+    protected abstract float getTextWidth(@NotNull String text);
+
+    protected abstract float getTextHeight(@NotNull String text);
 
     @Override
     public String toString() {

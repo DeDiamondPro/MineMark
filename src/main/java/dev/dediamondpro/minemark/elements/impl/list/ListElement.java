@@ -12,7 +12,7 @@ import org.xml.sax.Attributes;
 public abstract class ListElement<S extends Style, R> extends ChildMovingElement<S, R> {
     protected final ListHolderElement.ListType listType;
     protected final int elementIndex;
-    protected float markerWidth;
+    protected float actualMarkerWidth;
 
     public ListElement(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
         super(style, layoutStyle, parent, qName, attributes);
@@ -26,7 +26,7 @@ public abstract class ListElement<S extends Style, R> extends ChildMovingElement
 
 
     @Override
-    protected float getPadding(LayoutData layoutData) {
+    protected float getOutsidePadding(LayoutData layoutData) {
         return style.getTextStyle().getPadding();
     }
 
@@ -36,14 +36,14 @@ public abstract class ListElement<S extends Style, R> extends ChildMovingElement
     }
 
     @Override
-    protected final void drawMarker(float x, float y, float totalHeight, R renderData) {
-        drawMarker(x + marker.getWidth() - markerWidth, y, renderData);
+    protected final void drawMarker(float x, float y, float markerWidth, float totalHeight, R renderData) {
+        drawMarker(x + markerWidth - actualMarkerWidth, y, renderData);
     }
 
     @Override
     protected final float getMarkerWidth(LayoutData layoutData) {
-        markerWidth = getMarkerWidth();
-        return Math.max(markerWidth, style.getListStyle().getIndentation());
+        actualMarkerWidth = getMarkerWidth();
+        return Math.max(actualMarkerWidth, style.getListStyle().getIndentation());
     }
 
     protected abstract void drawMarker(float x, float y, R renderData);

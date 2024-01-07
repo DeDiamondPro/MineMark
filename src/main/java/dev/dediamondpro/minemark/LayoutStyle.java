@@ -17,9 +17,10 @@ public class LayoutStyle {
     private boolean underlined;
     private boolean strikethrough;
     private boolean partOfLink;
+    private boolean partOfCodeBlock;
     private boolean preFormatted;
 
-    public LayoutStyle(Alignment alignment, float fontSize, Color textColor, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean partOfLink, boolean preFormatted) {
+    public LayoutStyle(Alignment alignment, float fontSize, Color textColor, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean partOfLink, boolean partOfCodeBlock, boolean preFormatted) {
         this.alignment = alignment;
         this.fontSize = fontSize;
         this.textColor = textColor;
@@ -32,11 +33,11 @@ public class LayoutStyle {
     }
 
     public LayoutStyle(Style style) {
-        this(Alignment.LEFT, style.getTextStyle().getDefaultFontSize(), Color.WHITE, false, false, false, false, false, false);
+        this(Alignment.LEFT, style.getTextStyle().getDefaultFontSize(), Color.WHITE, false, false, false, false, false, false, false);
     }
 
     public LayoutStyle clone() {
-        return new LayoutStyle(alignment, fontSize, new Color(textColor.getRGB()), bold, italic, underlined, strikethrough, partOfLink, preFormatted);
+        return new LayoutStyle(alignment, fontSize, new Color(textColor.getRGB()), bold, italic, underlined, strikethrough, partOfLink, partOfCodeBlock, preFormatted);
     }
 
     public Alignment getAlignment() {
@@ -111,6 +112,13 @@ public class LayoutStyle {
         this.preFormatted = preFormatted;
     }
 
+    public boolean isPartOfCodeBlock() {
+        return partOfCodeBlock;
+    }
+
+    public void setPartOfCodeBlock(boolean partOfCodeBlock) {
+        this.partOfCodeBlock = partOfCodeBlock;
+    }
 
     public enum Alignment {
         CENTER, LEFT, RIGHT

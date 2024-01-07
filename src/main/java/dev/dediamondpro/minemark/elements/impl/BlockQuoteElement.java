@@ -11,14 +11,14 @@ import org.xml.sax.Attributes;
 
 import java.awt.*;
 
-public abstract class BlockQuote<S extends Style, R> extends ChildMovingElement<S, R> {
+public abstract class BlockQuoteElement<S extends Style, R> extends ChildMovingElement<S, R> {
 
-    public BlockQuote(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
+    public BlockQuoteElement(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
         super(style, layoutStyle, parent, qName, attributes);
     }
 
     @Override
-    protected void drawMarker(float x, float y, float totalHeight, R renderData) {
+    protected void drawMarker(float x, float y, float markerWidth, float totalHeight, R renderData) {
         drawBlock(
                 x + style.getBlockquoteStyle().getSpacingLeft(), y, style.getBlockquoteStyle().getBlockWidth(),
                 totalHeight, style.getBlockquoteStyle().getBlockColor(), renderData
@@ -33,7 +33,7 @@ public abstract class BlockQuote<S extends Style, R> extends ChildMovingElement<
     }
 
     @Override
-    protected float getPadding(LayoutData layoutData) {
+    protected float getOutsidePadding(LayoutData layoutData) {
         return style.getBlockquoteStyle().getPadding();
     }
 

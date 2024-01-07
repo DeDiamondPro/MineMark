@@ -6,8 +6,10 @@ import dev.dediamondpro.minemark.elementa.RenderData
 import dev.dediamondpro.minemark.elementa.style.MarkdownStyle
 import dev.dediamondpro.minemark.elements.Element
 import dev.dediamondpro.minemark.elements.impl.TextElement
+import gg.essential.elementa.components.UIBlock
 import gg.essential.universal.UResolution
 import org.xml.sax.Attributes
+import java.awt.Color
 import kotlin.math.round
 
 class MarkdownTextComponent(
@@ -50,6 +52,21 @@ class MarkdownTextComponent(
             1f, 1f
         )
         renderData.matrixStack.pop()
+    }
+
+    override fun drawInlineCodeBlock(
+        x: Float,
+        y: Float,
+        width: Float,
+        height: Float,
+        color: Color,
+        renderData: RenderData
+    ) {
+        UIBlock.drawBlockSized(
+            renderData.matrixStack, color,
+            x.toDouble(), y.toDouble(),
+            width.toDouble(), height.toDouble()
+        )
     }
 
     override fun getTextWidth(text: String): Float {

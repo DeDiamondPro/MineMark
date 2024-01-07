@@ -11,9 +11,9 @@ import org.xml.sax.Attributes;
 
 import java.awt.*;
 
-public abstract class HorizontalRule<S extends Style, R> extends BasicElement<S, R> {
+public abstract class HorizontalRuleElement<S extends Style, R> extends BasicElement<S, R> {
 
-    public HorizontalRule(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
+    public HorizontalRuleElement(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
         super(style, layoutStyle, parent, qName, attributes);
     }
 

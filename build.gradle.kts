@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "dev.dediamondpro"
-version = "1.0-SNAPSHOT80"
+version = "1.0-SNAPSHOT85"
 
 repositories {
     mavenCentral()
@@ -35,6 +35,7 @@ allprojects {
         publications {
             var name = project.name.lowercase()
             if (name != "minemark") name = "minemark-$name"
+            else name = "minemark-core"
             register<MavenPublication>(name) {
                 groupId = "dev.dediamondpro"
                 artifactId = name

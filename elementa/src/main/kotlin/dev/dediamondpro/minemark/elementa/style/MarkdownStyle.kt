@@ -25,6 +25,7 @@ data class MarkdownStyle @JvmOverloads constructor(
     private val imageStyle: ImageStyleConfig = ImageStyleConfig(DefaultImageProvider.INSTANCE),
     private val listStyle: ListStyleConfig = ListStyleConfig(16f, 6f),
     private val blockquoteBlockStyle: BlockquoteStyleConfig = BlockquoteStyleConfig(6f, 4f, 2f, 10f, LINE_COLOR),
+    private val codeBlockStyle: CodeBlockStyleConfig = CodeBlockStyleConfig(1f, 6f, 6f, LINE_COLOR)
 ) : Style {
     override fun getTextStyle(): MarkdownTextStyle = textStyle
     override fun getParagraphStyle(): ParagraphStyleConfig = paragraphStyle
@@ -34,6 +35,7 @@ data class MarkdownStyle @JvmOverloads constructor(
     override fun getImageStyle(): ImageStyleConfig = imageStyle
     override fun getListStyle(): ListStyleConfig = listStyle
     override fun getBlockquoteStyle(): BlockquoteStyleConfig = blockquoteBlockStyle
+    override fun getCodeBlockStyle(): CodeBlockStyleConfig = codeBlockStyle
 
     companion object {
         private val LINE_COLOR = Color(80, 80, 80);

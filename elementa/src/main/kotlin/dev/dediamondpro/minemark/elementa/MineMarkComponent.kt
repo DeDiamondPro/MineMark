@@ -74,14 +74,15 @@ class MineMarkComponent(
             .builder<MarkdownStyle, RenderData>()
             .addElementaExtensions()
             .build()
-
-        fun MineMarkCoreBuilder<MarkdownStyle, RenderData>.addElementaExtensions(): MineMarkCoreBuilder<MarkdownStyle, RenderData> {
-            return this.addElement(Elements.TEXT, ::MarkdownTextComponent)
-                .addElement(Elements.HEADING, ::MarkdownHeadingComponent)
-                .addElement(Elements.IMAGE, ::MarkdownImageComponent)
-                .addElement(Elements.HORIZONTAL_RULE, ::MarkdownHorizontalRuleComponent)
-                .addElement(Elements.LIST_ELEMENT, ::MarkdownListElementComponent)
-                .addElement(Elements.BLOCKQUOTE, ::MarkdownBlockquoteComponent)
-        }
     }
+}
+
+fun MineMarkCoreBuilder<MarkdownStyle, RenderData>.addElementaExtensions(): MineMarkCoreBuilder<MarkdownStyle, RenderData> {
+    return this.addElement(Elements.TEXT, ::MarkdownTextComponent)
+        .addElement(Elements.HEADING, ::MarkdownHeadingComponent)
+        .addElement(Elements.IMAGE, ::MarkdownImageComponent)
+        .addElement(Elements.HORIZONTAL_RULE, ::MarkdownHorizontalRuleComponent)
+        .addElement(Elements.LIST_ELEMENT, ::MarkdownListElementComponent)
+        .addElement(Elements.BLOCKQUOTE, ::MarkdownBlockquoteComponent)
+        .addElement(Elements.CODE_BLOCK, ::MarkdownCodeBlockComponent)
 }

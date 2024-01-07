@@ -14,7 +14,8 @@ public enum Elements {
     LIST_PARENT(listOf("ol", "ul")),
     LIST_ELEMENT(listOf("li")),
     HORIZONTAL_RULE(listOf("hr")),
-    BLOCKQUOTE(listOf("blockquote"))
+    BLOCKQUOTE(listOf("blockquote")),
+    CODE_BLOCK(listOf("code")),
     ;
 
     public final List<String> tags;

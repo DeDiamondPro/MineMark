@@ -17,4 +17,6 @@ public interface Style {
     ListStyleConfig getListStyle();
 
     BlockquoteStyleConfig getBlockquoteStyle();
+
+    CodeBlockStyleConfig getCodeBlockStyle();
 }

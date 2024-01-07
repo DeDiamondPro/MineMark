@@ -4,7 +4,7 @@ import dev.dediamondpro.minemark.LayoutStyle
 import dev.dediamondpro.minemark.elementa.RenderData
 import dev.dediamondpro.minemark.elementa.style.MarkdownStyle
 import dev.dediamondpro.minemark.elements.Element
-import dev.dediamondpro.minemark.elements.impl.BlockQuote
+import dev.dediamondpro.minemark.elements.impl.BlockQuoteElement
 import gg.essential.elementa.components.UIBlock
 import org.xml.sax.Attributes
 import java.awt.Color
@@ -14,7 +14,7 @@ class MarkdownBlockquoteComponent(
     layoutStyle: LayoutStyle,
     parent: Element<MarkdownStyle, RenderData>?,
     qName: String, attributes: Attributes?
-) : BlockQuote<MarkdownStyle, RenderData>(style, layoutStyle, parent, qName, attributes) {
+) : BlockQuoteElement<MarkdownStyle, RenderData>(style, layoutStyle, parent, qName, attributes) {
 
     override fun drawBlock(x: Float, y: Float, width: Float, height: Float, color: Color, renderData: RenderData) {
         UIBlock.drawBlockSized(
