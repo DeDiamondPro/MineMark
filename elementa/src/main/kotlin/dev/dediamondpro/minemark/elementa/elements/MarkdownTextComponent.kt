@@ -33,7 +33,7 @@ class MarkdownTextComponent(
         super.generateLayout(layoutData)
     }
 
-    override fun drawText(text: String, x: Float, bottomY: Float, hovered: Boolean, renderData: RenderData) {
+    override fun drawText(text: String, x: Float, y: Float, hovered: Boolean, renderData: RenderData) {
         prefix = buildString {
             if (layoutStyle.isBold) append("§l")
             if (layoutStyle.isItalic) append("§o")
@@ -41,7 +41,6 @@ class MarkdownTextComponent(
             if (layoutStyle.isUnderlined || layoutStyle.isPartOfLink && hovered) append("§n")
         }
 
-        val y = bottomY - getTextHeight(text)
         renderData.matrixStack.push()
         renderData.matrixStack.scale(scale, scale, 1f)
         font.drawString(
@@ -69,11 +68,19 @@ class MarkdownTextComponent(
         )
     }
 
-    override fun getTextWidth(text: String): Float {
+    override fun getTextWidth(text: String, fontSize: Float): Float {
         return font.getStringWidth(prefix + text, 1f) * scale
     }
 
-    override fun getTextHeight(text: String): Float {
-        return font.getStringHeight(prefix + text, 1f) * scale
+    override fun getBaselineHeight(fontSize: Float): Float {
+        return (font.getBaseLineHeight() + font.getShadowHeight()) * scale
+    }
+
+    override fun getAscender(fontSize: Float): Float {
+        return 0f
+    }
+
+    override fun getDescender(fontSize: Float): Float {
+        return font.getBelowLineHeight() * scale
     }
 }

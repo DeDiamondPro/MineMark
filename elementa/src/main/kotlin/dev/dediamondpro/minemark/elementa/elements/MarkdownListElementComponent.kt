@@ -41,6 +41,6 @@ class MarkdownListElementComponent(
     }
 
     override fun getMarkerHeight(layoutData: LayoutData?): Float {
-        return fontProvider.getStringHeight(markerStr, 1f) * layoutStyle.fontSize
+        return (fontProvider.getBaseLineHeight() + fontProvider.getShadowHeight()) * layoutStyle.fontSize
     }
 }
