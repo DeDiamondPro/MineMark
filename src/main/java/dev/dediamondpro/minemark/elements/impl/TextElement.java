@@ -29,7 +29,11 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
     public void generateLayout(LayoutData layoutData, R renderData) {
         lines.clear();
         ArrayList<String> allLines = new ArrayList<>();
-        String[] predefinedLines = text.replaceAll(" +", " ").split("\n", -1);
+        String actualText = text;
+        if (!getLayoutStyle().isPreFormatted()) {
+            actualText = actualText.replaceAll(" +", " ");
+        }
+        String[] predefinedLines = actualText.split("\n", -1);
         for (int i = 0; i < predefinedLines.length; i++) {
             String line = predefinedLines[i].replace("\n", "");
             if (layoutStyle.isPreFormatted()) {
@@ -68,7 +72,8 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
         for (Map.Entry<LayoutData.MarkDownElementPosition, String> line : lines.entrySet()) {
             LayoutData.MarkDownElementPosition position = line.getKey();
             String text = line.getValue();
-            if (layoutStyle.isPartOfCodeBlock()) {
+            // preformatted = non-inline code block
+            if (layoutStyle.isPartOfCodeBlock() && !layoutStyle.isPreFormatted()) {
                 drawInlineCodeBlock(
                         position.getX() + xOffset, position.getY() + yOffset - paddingTopBottom,
                         position.getWidth(), position.getHeight() + paddingTopBottom * 2,
@@ -78,7 +83,7 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
             drawText(
                     text, position.getX() + xOffset + paddingLeftRight,
                     position.getY() + yOffset - ascender, layoutStyle.getFontSize(),
-                    layoutStyle.getTextColor(), hovered, renderData
+                    layoutStyle.getTextColor(), hovered, position, renderData
             );
         }
     }
@@ -124,7 +129,7 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
         return getTextWidth(text, fontSize, renderData) + (layoutStyle.isPartOfCodeBlock() ? (style.getCodeBlockStyle().getInlinePaddingLeftRight() * 2f) : 0);
     }
 
-    protected abstract void drawText(@NotNull String text, float x, float y, float fontSize, Color color, boolean hovered, @NotNull R renderData);
+    protected abstract void drawText(@NotNull String text, float x, float y, float fontSize, Color color, boolean hovered, LayoutData.MarkDownElementPosition position, @NotNull R renderData);
 
     protected abstract void drawInlineCodeBlock(float x, float y, float width, float height, Color color, @NotNull R renderData);
 

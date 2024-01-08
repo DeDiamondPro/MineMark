@@ -40,6 +40,7 @@ class MarkdownTextComponent(
         fontSize: Float,
         color: Color,
         hovered: Boolean,
+        position: LayoutData.MarkDownElementPosition,
         renderData: RenderData
     ) {
         prefix = buildString {

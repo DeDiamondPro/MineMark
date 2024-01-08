@@ -3,7 +3,7 @@ package dev.dediamondpro.minemark.providers;
 import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
 
-public interface ImageProvider {
+public interface ImageProvider<I> {
 
     /**
      * Function to get an image, image is returned with callbacks
@@ -12,7 +12,7 @@ public interface ImageProvider {
      * @param dimensionCallback Callback for when the dimensions of the image are received
      * @param imageCallback     Callback for when the whole image is received
      */
-    void getImage(String src, Consumer<Dimension> dimensionCallback, Consumer<BufferedImage> imageCallback);
+    void getImage(String src, Consumer<Dimension> dimensionCallback, Consumer<I> imageCallback);
 
     class Dimension {
         private final float width;

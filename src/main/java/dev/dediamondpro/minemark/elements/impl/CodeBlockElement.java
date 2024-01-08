@@ -17,10 +17,8 @@ public abstract class CodeBlockElement<S extends Style, R> extends ChildMovingEl
     public CodeBlockElement(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
         super(style, layoutStyle, parent, qName, attributes);
         this.codeBlockType = layoutStyle.isPreFormatted() ? CodeBlockType.BLOCK : CodeBlockType.INLINE;
-        if (this.codeBlockType == CodeBlockType.INLINE) {
-            this.layoutStyle = this.layoutStyle.clone();
-            this.layoutStyle.setPartOfCodeBlock(true);
-        }
+        this.layoutStyle = this.layoutStyle.clone();
+        this.layoutStyle.setPartOfCodeBlock(true);
     }
 
     @Override

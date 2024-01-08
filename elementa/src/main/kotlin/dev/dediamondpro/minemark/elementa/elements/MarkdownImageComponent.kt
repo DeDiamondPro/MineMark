@@ -17,7 +17,7 @@ class MarkdownImageComponent(
     layoutStyle: LayoutStyle,
     parent: Element<MarkdownStyle, RenderData>?,
     qName: String, attributes: Attributes?
-) : ImageElement<MarkdownStyle, RenderData>(style, layoutStyle, parent, qName, attributes) {
+) : ImageElement<MarkdownStyle, RenderData, BufferedImage>(style, layoutStyle, parent, qName, attributes) {
     private var uiImage: UIImage? = null
 
     override fun drawImage(
@@ -29,7 +29,7 @@ class MarkdownImageComponent(
         renderData: RenderData
     ) {
         if (uiImage == null) {
-            uiImage = UIImage(CompletableFuture.supplyAsync { image }, EmptyImage, EmptyImage)
+            uiImage = UIImage(CompletableFuture.supplyAsync { image }, EmptyImage)
         }
         uiImage?.drawImage(
             renderData.matrixStack,

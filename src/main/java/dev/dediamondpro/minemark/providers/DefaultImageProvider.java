@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-public class DefaultImageProvider implements ImageProvider {
+public class DefaultImageProvider implements ImageProvider<BufferedImage> {
     public static final DefaultImageProvider INSTANCE = new DefaultImageProvider();
 
     protected DefaultImageProvider() {

@@ -14,20 +14,21 @@ import org.xml.sax.Attributes;
 import java.awt.image.BufferedImage;
 import java.util.regex.Pattern;
 
-public abstract class ImageElement<S extends Style, R> extends BasicElement<S, R> implements Inline {
+public abstract class ImageElement<S extends Style, R, I> extends BasicElement<S, R> implements Inline {
     private static final Pattern pixelPattern = Pattern.compile("^\\d+(px)?$");
     protected float imageWidth = -1;
     protected float imageHeight = -1;
     protected float width;
     protected float height;
     protected final String src;
-    protected BufferedImage image = null;
+    protected I image = null;
 
     public ImageElement(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
         super(style, layoutStyle, parent, qName, attributes);
         assert attributes != null;
         this.src = attributes.getValue("src");
-        style.getImageStyle().getImageProvider().getImage(src, this::onDimensionsReceived, this::onImageReceived);
+        ImageProvider<I> imageProvider = (ImageProvider<I>) style.getImageStyle().getImageProvider();
+        imageProvider.getImage(src, this::onDimensionsReceived, this::onImageReceived);
     }
 
     protected void onDimensionsReceived(ImageProvider.Dimension dimension) {
@@ -36,7 +37,7 @@ public abstract class ImageElement<S extends Style, R> extends BasicElement<S, R
         regenerateLayout();
     }
 
-    protected void onImageReceived(BufferedImage image) {
+    protected void onImageReceived(I image) {
         this.image = image;
     }
 
@@ -52,7 +53,7 @@ public abstract class ImageElement<S extends Style, R> extends BasicElement<S, R
         drawImage(image, x, y, width, height, renderData);
     }
 
-    public abstract void drawImage(BufferedImage image, float x, float y, float width, float height, R renderData);
+    public abstract void drawImage(I image, float x, float y, float width, float height, R renderData);
 
     @Override
     protected float getWidth(LayoutData layoutData, R renderData) {
