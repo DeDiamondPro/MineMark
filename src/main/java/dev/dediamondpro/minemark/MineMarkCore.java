@@ -96,7 +96,6 @@ public class MineMarkCore<S extends Style, R> {
 
     private MineMarkElement<S, R> parseDocument(@NotNull S style, Node document) throws SAXException, IOException {
         String html = "<minemark>\n" + htmlRenderer.render(document) + "</minemark>";
-        System.out.println(html);
         try {
             // Acquire the lock to make sure this thread is the only one using the parser
             parsingLock.lock();

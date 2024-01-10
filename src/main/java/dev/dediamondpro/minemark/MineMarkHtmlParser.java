@@ -60,7 +60,6 @@ public class MineMarkHtmlParser<S extends Style, R> extends DefaultHandler {
         addText();
         ElementLoader<S, R> elementCreator = findElement(qName);
         if (elementCreator == null) {
-            System.out.println("Unknown element " + qName);
             return;
         }
         currentElement = elementCreator.get(style, currentElement.getLayoutStyle(), currentElement, qName, attributes);

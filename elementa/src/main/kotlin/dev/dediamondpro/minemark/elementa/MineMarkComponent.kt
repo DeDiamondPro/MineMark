@@ -56,7 +56,6 @@ class MineMarkComponent(
                 parsedMarkdown.onMouseClicked(this.getLeft(), this.getTop(), button, it.absoluteX, it.absoluteY)
             }
         }
-        println(parsedMarkdown.tree)
     }
 
     override fun beforeDraw(matrixStack: UMatrixStack) {
