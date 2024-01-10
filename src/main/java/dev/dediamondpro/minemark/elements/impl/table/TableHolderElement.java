@@ -17,6 +17,7 @@
 
 package dev.dediamondpro.minemark.elements.impl.table;
 
+import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.elements.ChildBasedElement;
 import dev.dediamondpro.minemark.elements.Element;
@@ -28,6 +29,11 @@ import org.xml.sax.Attributes;
 public class TableHolderElement<S extends Style, R> extends ChildBasedElement<S, R> {
     public TableHolderElement(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
         super(style, layoutStyle, parent, qName, attributes);
+    }
+
+    @Override
+    protected float getPadding(LayoutData layoutData, R renderData) {
+        return style.getTableStyle().getOutsidePadding();
     }
 }
 

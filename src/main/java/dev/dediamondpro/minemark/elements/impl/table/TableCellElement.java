@@ -123,11 +123,6 @@ public abstract class TableCellElement<S extends Style, R> extends ChildMovingEl
     }
 
     @Override
-    protected float getOutsidePadding(LayoutData layoutData, R renderData) {
-        return style.getTableStyle().getOutsidePadding();
-    }
-
-    @Override
     protected MarkerType getMarkerType() {
         return MarkerType.BLOCK;
     }
