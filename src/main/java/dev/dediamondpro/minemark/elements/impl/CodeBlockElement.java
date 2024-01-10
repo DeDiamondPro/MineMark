@@ -5,6 +5,7 @@ import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.elements.ChildMovingElement;
 import dev.dediamondpro.minemark.elements.Element;
 import dev.dediamondpro.minemark.style.Style;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
@@ -22,7 +23,8 @@ public abstract class CodeBlockElement<S extends Style, R> extends ChildMovingEl
     }
 
     @Override
-    protected void generateLayout(LayoutData layoutData, R renderData) {
+    @ApiStatus.Internal
+    public void generateLayout(LayoutData layoutData, R renderData) {
         switch (codeBlockType) {
             case BLOCK:
                 super.generateLayout(layoutData, renderData);

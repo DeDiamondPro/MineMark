@@ -4,6 +4,7 @@ import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.style.Style;
 import dev.dediamondpro.minemark.utils.MouseButton;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
@@ -23,7 +24,8 @@ public abstract class ChildMovingElement<S extends Style, R> extends Element<S, 
     }
 
     @Override
-    protected void generateLayout(LayoutData layoutData, R renderData) {
+    @ApiStatus.Internal
+    public void generateLayout(LayoutData layoutData, R renderData) {
         if (layoutData.isLineOccupied()) {
             layoutData.nextLine();
         }
@@ -77,12 +79,13 @@ public abstract class ChildMovingElement<S extends Style, R> extends Element<S, 
     }
 
     @Override
-    protected void draw(float xOffset, float yOffset, float mouseX, float mouseY, R renderData) {
+    @ApiStatus.Internal
+    public void drawInternal(float xOffset, float yOffset, float mouseX, float mouseY, R renderData) {
         if (marker != null) {
             drawMarker(marker.getX() + xOffset, marker.getY() + yOffset, marker.getWidth(), marker.getHeight(), renderData);
         }
         for (Element<S, R> child : children) {
-            child.draw(
+            child.drawInternal(
                     xOffset + extraXOffset, yOffset + extraYOffset,
                     mouseX - extraXOffset, mouseY - extraYOffset, renderData
             );
@@ -90,16 +93,18 @@ public abstract class ChildMovingElement<S extends Style, R> extends Element<S, 
     }
 
     @Override
-    protected void beforeDraw(float xOffset, float yOffset, float mouseX, float mouseY, R renderData) {
-        super.beforeDraw(
+    @ApiStatus.Internal
+    public void beforeDrawInternal(float xOffset, float yOffset, float mouseX, float mouseY, R renderData) {
+        super.beforeDrawInternal(
                 xOffset + extraXOffset, yOffset + extraXOffset,
                 mouseX - extraXOffset, mouseY - extraYOffset, renderData
         );
     }
 
     @Override
-    protected void onMouseClicked(MouseButton button, float mouseX, float mouseY) {
-        super.onMouseClicked(button, mouseX - extraXOffset, mouseY - extraYOffset);
+    @ApiStatus.Internal
+    public void onMouseClickedInternal(MouseButton button, float mouseX, float mouseY) {
+        super.onMouseClickedInternal(button, mouseX - extraXOffset, mouseY - extraYOffset);
     }
 
     protected abstract void drawMarker(float x, float y, float markerWidth, float totalHeight, R renderData);

@@ -1,8 +1,9 @@
 package dev.dediamondpro.minemark;
 
 import dev.dediamondpro.minemark.elements.Element;
-import dev.dediamondpro.minemark.elements.ElementLoader;
+import dev.dediamondpro.minemark.elements.loaders.ElementLoader;
 import dev.dediamondpro.minemark.elements.MineMarkElement;
+import dev.dediamondpro.minemark.elements.loaders.TextElementLoader;
 import dev.dediamondpro.minemark.style.Style;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
@@ -12,6 +13,7 @@ import java.util.Map;
 
 public class MineMarkHtmlParser<S extends Style, R> extends DefaultHandler {
     private final Map<List<String>, ElementLoader<S, R>> elements;
+    private final TextElementLoader<S, R> textElement;
     private MineMarkElement<S, R> markDown;
     private Element<S, R> currentElement;
     private LayoutStyle layoutStyle;
@@ -19,7 +21,8 @@ public class MineMarkHtmlParser<S extends Style, R> extends DefaultHandler {
     private StringBuilder textBuilder = new StringBuilder();
     private boolean isPreFormatted = false;
 
-    protected MineMarkHtmlParser(Map<List<String>, ElementLoader<S, R>> elements) {
+    protected MineMarkHtmlParser(TextElementLoader<S, R> textElement, Map<List<String>, ElementLoader<S, R>> elements) {
+        this.textElement = textElement;
         this.elements = elements;
     }
 
@@ -93,11 +96,7 @@ public class MineMarkHtmlParser<S extends Style, R> extends DefaultHandler {
     private void addText() {
         String text = textBuilder.toString();
         if (text.isEmpty()) return;
-        ElementLoader<S, R> textLoader = findElement("text");
-        if (textLoader == null) {
-            throw new IllegalArgumentException("No text element provided!");
-        }
-        textLoader.get(style, currentElement.getLayoutStyle(), currentElement, "text", null).setText(textBuilder.toString());
+        textElement.get(textBuilder.toString(), style, currentElement.getLayoutStyle(), currentElement, "text", null);
         textBuilder = new StringBuilder();
     }
 

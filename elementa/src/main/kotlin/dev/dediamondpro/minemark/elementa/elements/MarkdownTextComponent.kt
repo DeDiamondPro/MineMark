@@ -13,11 +13,12 @@ import java.awt.Color
 import kotlin.math.round
 
 class MarkdownTextComponent(
+    text: String,
     style: MarkdownStyle,
     layoutStyle: LayoutStyle,
     parent: Element<MarkdownStyle, RenderData>?,
     qName: String, attributes: Attributes?
-) : TextElement<MarkdownStyle, RenderData>(style, layoutStyle, parent, qName, attributes) {
+) : TextElement<MarkdownStyle, RenderData>(text, style, layoutStyle, parent, qName, attributes) {
     private val font = style.textStyle.font
     private var scale = layoutStyle.fontSize
     private var prefix = buildString {

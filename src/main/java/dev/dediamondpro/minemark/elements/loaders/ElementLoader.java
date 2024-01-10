@@ -1,7 +1,8 @@
-package dev.dediamondpro.minemark.elements;
+package dev.dediamondpro.minemark.elements.loaders;
 
 
 import dev.dediamondpro.minemark.LayoutStyle;
+import dev.dediamondpro.minemark.elements.Element;
 import dev.dediamondpro.minemark.style.Style;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

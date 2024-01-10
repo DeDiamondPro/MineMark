@@ -17,12 +17,14 @@ import java.util.Map;
 
 public abstract class TextElement<S extends Style, R> extends Element<S, R> implements Inline {
     protected final HashMap<LayoutData.MarkDownElementPosition, String> lines = new HashMap<>();
+    protected final String text;
     protected float baseLineHeight;
     protected float ascender;
     protected float descender;
 
-    public TextElement(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
+    public TextElement(@NotNull String text, @NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
         super(style, layoutStyle, parent, qName, attributes);
+        this.text = text;
     }
 
     @Override
@@ -59,7 +61,7 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
     }
 
     @Override
-    public void draw(float xOffset, float yOffset, float mouseX, float mouseY, R renderData) {
+    public void drawInternal(float xOffset, float yOffset, float mouseX, float mouseY, R renderData) {
         boolean hovered = false;
         for (LayoutData.MarkDownElementPosition position : lines.keySet()) {
             if (position.isInside(mouseX, mouseY)) {

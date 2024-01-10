@@ -3,6 +3,7 @@ package dev.dediamondpro.minemark.elements;
 import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.style.Style;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
@@ -13,14 +14,8 @@ public abstract class ChildBasedElement<S extends Style, R> extends Element<S, R
     }
 
     @Override
-    protected void draw(float xOffset, float yOffset, float mouseX, float mouseY, R renderData) {
-        for (Element<S, R> child : children) {
-            child.draw(xOffset, yOffset, mouseX, mouseY, renderData);
-        }
-    }
-
-    @Override
-    protected void generateLayout(LayoutData layoutData, R renderData) {
+    @ApiStatus.Internal
+    public void generateLayout(LayoutData layoutData, R renderData) {
         if (!(this instanceof Inline) && layoutData.isLineOccupied()) {
             layoutData.nextLine();
         }

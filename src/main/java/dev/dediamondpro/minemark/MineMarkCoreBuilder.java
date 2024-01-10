@@ -1,12 +1,13 @@
 package dev.dediamondpro.minemark;
 
-import dev.dediamondpro.minemark.elements.ElementLoader;
+import dev.dediamondpro.minemark.elements.loaders.ElementLoader;
 import dev.dediamondpro.minemark.elements.Elements;
 import dev.dediamondpro.minemark.elements.impl.LinkElement;
 import dev.dediamondpro.minemark.elements.impl.ParagraphElement;
 import dev.dediamondpro.minemark.elements.impl.formatting.AlignmentElement;
 import dev.dediamondpro.minemark.elements.impl.formatting.FormattingElement;
 import dev.dediamondpro.minemark.elements.impl.list.ListHolderElement;
+import dev.dediamondpro.minemark.elements.loaders.TextElementLoader;
 import dev.dediamondpro.minemark.style.Style;
 import org.commonmark.Extension;
 import org.commonmark.renderer.html.UrlSanitizer;
@@ -23,14 +24,25 @@ public class MineMarkCoreBuilder<S extends Style, R> {
 
     private final HashMap<List<String>, ElementLoader<S, R>> elements = new HashMap<>();
     private final ArrayList<Extension> extensions = new ArrayList<>();
+    private TextElementLoader<S, R> textElement = null;
     private boolean withDefaultElements = true;
     private UrlSanitizer urlSanitizer = null;
+
+    /**
+     * Set the text element that should be used.
+     *
+     * @param textElement The {@link TextElementLoader} of that text element
+     */
+    public MineMarkCoreBuilder<S, R> setTextElement(@NotNull TextElementLoader<S, R> textElement) {
+        this.textElement = textElement;
+        return this;
+    }
 
     /**
      * Add a supported element to be used
      *
      * @param elementName Tags the element should use
-     * @param element     An ElementLoader of that element
+     * @param element     An {@link ElementLoader} of that element
      */
     public MineMarkCoreBuilder<S, R> addElement(@NotNull Elements elementName, @NotNull ElementLoader<S, R> element) {
         this.elements.put(elementName.tags, element);
@@ -41,7 +53,7 @@ public class MineMarkCoreBuilder<S extends Style, R> {
      * Add a supported element to be used
      *
      * @param tags    Tags the element should use
-     * @param element An ElementLoader of that element
+     * @param element An {@link ElementLoader} of that element
      */
     public MineMarkCoreBuilder<S, R> addElement(@NotNull List<String> tags, @NotNull ElementLoader<S, R> element) {
         this.elements.put(tags, element);
@@ -81,7 +93,7 @@ public class MineMarkCoreBuilder<S extends Style, R> {
     }
 
     /**
-     * Disable default extensions
+     * Disable default elements
      */
     public MineMarkCoreBuilder<S, R> withoutDefaultElements() {
         withDefaultElements = false;
@@ -101,6 +113,9 @@ public class MineMarkCoreBuilder<S extends Style, R> {
      * @return a MineMarkCore with the given settings
      */
     public MineMarkCore<S, R> build() {
+        if (textElement == null) {
+            throw new IllegalArgumentException("A text element has to be provided by using \"setTextElement(textElement\"");
+        }
         if (withDefaultElements) {
             addElement(Elements.PARAGRAPH, ParagraphElement::new);
             addElement(Elements.FORMATTING, FormattingElement::new);
@@ -108,6 +123,6 @@ public class MineMarkCoreBuilder<S extends Style, R> {
             addElement(Elements.LINK, LinkElement::new);
             addElement(Elements.LIST_PARENT, ListHolderElement::new);
         }
-        return new MineMarkCore<>(elements, extensions, urlSanitizer);
+        return new MineMarkCore<>(textElement, elements, extensions, urlSanitizer);
     }
 }

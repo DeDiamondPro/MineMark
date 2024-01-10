@@ -3,8 +3,10 @@ package dev.dediamondpro.minemark.elements;
 import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.elements.impl.TextElement;
+import dev.dediamondpro.minemark.elements.loaders.ElementLoader;
 import dev.dediamondpro.minemark.style.Style;
 import dev.dediamondpro.minemark.utils.MouseButton;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
@@ -18,15 +20,14 @@ public abstract class Element<S extends Style, R> {
     protected final Attributes attributes;
     protected final S style;
     protected LayoutStyle layoutStyle;
-    protected String text;
 
     /**
      * Base Element Constructor used by {@link ElementLoader}
      *
      * @param layoutStyle The configuration used to generate the layout positioning
-     * @param parent       Parent element, null in top level element {@link MineMarkElement}
-     * @param qName        The name of the HTML tag
-     * @param attributes   The attributes of the HTML tag, null for text {@link TextElement}
+     * @param parent      Parent element, null in top level element {@link MineMarkElement}
+     * @param qName       The name of the HTML tag
+     * @param attributes  The attributes of the HTML tag, null for text {@link TextElement}
      */
     public Element(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
         this.style = style;
@@ -37,46 +38,50 @@ public abstract class Element<S extends Style, R> {
         this.attributes = attributes;
     }
 
-    public void setText(String text) {
-        if (text == null) {
-            throw new IllegalStateException("Text is already set, it can not be set twice.");
+    /**
+     * Internal method for drawing an element, should never be used directly.
+     */
+    @ApiStatus.Internal
+    public void drawInternal(float xOffset, float yOffset, float mouseX, float mouseY, R renderData){
+        for (Element<S, R> child : children) {
+            child.drawInternal(xOffset, yOffset, mouseX, mouseY, renderData);
         }
-        this.text = text;
     }
 
-    public @Nullable Element<S, R> getParent() {
-        return parent;
+    /**
+     * Internal method called before drawing an element, should never be used directly.
+     */
+    @ApiStatus.Internal
+    public void beforeDrawInternal(float xOffset, float yOffset, float mouseX, float mouseY, R renderData) {
+        for (Element<S, R> child : children) {
+            child.beforeDrawInternal(xOffset, yOffset, mouseX, mouseY, renderData);
+        }
     }
 
-    public ArrayList<Element<S, R>> getChildren() {
-        return children;
+    /**
+     * Internal method for called when the mouse is clicked, should never be used directly.
+     */
+    @ApiStatus.Internal
+    public void onMouseClickedInternal(MouseButton button, float mouseX, float mouseY) {
+        for (Element<S, R> child : children) {
+            child.onMouseClickedInternal(button, mouseX, mouseY);
+        }
     }
 
-    public LayoutStyle getLayoutStyle() {
-        return layoutStyle;
-    }
+    /**
+     * Internal method for generating the layout of this element, should never be used directly.
+     */
+    @ApiStatus.Internal
+    public abstract void generateLayout(LayoutData layoutData, R renderData);
 
-    protected abstract void generateLayout(LayoutData layoutData, R renderData);
-
+    /**
+     * Call this method to regenerate the layout of all associated elements
+     */
     public void regenerateLayout() {
         if (parent == null) {
             throw new IllegalStateException("No top level MineMarkElement found to regenerate layout with.");
         }
         parent.regenerateLayout();
-    }
-
-    protected abstract void draw(float xOffset, float yOffset, float mouseX, float mouseY, R renderData);
-
-    protected void beforeDraw(float xOffset, float yOffset, float mouseX, float mouseY, R renderData) {
-        for (Element<S, R> child : children) {
-            child.beforeDraw(xOffset, yOffset, mouseX, mouseY, renderData);
-        }
-    }
-
-    protected void onMouseClicked(MouseButton button, float mouseX, float mouseY) {
-        for (Element<S, R> child : children) {
-            child.onMouseClicked(button, mouseX, mouseY);
-        }
     }
 
     /**
@@ -92,5 +97,17 @@ public abstract class Element<S extends Style, R> {
             builder.append(child.buildTree(depth + 1));
         }
         return builder.toString();
+    }
+
+    public @Nullable Element<S, R> getParent() {
+        return parent;
+    }
+
+    public ArrayList<Element<S, R>> getChildren() {
+        return children;
+    }
+
+    public LayoutStyle getLayoutStyle() {
+        return layoutStyle;
     }
 }

@@ -7,11 +7,11 @@ import dev.dediamondpro.minemark.elements.Element;
 import dev.dediamondpro.minemark.elements.Inline;
 import dev.dediamondpro.minemark.providers.ImageProvider;
 import dev.dediamondpro.minemark.style.Style;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
 
-import java.awt.image.BufferedImage;
 import java.util.regex.Pattern;
 
 public abstract class ImageElement<S extends Style, R, I> extends BasicElement<S, R> implements Inline {
@@ -42,7 +42,8 @@ public abstract class ImageElement<S extends Style, R, I> extends BasicElement<S
     }
 
     @Override
-    protected void generateLayout(LayoutData layoutData, R renderData) {
+    @ApiStatus.Internal
+    public void generateLayout(LayoutData layoutData, R renderData) {
         calculateDimensions(layoutData);
         super.generateLayout(layoutData, renderData);
     }

@@ -3,13 +3,12 @@ package dev.dediamondpro.minemark.elements;
 import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.style.Style;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
 
 public abstract class BasicElement<S extends Style, R> extends Element<S, R> {
-    private float width;
-    private float height;
     protected LayoutData.MarkDownElementPosition position;
 
     public BasicElement(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
@@ -17,17 +16,18 @@ public abstract class BasicElement<S extends Style, R> extends Element<S, R> {
     }
 
     @Override
-    protected void draw(float xOffset, float yOffset, float mouseX, float mouseY, R renderData) {
+    public void drawInternal(float xOffset, float yOffset, float mouseX, float mouseY, R renderData) {
         drawElement(
-                position.getX() + xOffset, position.getBottomY() - height + yOffset,
+                position.getX() + xOffset, position.getY() + yOffset,
                 position.getWidth(), position.getHeight(), renderData
         );
     }
 
     @Override
-    protected void generateLayout(LayoutData layoutData, R renderData) {
-        width = getWidth(layoutData, renderData);
-        height = getHeight(layoutData, renderData);
+    @ApiStatus.Internal
+    public void generateLayout(LayoutData layoutData, R renderData) {
+        float width = getWidth(layoutData, renderData);
+        float height = getHeight(layoutData, renderData);
         float padding = getPadding(layoutData, renderData);
         if ((!(this instanceof Inline) && layoutData.isLineOccupied()) || layoutData.getX() + width > layoutData.getMaxWidth()) {
             layoutData.nextLine();

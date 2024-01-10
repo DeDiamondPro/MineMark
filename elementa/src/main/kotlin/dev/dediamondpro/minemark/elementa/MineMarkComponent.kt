@@ -82,7 +82,7 @@ class MineMarkComponent(
 }
 
 fun MineMarkCoreBuilder<MarkdownStyle, RenderData>.addElementaExtensions(): MineMarkCoreBuilder<MarkdownStyle, RenderData> {
-    return this.addElement(Elements.TEXT, ::MarkdownTextComponent)
+    return this.setTextElement(::MarkdownTextComponent)
         .addElement(Elements.HEADING, ::MarkdownHeadingComponent)
         .addElement(Elements.IMAGE, ::MarkdownImageComponent)
         .addElement(Elements.HORIZONTAL_RULE, ::MarkdownHorizontalRuleComponent)

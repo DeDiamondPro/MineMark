@@ -7,6 +7,7 @@ import dev.dediamondpro.minemark.elements.Element;
 import dev.dediamondpro.minemark.elements.Inline;
 import dev.dediamondpro.minemark.style.HeadingLevelStyleConfig;
 import dev.dediamondpro.minemark.style.Style;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
@@ -27,8 +28,8 @@ public abstract class HeadingElement<S extends Style, R> extends ChildBasedEleme
     }
 
     @Override
-    protected void draw(float xOffset, float yOffset, float mouseX, float mouseY, R renderData) {
-        super.draw(xOffset, yOffset, mouseX, mouseY, renderData);
+    public void drawInternal(float xOffset, float yOffset, float mouseX, float mouseY, R renderData) {
+        super.drawInternal(xOffset, yOffset, mouseX, mouseY, renderData);
         if (headingStyle.hasDivider()) {
             drawDivider(
                     xOffset + dividerPosition.getX(), yOffset + dividerPosition.getY(),
@@ -38,7 +39,8 @@ public abstract class HeadingElement<S extends Style, R> extends ChildBasedEleme
     }
 
     @Override
-    protected void generateLayout(LayoutData layoutData, R renderData) {
+    @ApiStatus.Internal
+    public void generateLayout(LayoutData layoutData, R renderData) {
         if (layoutData.isLineOccupied()) {
             layoutData.nextLine();
         }

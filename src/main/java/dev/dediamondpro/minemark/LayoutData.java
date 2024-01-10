@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 public class LayoutData {
     private final ArrayList<Consumer<MarkDownElementPosition>> elementListeners = new ArrayList<>();
     private MarkDownLine currentLine = new MarkDownLine(0f);
+    private MarkDownLine previousLine = null;
     private final float maxWidth;
     private boolean topSpacingLocked = false;
     private boolean bottomSpacingLocked = false;
@@ -23,6 +24,7 @@ public class LayoutData {
     }
 
     public void nextLine() {
+        previousLine = currentLine;
         currentLine = new MarkDownLine(currentLine.getBottomY());
         topSpacingLocked = false;
         bottomSpacingLocked = false;
@@ -85,6 +87,10 @@ public class LayoutData {
 
     public MarkDownLine getCurrentLine() {
         return currentLine;
+    }
+
+    public MarkDownLine getPreviousLine() {
+        return previousLine;
     }
 
     public void updateTopSpacing(float spacing) {
