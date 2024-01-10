@@ -1,8 +1,8 @@
 package dev.dediamondpro.minemark;
 
 import dev.dediamondpro.minemark.elements.Element;
-import dev.dediamondpro.minemark.elements.loaders.ElementLoader;
 import dev.dediamondpro.minemark.elements.MineMarkElement;
+import dev.dediamondpro.minemark.elements.loaders.ElementLoader;
 import dev.dediamondpro.minemark.elements.loaders.TextElementLoader;
 import dev.dediamondpro.minemark.style.Style;
 import org.xml.sax.Attributes;

@@ -15,6 +15,9 @@ public enum Elements {
     HORIZONTAL_RULE(listOf("hr")),
     BLOCKQUOTE(listOf("blockquote")),
     CODE_BLOCK(listOf("code")),
+    TABLE(listOf("table")),
+    TABLE_ROW(listOf("tr")),
+    TABLE_CELL(listOf("td", "th")),
     ;
 
     public final List<String> tags;

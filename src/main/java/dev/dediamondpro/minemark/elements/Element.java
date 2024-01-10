@@ -103,7 +103,7 @@ public abstract class Element<S extends Style, R> {
         return parent;
     }
 
-    public ArrayList<Element<S, R>> getChildren() {
+    public @NotNull ArrayList<Element<S, R>> getChildren() {
         return children;
     }
 

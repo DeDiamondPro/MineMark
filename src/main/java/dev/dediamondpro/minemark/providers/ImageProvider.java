@@ -1,6 +1,5 @@
 package dev.dediamondpro.minemark.providers;
 
-import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
 
 public interface ImageProvider<I> {

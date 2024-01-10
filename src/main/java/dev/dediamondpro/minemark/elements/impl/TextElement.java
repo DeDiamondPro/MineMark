@@ -103,7 +103,10 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
             if (getAdjustedTextWidth(currentLine + word, fontSize, renderData) <= actualMaxWidth) {
                 currentLine.append(word);
             } else {
-                lines.add(currentLine.toString());
+                String finishedText = currentLine.toString();
+                if (!finishedText.isEmpty() || actualMaxWidth != maxWidth) {
+                    lines.add(finishedText);
+                }
                 String cleanedWord = word.replaceAll("^ ", "");
                 currentLine = new StringBuilder();
                 actualMaxWidth = maxWidth;

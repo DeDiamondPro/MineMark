@@ -3,6 +3,3 @@
 # MineMark
 Java Markdown Rendering library
 </div>
-
-# TODO
-- Tables

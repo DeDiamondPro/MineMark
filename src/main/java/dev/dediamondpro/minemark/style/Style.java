@@ -19,4 +19,6 @@ public interface Style {
     BlockquoteStyleConfig getBlockquoteStyle();
 
     CodeBlockStyleConfig getCodeBlockStyle();
+
+    TableStyleConfig getTableStyle();
 }

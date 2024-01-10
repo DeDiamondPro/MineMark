@@ -1,12 +1,14 @@
 package dev.dediamondpro.minemark;
 
-import dev.dediamondpro.minemark.elements.loaders.ElementLoader;
 import dev.dediamondpro.minemark.elements.Elements;
 import dev.dediamondpro.minemark.elements.impl.LinkElement;
 import dev.dediamondpro.minemark.elements.impl.ParagraphElement;
 import dev.dediamondpro.minemark.elements.impl.formatting.AlignmentElement;
 import dev.dediamondpro.minemark.elements.impl.formatting.FormattingElement;
 import dev.dediamondpro.minemark.elements.impl.list.ListHolderElement;
+import dev.dediamondpro.minemark.elements.impl.table.TableHolderElement;
+import dev.dediamondpro.minemark.elements.impl.table.TableRowElement;
+import dev.dediamondpro.minemark.elements.loaders.ElementLoader;
 import dev.dediamondpro.minemark.elements.loaders.TextElementLoader;
 import dev.dediamondpro.minemark.style.Style;
 import org.commonmark.Extension;
@@ -122,6 +124,8 @@ public class MineMarkCoreBuilder<S extends Style, R> {
             addElement(Elements.ALIGNMENT, AlignmentElement::new);
             addElement(Elements.LINK, LinkElement::new);
             addElement(Elements.LIST_PARENT, ListHolderElement::new);
+            addElement(Elements.TABLE, TableHolderElement::new);
+            addElement(Elements.TABLE_ROW, TableRowElement::new);
         }
         return new MineMarkCore<>(textElement, elements, extensions, urlSanitizer);
     }
