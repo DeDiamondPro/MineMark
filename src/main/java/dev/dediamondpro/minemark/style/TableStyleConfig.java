@@ -20,18 +20,24 @@ package dev.dediamondpro.minemark.style;
 import java.awt.*;
 
 public class TableStyleConfig {
+    private final float outsidePadding;
     private final float insidePadding;
     private final float borderThickness;
     private final Color borderColor;
     private final Color evenFillColor;
     private final Color oddFillColor;
 
-    public TableStyleConfig(float insidePadding, float borderThickness, Color borderColor, Color evenFillColor, Color oddFillColor) {
+    public TableStyleConfig(float outsidePadding, float insidePadding, float borderThickness, Color borderColor, Color evenFillColor, Color oddFillColor) {
+        this.outsidePadding = outsidePadding;
         this.insidePadding = insidePadding;
         this.borderThickness = borderThickness;
         this.borderColor = borderColor;
         this.evenFillColor = evenFillColor;
         this.oddFillColor = oddFillColor;
+    }
+
+    public float getOutsidePadding() {
+        return outsidePadding;
     }
 
     public float getInsidePadding() {
