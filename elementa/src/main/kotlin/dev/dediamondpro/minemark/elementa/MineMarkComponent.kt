@@ -16,7 +16,7 @@ import org.commonmark.ext.gfm.tables.TablesExtension
 class MineMarkComponent(
     markdown: String,
     style: MarkdownStyle = MarkdownStyle(),
-    core: MineMarkCore<MarkdownStyle, RenderData> = defaultCore
+    core: MineMarkCore<MarkdownStyle, UMatrixStack> = defaultCore
 ) : UIComponent() {
 
     private val parsedMarkdown = core.parse(style, markdown).apply {
@@ -46,7 +46,7 @@ class MineMarkComponent(
             this.getWidth(),
             mouse.first,
             mouse.second,
-            RenderData(matrixStack)
+            matrixStack
         )
         super.beforeDraw(matrixStack)
     }
@@ -60,7 +60,7 @@ class MineMarkComponent(
             this.getWidth(),
             mouse.first,
             mouse.second,
-            RenderData(matrixStack)
+            matrixStack
         )
         super.draw(matrixStack)
     }
@@ -73,7 +73,7 @@ class MineMarkComponent(
 
     companion object {
         private val defaultCore = MineMarkCore
-            .builder<MarkdownStyle, RenderData>()
+            .builder<MarkdownStyle, UMatrixStack>()
             .addExtension(StrikethroughExtension.create())
             .addExtension(TablesExtension.create())
             .addElementaExtensions()
@@ -81,7 +81,7 @@ class MineMarkComponent(
     }
 }
 
-fun MineMarkCoreBuilder<MarkdownStyle, RenderData>.addElementaExtensions(): MineMarkCoreBuilder<MarkdownStyle, RenderData> {
+fun MineMarkCoreBuilder<MarkdownStyle, UMatrixStack>.addElementaExtensions(): MineMarkCoreBuilder<MarkdownStyle, UMatrixStack> {
     return this.setTextElement(::MarkdownTextComponent)
         .addElement(Elements.HEADING, ::MarkdownHeadingComponent)
         .addElement(Elements.IMAGE, ::MarkdownImageComponent)
