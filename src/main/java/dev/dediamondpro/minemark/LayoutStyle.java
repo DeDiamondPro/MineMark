@@ -50,7 +50,7 @@ public class LayoutStyle {
     }
 
     public LayoutStyle(Style style) {
-        this(Alignment.LEFT, style.getTextStyle().getDefaultFontSize(), Color.WHITE, false, false, false, false, false, false, false);
+        this(Alignment.LEFT, style.getTextStyle().getDefaultFontSize(), style.getTextStyle().getDefaultTextColor(), false, false, false, false, false, false, false);
     }
 
     public LayoutStyle clone() {
