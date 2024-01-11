@@ -19,6 +19,11 @@ package dev.dediamondpro.minemark.providers;
 
 import java.util.function.Consumer;
 
+/**
+ * Interface used to get an image
+ *
+ * @param <I> The class of the image
+ */
 public interface ImageProvider<I> {
 
     /**

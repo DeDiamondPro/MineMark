@@ -40,6 +40,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Class responsible for integrating parsing, layout and rendering
+ *
+ * @param <S> The {@link Style} this core and all associated elements will use
+ * @param <R> The class passed to the rendering implementation at render time
  */
 public class MineMarkCore<S extends Style, R> {
     private final Parser markdownParser;
@@ -109,8 +112,8 @@ public class MineMarkCore<S extends Style, R> {
     }
 
     /**
-     * @param <S> The style object passed to each element
-     * @param <R> A class that is given to elements at render time
+     * @param <S> The {@link Style} this core and all associated elements will use
+     * @param <R> The class passed to the rendering implementation at render time
      * @return The builder used to create the core
      */
     public static <S extends Style, R> MineMarkCoreBuilder<S, R> builder() {

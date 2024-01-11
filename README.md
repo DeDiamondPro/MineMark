@@ -23,11 +23,13 @@ dependencies {
     implementation("dev.dediamondpro:minemark-elementa:1.0.0")
 }
 ```
+It is recommended to **shade and relocate MineMark** if you are using it in a Minecraft mod since no guarantees will be
+provided regarding backwards compatibility.
 
 How you render a markdown element will differ from one rendering implementation to another, here is an example of how 
 you would do it with the elementa rendering implementation:
 ```kt
-MineMarkComponent("This *is* **were** you input your markdown!").constrain {
+MineMarkComponent("This *is* **where** you input your markdown!").constrain {
     x = 0.pixels()
     y = 0.pixels()
     width = 600.pixels()
@@ -38,19 +40,19 @@ MineMarkComponent("This *is* **were** you input your markdown!").constrain {
 To create your own rendering implementation, you first have to implement the rendering of the elements you want to 
 support. You can choose what elements you implement, the only requirement is that **you have to provide a text element**.
 To implement an element, you have to extend its abstract form, for an example for each element I would recommend you
-look at the elementa implementation as a reference. An element takes 2 type variables, the first one (S) is the style,
-so you have to create a class that implements the `Style` interface. The second can be any class, it is given to your
+look at the elementa implementation as a reference. An element takes 2 type variables, the first one (`S`) is the style,
+so you have to create a class that implements the `Style` interface. The second (`R`) can be any class, it is given to your
 elements at render time. If you do not wish to use this you can just set it to be an `Object`.
 
 Once you implemented the elements you want, you have to register them in a core. You can do this as follows:
 ```java
 MineMarkCore<MyStyle, MyRenderObject> core = MineMarkCore.<MyStyle, MyRenderObject>builder()
         // Set the text element to your text element
-        .setTextElement(MyTextElement)
+        .setTextElement(MyTextElement::new)
         // Set the image element to your image element
-        .addElement(Elements.IMAGE, MyImageElement)
+        .addElement(Elements.IMAGE, MyImageElement::new)
         // Set an element with the html tag "myHtmlTag" to MyElement
-        .addElement(Arrays.asList("myHtmlTag"), MyElement)
+        .addElement(Arrays.asList("myHtmlTag"), MyElement::new)
         .build();
 ```
 

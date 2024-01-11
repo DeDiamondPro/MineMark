@@ -31,6 +31,13 @@ import org.xml.sax.Attributes;
 
 import java.util.regex.Pattern;
 
+/**
+ * Base image element
+ *
+ * @param <S> The {@link Style} this core and all associated elements will use
+ * @param <R> The class passed to the rendering implementation at render time
+ * @param <I> The class of the image, should be the same as your {@link ImageProvider}
+ */
 public abstract class ImageElement<S extends Style, R, I> extends BasicElement<S, R> implements Inline {
     private static final Pattern pixelPattern = Pattern.compile("^\\d+(px)?$");
     protected float imageWidth = -1;

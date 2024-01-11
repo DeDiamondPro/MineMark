@@ -41,7 +41,10 @@ public class LayoutData {
     }
 
     public void nextLine() {
-        previousLine = currentLine;
+        // Only set previous line if there was a meaningful change
+        if (isLineOccupied() || currentLine.bottomSpacing != 0f || currentLine.height != 0f || currentLine.topSpacing != 0f) {
+            previousLine = currentLine;
+        }
         currentLine = new MarkDownLine(currentLine.getBottomY());
         topSpacingLocked = false;
         bottomSpacingLocked = false;

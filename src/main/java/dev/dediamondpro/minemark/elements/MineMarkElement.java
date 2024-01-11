@@ -111,7 +111,7 @@ public class MineMarkElement<S extends Style, R> extends ChildBasedElement<S, R>
         layoutData.lockTopSpacing();
         super.generateLayout(layoutData, renderData);
         float bottomSpacing = layoutData.getCurrentLine().getBottomSpacing();
-        if (bottomSpacing == 0f && layoutData.isLineEmpty()) {
+        if (bottomSpacing == 0f && layoutData.isLineEmpty() && layoutData.getPreviousLine() != null) {
             bottomSpacing = layoutData.getPreviousLine().getBottomSpacing();
         }
         height = layoutData.getY() + layoutData.getLineHeight() - bottomSpacing;
