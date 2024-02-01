@@ -31,9 +31,9 @@ import org.jetbrains.annotations.Nullable;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
@@ -74,13 +74,42 @@ public class MineMarkCore<S extends Style, R> {
      *
      * @param markdown The markdown text to parse
      * @param style    The style passed to all elements
+     * @param charSet  The charset to use when parsing the markdown
+     * @return The parsed markdown element
+     * @throws SAXException An exception during SAX parsing
+     * @throws IOException  An IOException during parsing
+     */
+    public MineMarkElement<S, R> parse(@NotNull S style, @NotNull String markdown, Charset charSet) throws SAXException, IOException {
+        Node document = markdownParser.parse(markdown);
+        return parseDocument(style, document, charSet);
+    }
+
+    /**
+     * Parse markdown to an element used to render it
+     *
+     * @param markdown The markdown text to parse
+     * @param style    The style passed to all elements
      * @return The parsed markdown element
      * @throws SAXException An exception during SAX parsing
      * @throws IOException  An IOException during parsing
      */
     public MineMarkElement<S, R> parse(@NotNull S style, @NotNull String markdown) throws SAXException, IOException {
-        Node document = markdownParser.parse(markdown);
-        return parseDocument(style, document);
+        return parse(style, markdown, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Parse markdown to an element used to render it
+     *
+     * @param markdown The markdown text to parse
+     * @param style    The style passed to all elements
+     * @param charSet  The charset to use when parsing the markdown
+     * @return The parsed markdown element
+     * @throws SAXException An exception during SAX parsing
+     * @throws IOException  An IOException during parsing
+     */
+    public MineMarkElement<S, R> parse(@NotNull S style, @NotNull Reader markdown, Charset charSet) throws SAXException, IOException {
+        Node document = markdownParser.parseReader(markdown);
+        return parseDocument(style, document, charSet);
     }
 
     /**
@@ -93,17 +122,18 @@ public class MineMarkCore<S extends Style, R> {
      * @throws IOException  An IOException during parsing
      */
     public MineMarkElement<S, R> parse(@NotNull S style, @NotNull Reader markdown) throws SAXException, IOException {
-        Node document = markdownParser.parseReader(markdown);
-        return parseDocument(style, document);
+        return parse(style, markdown, StandardCharsets.UTF_8);
     }
 
-    private MineMarkElement<S, R> parseDocument(@NotNull S style, Node document) throws SAXException, IOException {
+    private MineMarkElement<S, R> parseDocument(@NotNull S style, Node document, Charset charSet) throws SAXException, IOException {
         String html = "<minemark>\n" + htmlRenderer.render(document) + "</minemark>";
-        try {
-            // Acquire the lock to make sure this thread is the only one using the parser
-            parsingLock.lock();
+        // Acquire the lock to make sure this thread is the only one using the parser
+        parsingLock.lock();
+        try (InputStream stream = new ByteArrayInputStream(html.getBytes(charSet))) {
             htmlParser.setStyle(style, new LayoutStyle(style));
-            xmlParser.parse(new InputSource(new ByteArrayInputStream(html.getBytes())));
+            InputSource source = new InputSource(stream);
+            source.setEncoding(charSet.name());
+            xmlParser.parse(source);
             return htmlParser.getParsedResult();
         } finally {
             htmlParser.cleanUp();
