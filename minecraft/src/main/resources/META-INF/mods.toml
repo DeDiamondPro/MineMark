@@ -1,0 +1,11 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "${license}"
+showAsResourcePack=false
+
+[[mods]]
+modId = "${id}"
+displayName = "${name}"
+version = "${version}"
+authors = "DeDiamondPro"
+description = "${description}"

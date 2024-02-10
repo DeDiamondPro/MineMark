@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 
 public class LayoutData {
     private final ArrayList<Consumer<MarkDownElementPosition>> elementListeners = new ArrayList<>();
+    private final ArrayList<Consumer<MarkDownLine>> lineListeners = new ArrayList<>();
     private MarkDownLine currentLine = new MarkDownLine(0f);
     private MarkDownLine previousLine = null;
     private final float maxWidth;
@@ -43,6 +44,7 @@ public class LayoutData {
     public void nextLine() {
         // Only set previous line if there was a meaningful change
         if (isLineOccupied() || currentLine.bottomSpacing != 0f || currentLine.height != 0f || currentLine.topSpacing != 0f) {
+            lineListeners.forEach(listener -> listener.accept(currentLine));
             previousLine = currentLine;
         }
         currentLine = new MarkDownLine(currentLine.getBottomY());
@@ -75,6 +77,23 @@ public class LayoutData {
      */
     public void removeElementListener() {
         elementListeners.remove(0);
+    }
+
+    /**
+     * Add a consumer that will be called when a new line is started
+     * Only the last added listener is called to avoid conflicts
+     *
+     * @param listener The listener
+     */
+    public void addLineListener(Consumer<MarkDownLine> listener) {
+        lineListeners.add(0, listener);
+    }
+
+    /**
+     * Remove the last listener that was added
+     */
+    public void removeLineListener() {
+        lineListeners.remove(0);
     }
 
     public float getX() {

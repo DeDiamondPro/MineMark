@@ -15,14 +15,19 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-dependencyResolutionManagement {
-    versionCatalogs {
-        create("libs")
+package dev.dediamondpro.minemark.minecraft.utils;
+
+import dev.dediamondpro.minemark.providers.BrowserProvider;
+import net.minecraft.util.Util;
+
+public class MinecraftBrowserProvider implements BrowserProvider {
+    public static MinecraftBrowserProvider INSTANCE = new MinecraftBrowserProvider();
+
+    private MinecraftBrowserProvider() {
+    }
+
+    @Override
+    public void browse(String url) {
+        Util.getOperatingSystem().open(url);
     }
 }
-
-include(":elementa")
-includeBuild("minecraft")
-includeBuild(".")
-
-rootProject.name = "MineMark"

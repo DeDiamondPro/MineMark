@@ -15,14 +15,21 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-dependencyResolutionManagement {
-    versionCatalogs {
-        create("libs")
+package dev.dediamondpro.minemark.minecraft.style;
+
+import dev.dediamondpro.minemark.style.TextStyleConfig;
+
+import java.awt.*;
+
+public class MarkdownTextStyle  extends TextStyleConfig {
+    private final boolean hasShadow;
+
+    public MarkdownTextStyle(float defaultFontSize, Color defaultTextColor, float padding, boolean hasShadow) {
+        super(defaultFontSize, defaultTextColor, padding);
+        this.hasShadow = hasShadow;
+    }
+
+    public boolean hasShadow() {
+        return hasShadow;
     }
 }
-
-include(":elementa")
-includeBuild("minecraft")
-includeBuild(".")
-
-rootProject.name = "MineMark"

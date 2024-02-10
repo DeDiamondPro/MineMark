@@ -33,6 +33,21 @@ dependencies {
     compileOnly(libs.jetbrains.annotations)
 }
 
+tasks {
+    build {
+        dependsOn(gradle.includedBuild("minecraft").task(":buildAll"))
+    }
+    clean {
+        dependsOn(gradle.includedBuild("minecraft").task(":cleanAll"))
+    }
+    publish {
+        dependsOn(gradle.includedBuild("minecraft").task(":publishAll"))
+    }
+    publishToMavenLocal {
+        dependsOn(gradle.includedBuild("minecraft").task(":publishToMavenLocalAll"))
+    }
+}
+
 allprojects {
     apply(plugin = "java-library")
     apply(plugin = "maven-publish")

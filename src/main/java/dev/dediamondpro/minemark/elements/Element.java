@@ -28,9 +28,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
 
+import java.io.Closeable;
 import java.util.ArrayList;
 
-public abstract class Element<S extends Style, R> {
+public abstract class Element<S extends Style, R> implements Closeable {
     protected final @Nullable Element<S, R> parent;
     protected final ArrayList<Element<S, R>> children = new ArrayList<>();
     protected final String qName;
@@ -99,6 +100,16 @@ public abstract class Element<S extends Style, R> {
             throw new IllegalStateException("No top level MineMarkElement found to regenerate layout with.");
         }
         parent.regenerateLayout();
+    }
+
+    /**
+     * Close all resources opened by associated elements
+     */
+    @Override
+    public void close() {
+        for (Element<S, R> child : children) {
+            child.close();
+        }
     }
 
     /**

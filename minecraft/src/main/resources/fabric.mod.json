@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "${id}",
+  "name": "${name}",
+  "version": "${version}",
+  "description": "${description}",
+  "license": "${license}",
+  "authors": [
+    "DeDiamondPro"
+  ],
+  "contact": {
+    "homepage": "https://github.com/DeDiamondPro/MineMark",
+    "sources": "https://github.com/DeDiamondPro/MineMark",
+    "issues": "https://github.com/DeDiamondPro/MineMark/issues"
+  },
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.example.examplemod.ExampleMod"
+    ]
+  },
+  "custom": {
+    "modmenu": {
+      "badges": [
+        "library"
+      ]
+    }
+  }
+}

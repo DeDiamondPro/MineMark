@@ -46,6 +46,7 @@ public class LayoutStyle {
         this.underlined = underlined;
         this.partOfLink = partOfLink;
         this.preFormatted = preFormatted;
+        this.partOfCodeBlock = partOfCodeBlock;
         this.strikethrough = strikethrough;
     }
 

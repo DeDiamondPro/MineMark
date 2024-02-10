@@ -22,6 +22,7 @@ import dev.dediamondpro.minemark.MineMarkCoreBuilder
 import dev.dediamondpro.minemark.elementa.elements.*
 import dev.dediamondpro.minemark.elementa.style.MarkdownStyle
 import dev.dediamondpro.minemark.elements.Elements
+import dev.dediamondpro.minemark.elements.MineMarkElement
 import dev.dediamondpro.minemark.utils.MouseButton
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.dsl.constrain
@@ -39,8 +40,7 @@ class MineMarkComponent(
     style: MarkdownStyle = MarkdownStyle(),
     core: MineMarkCore<MarkdownStyle, UMatrixStack> = defaultCore
 ) : UIComponent() {
-
-    private val parsedMarkdown = core.parse(style, markdown).apply {
+    val parsedMarkdown: MineMarkElement<MarkdownStyle, UMatrixStack> = core.parse(style, markdown).apply {
         addLayoutCallback(this@MineMarkComponent::layoutCallback)
     }
 

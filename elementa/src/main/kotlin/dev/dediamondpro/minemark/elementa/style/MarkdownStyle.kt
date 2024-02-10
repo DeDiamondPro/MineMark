@@ -59,7 +59,7 @@ data class MarkdownStyle @JvmOverloads constructor(
     override fun getTableStyle(): TableStyleConfig = tableStyle
 
     companion object {
-        private val LINE_COLOR = Color(80, 80, 80);
+        private val LINE_COLOR = Color(80, 80, 80)
     }
 }
 
