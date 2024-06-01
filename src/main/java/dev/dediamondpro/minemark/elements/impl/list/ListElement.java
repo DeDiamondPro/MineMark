@@ -34,11 +34,13 @@ public abstract class ListElement<S extends Style, R> extends ChildMovingElement
     public ListElement(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
         super(style, layoutStyle, parent, qName, attributes);
         if (!(parent instanceof ListHolderElement)) {
-            throw new IllegalArgumentException("List element has no surrounding list holder!");
+            listType = ListHolderElement.ListType.UNORDERED;
+            elementIndex = 0;
+        } else {
+            ListHolderElement<S, R> holder = (ListHolderElement<S, R>) parent;
+            listType = holder.getListType();
+            elementIndex = holder.getChildren().indexOf(this);
         }
-        ListHolderElement<S, R> holder = (ListHolderElement<S, R>) parent;
-        listType = holder.getListType();
-        elementIndex = holder.getChildren().indexOf(this);
     }
 
 
