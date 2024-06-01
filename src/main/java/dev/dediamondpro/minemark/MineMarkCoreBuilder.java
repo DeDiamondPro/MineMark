@@ -32,8 +32,8 @@ import org.commonmark.Extension;
 import org.commonmark.renderer.html.UrlSanitizer;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.LinkedHashMap;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +41,7 @@ public class MineMarkCoreBuilder<S extends Style, R> {
     protected MineMarkCoreBuilder() {
     }
 
-    private final HashMap<List<String>, ElementLoader<S, R>> elements = new HashMap<>();
+    private final LinkedHashMap<List<String>, ElementLoader<S, R>> elements = new LinkedHashMap<>();
     private final ArrayList<Extension> extensions = new ArrayList<>();
     private TextElementLoader<S, R> textElement = null;
     private boolean withDefaultElements = true;
@@ -124,8 +124,9 @@ public class MineMarkCoreBuilder<S extends Style, R> {
      *
      * @param urlSanitizer The url sanitizer
      */
-    public void setUrlSanitizer(UrlSanitizer urlSanitizer) {
+    public MineMarkCoreBuilder<S, R> setUrlSanitizer(UrlSanitizer urlSanitizer) {
         this.urlSanitizer = urlSanitizer;
+        return this;
     }
 
     /**

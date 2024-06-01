@@ -19,9 +19,12 @@ package dev.dediamondpro.minemark;
 
 import dev.dediamondpro.minemark.elements.Element;
 import dev.dediamondpro.minemark.elements.MineMarkElement;
+import dev.dediamondpro.minemark.elements.TagMultiElement;
 import dev.dediamondpro.minemark.elements.loaders.ElementLoader;
 import dev.dediamondpro.minemark.elements.loaders.TextElementLoader;
 import dev.dediamondpro.minemark.style.Style;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -30,7 +33,7 @@ import java.util.Map;
 
 public class MineMarkHtmlParser<S extends Style, R> extends DefaultHandler {
     private final Map<List<String>, ElementLoader<S, R>> elements;
-    private final TextElementLoader<S, R> textElement;
+    private final TextElementLoader<S, R> textElementLoader;
     private MineMarkElement<S, R> markDown;
     private Element<S, R> currentElement;
     private LayoutStyle layoutStyle;
@@ -38,8 +41,8 @@ public class MineMarkHtmlParser<S extends Style, R> extends DefaultHandler {
     private StringBuilder textBuilder = new StringBuilder();
     private boolean isPreFormatted = false;
 
-    protected MineMarkHtmlParser(TextElementLoader<S, R> textElement, Map<List<String>, ElementLoader<S, R>> elements) {
-        this.textElement = textElement;
+    protected MineMarkHtmlParser(TextElementLoader<S, R> textElementLoader, Map<List<String>, ElementLoader<S, R>> elements) {
+        this.textElementLoader = textElementLoader;
         this.elements = elements;
     }
 
@@ -47,8 +50,7 @@ public class MineMarkHtmlParser<S extends Style, R> extends DefaultHandler {
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         switch (qName) {
             case "minemark":
-                markDown = new MineMarkElement<>(style, layoutStyle, attributes);
-                currentElement = markDown;
+                currentElement = markDown = new MineMarkElement<>(style, layoutStyle, attributes);
                 return;
             case "br":
                 textBuilder.append("\n");
@@ -58,11 +60,11 @@ public class MineMarkHtmlParser<S extends Style, R> extends DefaultHandler {
                 break;
         }
         addText();
-        ElementLoader<S, R> elementCreator = findElement(qName);
-        if (elementCreator == null) {
+        Element<S, R> newElement = createElement(style, currentElement.getLayoutStyle(), currentElement, qName, attributes);
+        if (newElement == null) {
             return;
         }
-        currentElement = elementCreator.get(style, currentElement.getLayoutStyle(), currentElement, qName, attributes);
+        currentElement = newElement;
     }
 
     @Override
@@ -112,21 +114,52 @@ public class MineMarkHtmlParser<S extends Style, R> extends DefaultHandler {
     private void addText() {
         String text = textBuilder.toString();
         if (text.isEmpty()) return;
-        textElement.get(textBuilder.toString(), style, currentElement.getLayoutStyle(), currentElement, "text", null);
+        textElementLoader.createElement(textBuilder.toString(), style, currentElement.getLayoutStyle(), currentElement, "text", null);
         textBuilder = new StringBuilder();
     }
 
-    private ElementLoader<S, R> findElement(String qName) {
-        for (Map.Entry<List<String>, ElementLoader<S, R>> element : elements.entrySet()) {
-            if (element.getKey().contains(qName)) {
-                return element.getValue();
+    /**
+     * Try to create an element for the given tag
+     *
+     * @param style       The style of the element
+     * @param layoutStyle The layout style of the element
+     * @param parent      The parent element, null if top level element
+     * @param qName       The name of the HTML tag
+     * @param attributes  The attributes of the HTML tag, null for text
+     * @return If only one element applies to the given parameters, return that element,
+     * otherwise return a TagMultiElement with all elements that apply. If no element applies, return null.
+     */
+    private Element<S, R> createElement(S style, LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
+        ElementLoader<S, R> elementLoader = null;
+        TagMultiElement<S, R> multipleElement = null;
+
+        for (Map.Entry<List<String>, ElementLoader<S, R>> e : elements.entrySet()) {
+            if (!e.getKey().contains(qName) || !e.getValue().appliesTo(style, layoutStyle, parent, qName, attributes)) {
+                continue;
             }
+
+            if (elementLoader == null) {
+                elementLoader = e.getValue();
+                continue;
+            }
+
+            if (multipleElement == null) {
+                multipleElement = new TagMultiElement<>(style, layoutStyle, parent, qName, attributes);
+                multipleElement.addElement(elementLoader, style, layoutStyle, qName, attributes);
+            }
+            multipleElement.addElement(e.getValue(), style, layoutStyle, qName, attributes);
+
         }
-        return null;
+        return multipleElement != null ? multipleElement : elementLoader != null ? elementLoader.createElement(style, layoutStyle, parent, qName, attributes) : null;
     }
 
     private boolean hasElement(String qName) {
-        return findElement(qName) != null;
+        for (Map.Entry<List<String>, ElementLoader<S, R>> e : elements.entrySet()) {
+            if (e.getKey().contains(qName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected void setStyle(S style, LayoutStyle layoutStyle) {

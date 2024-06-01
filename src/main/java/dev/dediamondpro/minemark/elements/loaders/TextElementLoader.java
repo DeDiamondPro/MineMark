@@ -26,5 +26,16 @@ import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
 
 public interface TextElementLoader<S extends Style, R> {
-    Element<S, R> get(@NotNull String text, S style, LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes);
+    /**
+     * Create a text element from the given parameters
+     *
+     * @param text         The text of the element
+     * @param style        The style of the element
+     * @param layoutStyle  The layout style of the element
+     * @param parent       The parent element, null if top level element
+     * @param qName        The name of the HTML tag
+     * @param attributes   The attributes of the HTML tag, null for text
+     * @return The created element
+     */
+    Element<S, R> createElement(@NotNull String text, S style, LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes);
 }
