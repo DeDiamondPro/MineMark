@@ -21,6 +21,7 @@ import dev.dediamondpro.minemark.elements.Elements;
 import dev.dediamondpro.minemark.elements.impl.LinkElement;
 import dev.dediamondpro.minemark.elements.impl.ParagraphElement;
 import dev.dediamondpro.minemark.elements.impl.formatting.AlignmentElement;
+import dev.dediamondpro.minemark.elements.impl.formatting.CssStyleElement;
 import dev.dediamondpro.minemark.elements.impl.formatting.FormattingElement;
 import dev.dediamondpro.minemark.elements.impl.list.ListHolderElement;
 import dev.dediamondpro.minemark.elements.impl.table.TableHolderElement;
@@ -78,8 +79,8 @@ public class MineMarkCoreBuilder<S extends Style, R> {
     /**
      * Add a supported element to be used
      *
-     * @param tag         HTML tags the element will be applied to
-     * @param element     An {@link TagBasedElementCreator.BasicElementCreator} of that element
+     * @param tag     HTML tags the element will be applied to
+     * @param element An {@link TagBasedElementCreator.BasicElementCreator} of that element
      */
     public MineMarkCoreBuilder<S, R> addElement(@NotNull String tag, @NotNull TagBasedElementCreator.BasicElementCreator<S, R> element) {
         return addElement(Collections.singletonList(tag), element);
@@ -93,6 +94,50 @@ public class MineMarkCoreBuilder<S extends Style, R> {
      */
     public MineMarkCoreBuilder<S, R> addElement(@NotNull Elements elementName, @NotNull TagBasedElementCreator.BasicElementCreator<S, R> element) {
         return addElement(elementName.tags, element);
+    }
+
+    /**
+     * Add a supported element to be used
+     *
+     * @param position The position the element should be added at
+     * @param element  An {@link ElementCreator} of that element
+     */
+    public MineMarkCoreBuilder<S, R> addElement(int position, @NotNull ElementCreator<S, R> element) {
+        this.elements.add(position, element);
+        return this;
+    }
+
+    /**
+     * Add a supported element to be used
+     *
+     * @param position The position the element should be added at
+     * @param tags     HTML tags the element will be applied to
+     * @param element  An {@link ElementCreator} of that element
+     */
+    public MineMarkCoreBuilder<S, R> addElement(int position, @NotNull List<String> tags, @NotNull TagBasedElementCreator.BasicElementCreator<S, R> element) {
+        return addElement(position, new TagBasedElementCreator<>(tags, element));
+    }
+
+    /**
+     * Add a supported element to be used
+     *
+     * @param position The position the element should be added at
+     * @param tag      HTML tags the element will be applied to
+     * @param element  An {@link TagBasedElementCreator.BasicElementCreator} of that element
+     */
+    public MineMarkCoreBuilder<S, R> addElement(int position, @NotNull String tag, @NotNull TagBasedElementCreator.BasicElementCreator<S, R> element) {
+        return addElement(position, Collections.singletonList(tag), element);
+    }
+
+    /**
+     * Add a supported element to be used
+     *
+     * @param position    The position the element should be added at
+     * @param elementName HTML tags the element will be applied to
+     * @param element     An {@link TagBasedElementCreator.BasicElementCreator} of that element
+     */
+    public MineMarkCoreBuilder<S, R> addElement(int position, @NotNull Elements elementName, @NotNull TagBasedElementCreator.BasicElementCreator<S, R> element) {
+        return addElement(position, elementName.tags, element);
     }
 
     /**
@@ -143,13 +188,15 @@ public class MineMarkCoreBuilder<S extends Style, R> {
             throw new IllegalArgumentException("A text element has to be provided by using \"setTextElement(textElement\"");
         }
         if (withDefaultElements) {
-            addElement(Elements.PARAGRAPH, ParagraphElement::new);
-            addElement(Elements.FORMATTING, FormattingElement::new);
-            addElement(Elements.LINK, LinkElement::new);
-            addElement(Elements.LIST_PARENT, ListHolderElement::new);
-            addElement(Elements.TABLE, TableHolderElement::new);
-            addElement(Elements.TABLE_ROW, TableRowElement::new);
-            addElement(new AlignmentElement.AlignmentElementCreator<>());
+            // Add default (formatting) elements, these are added first so they take priority and their formatting applies properly
+            addElement(0, Elements.PARAGRAPH, ParagraphElement::new);
+            addElement(0, Elements.FORMATTING, FormattingElement::new);
+            addElement(0, Elements.LINK, LinkElement::new);
+            addElement(0, Elements.LIST_PARENT, ListHolderElement::new);
+            addElement(0, Elements.TABLE, TableHolderElement::new);
+            addElement(0, Elements.TABLE_ROW, TableRowElement::new);
+            addElement(0, new AlignmentElement.AlignmentElementCreator<>());
+            addElement(0, new CssStyleElement.CssStyleElementCreator<>());
         }
         return new MineMarkCore<>(textElement, elements, extensions, urlSanitizer);
     }

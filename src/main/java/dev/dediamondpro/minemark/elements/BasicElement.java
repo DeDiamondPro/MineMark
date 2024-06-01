@@ -46,12 +46,13 @@ public abstract class BasicElement<S extends Style, R> extends Element<S, R> {
         float width = getWidth(layoutData, renderData);
         float height = getHeight(layoutData, renderData);
         float padding = getPadding(layoutData, renderData);
-        if ((!(this instanceof Inline) && layoutData.isLineOccupied()) || layoutData.getX() + width > layoutData.getMaxWidth()) {
+        boolean inline = this instanceof Inline && (((Inline) this).isInline());
+        if ((!inline && layoutData.isLineOccupied()) || layoutData.getX() + width > layoutData.getMaxWidth()) {
             layoutData.nextLine();
         }
         layoutData.updatePadding(padding);
         position = layoutData.addElement(layoutStyle.getAlignment(), width, height);
-        if (!(this instanceof Inline) && layoutData.isLineOccupied()) {
+        if (!inline && layoutData.isLineOccupied()) {
             layoutData.nextLine();
         }
     }

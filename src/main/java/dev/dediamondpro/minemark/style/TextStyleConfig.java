@@ -18,16 +18,26 @@
 package dev.dediamondpro.minemark.style;
 
 import java.awt.*;
+import java.util.function.Function;
 
 public class TextStyleConfig {
     private final float defaultFontSize;
     private final Color defaultTextColor;
     private final float padding;
+    /**
+     * Function used to adapt font size from px to the unit the rendering implementation uses
+     */
+    private final Function<Float, Float> adaptFontSize;
 
-    public TextStyleConfig(float defaultFontSize, Color defaultTextColor, float padding) {
+    public TextStyleConfig(float defaultFontSize, Color defaultTextColor, float padding, Function<Float, Float> adaptFontSize) {
         this.defaultFontSize = defaultFontSize;
         this.defaultTextColor = defaultTextColor;
         this.padding = padding;
+        this.adaptFontSize = adaptFontSize;
+    }
+
+    public TextStyleConfig(float defaultFontSize, Color defaultTextColor, float padding) {
+        this(defaultFontSize, defaultTextColor, padding, (size) -> size);
     }
 
     public float getDefaultFontSize() {
@@ -40,5 +50,9 @@ public class TextStyleConfig {
 
     public float getPadding() {
         return padding;
+    }
+
+    public float adaptFontSize(float size) {
+        return adaptFontSize.apply(size);
     }
 }

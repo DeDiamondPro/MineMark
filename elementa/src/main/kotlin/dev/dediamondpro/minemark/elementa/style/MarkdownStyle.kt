@@ -23,6 +23,7 @@ import dev.dediamondpro.minemark.style.*
 import gg.essential.elementa.font.DefaultFonts
 import gg.essential.elementa.font.FontProvider
 import java.awt.Color
+import java.util.function.Function
 
 data class MarkdownStyle @JvmOverloads constructor(
     private val textStyle: MarkdownTextStyle = MarkdownTextStyle(
@@ -64,5 +65,9 @@ data class MarkdownStyle @JvmOverloads constructor(
 }
 
 class MarkdownTextStyle(
-    defaultFontSize: Float, defaultTextColor: Color?, padding: Float, val font: FontProvider
-) : TextStyleConfig(defaultFontSize, defaultTextColor, padding)
+    defaultFontSize: Float,
+    defaultTextColor: Color?,
+    padding: Float,
+    val font: FontProvider,
+    adaptFontSize: Function<Float, Float> = Function { it / 16f }
+) : TextStyleConfig(defaultFontSize, defaultTextColor, padding, adaptFontSize)

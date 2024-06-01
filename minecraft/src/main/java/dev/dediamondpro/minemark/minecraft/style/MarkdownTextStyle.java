@@ -20,12 +20,18 @@ package dev.dediamondpro.minemark.minecraft.style;
 import dev.dediamondpro.minemark.style.TextStyleConfig;
 
 import java.awt.*;
+import java.util.function.Function;
 
 public class MarkdownTextStyle  extends TextStyleConfig {
     private final boolean hasShadow;
 
+    public MarkdownTextStyle(float defaultFontSize, Color defaultTextColor, float padding, boolean hasShadow, Function<Float, Float> adaptFontSize) {
+        super(defaultFontSize, defaultTextColor, padding, adaptFontSize);
+        this.hasShadow = hasShadow;
+    }
+
     public MarkdownTextStyle(float defaultFontSize, Color defaultTextColor, float padding, boolean hasShadow) {
-        super(defaultFontSize, defaultTextColor, padding);
+        super(defaultFontSize, defaultTextColor, padding, (size) -> size / 16f);
         this.hasShadow = hasShadow;
     }
 

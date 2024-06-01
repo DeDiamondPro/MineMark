@@ -40,8 +40,11 @@ public class LinkElement<S extends Style, R> extends ChildBasedElement<S, R> imp
         this.link = attributes != null ? attributes.getValue("href") : null;
         if (link != null) {
             this.layoutStyle = this.layoutStyle.clone();
-            this.layoutStyle.setTextColor(style.getLinkStyle().getTextColor());
             this.layoutStyle.setPartOfLink(true);
+            // Only change the text color if no custom color is active
+            if (style.getTextStyle().getDefaultTextColor().equals(this.layoutStyle.getTextColor())) {
+                this.layoutStyle.setTextColor(style.getLinkStyle().getTextColor());
+            }
         }
     }
 

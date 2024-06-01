@@ -60,7 +60,7 @@ public class MineMarkHtmlParser<S extends Style, R> extends DefaultHandler {
         }
         addText();
         Element<S, R> newElement = createElement(style, currentElement.getLayoutStyle(), currentElement, qName, attributes);
-        currentElement = newElement != null ? newElement : new EmptyElement<>(style, layoutStyle, currentElement, qName, attributes);
+        currentElement = newElement != null ? newElement : new EmptyElement<>(style, currentElement.getLayoutStyle(), currentElement, qName, attributes);
     }
 
     @Override
@@ -140,9 +140,9 @@ public class MineMarkHtmlParser<S extends Style, R> extends DefaultHandler {
 
             if (multipleElement == null) {
                 multipleElement = new SingleTagMultiElement<>(style, layoutStyle, parent, qName, attributes);
-                multipleElement.addElement(elementCreator, style, layoutStyle, qName, attributes);
+                multipleElement.addElement(elementCreator);
             }
-            multipleElement.addElement(element, style, layoutStyle, qName, attributes);
+            multipleElement.addElement(element);
 
         }
         return multipleElement != null ? multipleElement : elementCreator != null ? elementCreator.createElement(style, layoutStyle, parent, qName, attributes) : null;

@@ -33,7 +33,8 @@ public abstract class ChildBasedElement<S extends Style, R> extends Element<S, R
     @Override
     @ApiStatus.Internal
     public void generateLayout(LayoutData layoutData, R renderData) {
-        if (!(this instanceof Inline) && layoutData.isLineOccupied()) {
+        boolean inline = this instanceof Inline && (((Inline) this).isInline());
+        if (!inline && layoutData.isLineOccupied()) {
             layoutData.nextLine();
         }
         float padding = getPadding(layoutData, renderData);
@@ -42,7 +43,7 @@ public abstract class ChildBasedElement<S extends Style, R> extends Element<S, R
             child.generateLayout(layoutData, renderData);
         }
         layoutData.updateBottomSpacing(padding);
-        if (!(this instanceof Inline)) {
+        if (!inline) {
             layoutData.nextLine();
         }
     }

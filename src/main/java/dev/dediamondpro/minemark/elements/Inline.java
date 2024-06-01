@@ -19,4 +19,7 @@ package dev.dediamondpro.minemark.elements;
 
 
 public interface Inline {
+    default boolean isInline() {
+        return true;
+    }
 }

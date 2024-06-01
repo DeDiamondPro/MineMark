@@ -48,10 +48,21 @@ public class SingleTagMultiElement<S extends Style, R> extends Element<S, R> {
     @Override
     public @NotNull ArrayList<Element<S, R>> getChildren() {
         // We return the children of the deepest child so all new elements are added to the deepest child,
-        return deepestChildElement.children;
+        if (deepestChildElement == this) return children;
+        return deepestChildElement.getChildren();
     }
 
-    public void addElement(@NotNull ElementCreator<S, R> elementCreator, S style, LayoutStyle layoutStyle, @NotNull String qName, @Nullable Attributes attributes) {
-        deepestChildElement = elementCreator.createElement(style, layoutStyle, deepestChildElement, qName, attributes);
+    @Override
+    public LayoutStyle getLayoutStyle() {
+        if (deepestChildElement == this) return layoutStyle;
+        return deepestChildElement.getLayoutStyle();
+    }
+
+    public void addElement(@NotNull ElementCreator<S, R> elementCreator) {
+        assert parent != null;
+        Element<S, R> newElement = elementCreator.createElement(style, getLayoutStyle(), parent, qName, attributes);
+        parent.getChildren().remove(newElement);
+        deepestChildElement.getChildren().add(newElement);
+        deepestChildElement = newElement;
     }
 }
