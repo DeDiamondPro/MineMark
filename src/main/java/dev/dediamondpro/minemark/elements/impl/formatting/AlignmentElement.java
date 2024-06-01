@@ -20,6 +20,7 @@ package dev.dediamondpro.minemark.elements.impl.formatting;
 import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.elements.ChildBasedElement;
 import dev.dediamondpro.minemark.elements.Element;
+import dev.dediamondpro.minemark.elements.creators.ElementCreator;
 import dev.dediamondpro.minemark.style.Style;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -49,5 +50,18 @@ public class AlignmentElement<S extends Style, R> extends ChildBasedElement<S, R
     @Override
     public String toString() {
         return "AlignmentElement {" + qName + "}";
+    }
+
+    public static class AlignmentElementCreator<S extends Style, R> implements ElementCreator<S, R> {
+
+        @Override
+        public Element<S, R> createElement(S style, LayoutStyle layoutStyle, @NotNull Element<S, R> parent, @NotNull String qName, @NotNull Attributes attributes) {
+            return new AlignmentElement<>(style, layoutStyle, parent, qName, attributes);
+        }
+
+        @Override
+        public boolean appliesTo(S style, LayoutStyle layoutStyle, @NotNull Element<S, R> parent, @NotNull String qName, @NotNull Attributes attributes) {
+            return qName.equals("center") || (qName.equals("div") && attributes.getValue("align") != null);
+        }
     }
 }

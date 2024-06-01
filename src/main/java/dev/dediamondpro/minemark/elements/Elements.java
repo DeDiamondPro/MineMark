@@ -24,7 +24,6 @@ public enum Elements {
     PARAGRAPH(listOf("p")),
     FORMATTING(listOf("strong", "b", "em", "i", "ins", "u", "del", "s", "pre")),
     HEADING(listOf("h1", "h2", "h3", "h4", "h5", "h6")),
-    ALIGNMENT(listOf("div", "center")),
     LINK(listOf("a")),
     IMAGE(listOf("img")),
     LIST_PARENT(listOf("ol", "ul")),

@@ -18,8 +18,8 @@
 package dev.dediamondpro.minemark;
 
 import dev.dediamondpro.minemark.elements.MineMarkElement;
-import dev.dediamondpro.minemark.elements.loaders.ElementLoader;
-import dev.dediamondpro.minemark.elements.loaders.TextElementLoader;
+import dev.dediamondpro.minemark.elements.creators.ElementCreator;
+import dev.dediamondpro.minemark.elements.creators.TextElementCreator;
 import dev.dediamondpro.minemark.style.Style;
 import org.commonmark.Extension;
 import org.commonmark.node.Node;
@@ -35,7 +35,6 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -57,7 +56,7 @@ public class MineMarkCore<S extends Style, R> {
      * @param extensions   Markdown extensions that should be used when parsing
      * @param urlSanitizer An optional urlSanitizer
      */
-    protected MineMarkCore(TextElementLoader<S, R> textElement, Map<List<String>, ElementLoader<S, R>> elements, Iterable<? extends Extension> extensions, @Nullable UrlSanitizer urlSanitizer) {
+    protected MineMarkCore(TextElementCreator<S, R> textElement, List<ElementCreator<S, R>> elements, Iterable<? extends Extension> extensions, @Nullable UrlSanitizer urlSanitizer) {
         this.markdownParser = Parser.builder().extensions(extensions).build();
         HtmlRenderer.Builder htmlRendererBuilder = HtmlRenderer.builder().extensions(extensions);
         if (urlSanitizer != null) {

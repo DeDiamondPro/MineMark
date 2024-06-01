@@ -20,7 +20,7 @@ package dev.dediamondpro.minemark.elements;
 
 import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.LayoutStyle;
-import dev.dediamondpro.minemark.elements.loaders.ElementLoader;
+import dev.dediamondpro.minemark.elements.creators.ElementCreator;
 import dev.dediamondpro.minemark.style.Style;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,10 +31,10 @@ import java.util.ArrayList;
 /**
  * An element that is used to apply multiple elements to the same HTML tag.
  */
-public class TagMultiElement<S extends Style, R> extends Element<S, R> {
+public class SingleTagMultiElement<S extends Style, R> extends Element<S, R> {
     private Element<S, R> deepestChildElement = this;
 
-    public TagMultiElement(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
+    public SingleTagMultiElement(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
         super(style, layoutStyle, parent, qName, attributes);
     }
 
@@ -47,10 +47,11 @@ public class TagMultiElement<S extends Style, R> extends Element<S, R> {
 
     @Override
     public @NotNull ArrayList<Element<S, R>> getChildren() {
+        // We return the children of the deepest child so all new elements are added to the deepest child,
         return deepestChildElement.children;
     }
 
-    public void addElement(@NotNull ElementLoader<S, R> elementLoader, S style, LayoutStyle layoutStyle, @NotNull String qName, @Nullable Attributes attributes) {
-        deepestChildElement = elementLoader.createElement(style, layoutStyle, deepestChildElement, qName, attributes);
+    public void addElement(@NotNull ElementCreator<S, R> elementCreator, S style, LayoutStyle layoutStyle, @NotNull String qName, @Nullable Attributes attributes) {
+        deepestChildElement = elementCreator.createElement(style, layoutStyle, deepestChildElement, qName, attributes);
     }
 }

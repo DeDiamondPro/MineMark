@@ -25,34 +25,32 @@ import dev.dediamondpro.minemark.elements.impl.formatting.FormattingElement;
 import dev.dediamondpro.minemark.elements.impl.list.ListHolderElement;
 import dev.dediamondpro.minemark.elements.impl.table.TableHolderElement;
 import dev.dediamondpro.minemark.elements.impl.table.TableRowElement;
-import dev.dediamondpro.minemark.elements.loaders.ElementLoader;
-import dev.dediamondpro.minemark.elements.loaders.TextElementLoader;
+import dev.dediamondpro.minemark.elements.creators.ElementCreator;
+import dev.dediamondpro.minemark.elements.creators.TagBasedElementCreator;
+import dev.dediamondpro.minemark.elements.creators.TextElementCreator;
 import dev.dediamondpro.minemark.style.Style;
 import org.commonmark.Extension;
 import org.commonmark.renderer.html.UrlSanitizer;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedHashMap;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MineMarkCoreBuilder<S extends Style, R> {
     protected MineMarkCoreBuilder() {
     }
 
-    private final LinkedHashMap<List<String>, ElementLoader<S, R>> elements = new LinkedHashMap<>();
+    private final ArrayList<ElementCreator<S, R>> elements = new ArrayList<>();
     private final ArrayList<Extension> extensions = new ArrayList<>();
-    private TextElementLoader<S, R> textElement = null;
+    private TextElementCreator<S, R> textElement = null;
     private boolean withDefaultElements = true;
     private UrlSanitizer urlSanitizer = null;
 
     /**
      * Set the text element that should be used.
      *
-     * @param textElement The {@link TextElementLoader} of that text element
+     * @param textElement The {@link TextElementCreator} of that text element
      */
-    public MineMarkCoreBuilder<S, R> setTextElement(@NotNull TextElementLoader<S, R> textElement) {
+    public MineMarkCoreBuilder<S, R> setTextElement(@NotNull TextElementCreator<S, R> textElement) {
         this.textElement = textElement;
         return this;
     }
@@ -60,23 +58,41 @@ public class MineMarkCoreBuilder<S extends Style, R> {
     /**
      * Add a supported element to be used
      *
-     * @param elementName Tags the element should use
-     * @param element     An {@link ElementLoader} of that element
+     * @param element An {@link ElementCreator} of that element
      */
-    public MineMarkCoreBuilder<S, R> addElement(@NotNull Elements elementName, @NotNull ElementLoader<S, R> element) {
-        this.elements.put(elementName.tags, element);
+    public MineMarkCoreBuilder<S, R> addElement(@NotNull ElementCreator<S, R> element) {
+        this.elements.add(element);
         return this;
     }
 
     /**
      * Add a supported element to be used
      *
-     * @param tags    Tags the element should use
-     * @param element An {@link ElementLoader} of that element
+     * @param tags    HTML tags the element will be applied to
+     * @param element An {@link ElementCreator} of that element
      */
-    public MineMarkCoreBuilder<S, R> addElement(@NotNull List<String> tags, @NotNull ElementLoader<S, R> element) {
-        this.elements.put(tags, element);
-        return this;
+    public MineMarkCoreBuilder<S, R> addElement(@NotNull List<String> tags, @NotNull TagBasedElementCreator.BasicElementCreator<S, R> element) {
+        return addElement(new TagBasedElementCreator<>(tags, element));
+    }
+
+    /**
+     * Add a supported element to be used
+     *
+     * @param tag         HTML tags the element will be applied to
+     * @param element     An {@link TagBasedElementCreator.BasicElementCreator} of that element
+     */
+    public MineMarkCoreBuilder<S, R> addElement(@NotNull String tag, @NotNull TagBasedElementCreator.BasicElementCreator<S, R> element) {
+        return addElement(Collections.singletonList(tag), element);
+    }
+
+    /**
+     * Add a supported element to be used
+     *
+     * @param elementName HTML tags the element will be applied to
+     * @param element     An {@link TagBasedElementCreator.BasicElementCreator} of that element
+     */
+    public MineMarkCoreBuilder<S, R> addElement(@NotNull Elements elementName, @NotNull TagBasedElementCreator.BasicElementCreator<S, R> element) {
+        return addElement(elementName.tags, element);
     }
 
     /**
@@ -84,20 +100,10 @@ public class MineMarkCoreBuilder<S extends Style, R> {
      *
      * @param elements A Map with all elements that should be added
      */
-    public MineMarkCoreBuilder<S, R> addElements(@NotNull Map<Elements, ElementLoader<S, R>> elements) {
-        for (Map.Entry<Elements, ElementLoader<S, R>> element : elements.entrySet()) {
-            addElement(element.getKey(), element.getValue());
+    public MineMarkCoreBuilder<S, R> addElements(@NotNull List<ElementCreator<S, R>> elements) {
+        for (ElementCreator<S, R> element : elements) {
+            addElement(element);
         }
-        return this;
-    }
-
-    /**
-     * Add supported elements to be used
-     *
-     * @param elements A Map with all elements that should be added
-     */
-    public MineMarkCoreBuilder<S, R> addElementsString(@NotNull Map<List<String>, ElementLoader<S, R>> elements) {
-        this.elements.putAll(elements);
         return this;
     }
 
@@ -139,11 +145,11 @@ public class MineMarkCoreBuilder<S extends Style, R> {
         if (withDefaultElements) {
             addElement(Elements.PARAGRAPH, ParagraphElement::new);
             addElement(Elements.FORMATTING, FormattingElement::new);
-            addElement(Elements.ALIGNMENT, AlignmentElement::new);
             addElement(Elements.LINK, LinkElement::new);
             addElement(Elements.LIST_PARENT, ListHolderElement::new);
             addElement(Elements.TABLE, TableHolderElement::new);
             addElement(Elements.TABLE_ROW, TableRowElement::new);
+            addElement(new AlignmentElement.AlignmentElementCreator<>());
         }
         return new MineMarkCore<>(textElement, elements, extensions, urlSanitizer);
     }

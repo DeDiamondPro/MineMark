@@ -20,7 +20,7 @@ package dev.dediamondpro.minemark.elements;
 import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.elements.impl.TextElement;
-import dev.dediamondpro.minemark.elements.loaders.ElementLoader;
+import dev.dediamondpro.minemark.elements.creators.ElementCreator;
 import dev.dediamondpro.minemark.style.Style;
 import dev.dediamondpro.minemark.utils.MouseButton;
 import org.jetbrains.annotations.ApiStatus;
@@ -40,7 +40,7 @@ public abstract class Element<S extends Style, R> implements Closeable {
     protected LayoutStyle layoutStyle;
 
     /**
-     * Base Element Constructor used by {@link ElementLoader}
+     * Base Element Constructor used by {@link ElementCreator}
      *
      * @param layoutStyle The configuration used to generate the layout positioning
      * @param parent      Parent element, null in top level element {@link MineMarkElement}
