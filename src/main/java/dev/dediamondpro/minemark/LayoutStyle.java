@@ -18,8 +18,10 @@
 package dev.dediamondpro.minemark;
 
 import dev.dediamondpro.minemark.style.Style;
+import dev.dediamondpro.minemark.utils.StyleType;
 
 import java.awt.*;
+import java.util.HashMap;
 
 /**
  * Class that will be given to an element at parsing time
@@ -36,8 +38,9 @@ public class LayoutStyle {
     private boolean partOfLink;
     private boolean partOfCodeBlock;
     private boolean preFormatted;
+    private final HashMap<StyleType<?>, Object> customStyles;
 
-    public LayoutStyle(Alignment alignment, float fontSize, Color textColor, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean partOfLink, boolean partOfCodeBlock, boolean preFormatted) {
+    public LayoutStyle(Alignment alignment, float fontSize, Color textColor, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean partOfLink, boolean partOfCodeBlock, boolean preFormatted, HashMap<StyleType<?>, Object> customStyles) {
         this.alignment = alignment;
         this.fontSize = fontSize;
         this.textColor = textColor;
@@ -48,14 +51,15 @@ public class LayoutStyle {
         this.preFormatted = preFormatted;
         this.partOfCodeBlock = partOfCodeBlock;
         this.strikethrough = strikethrough;
+        this.customStyles = customStyles;
     }
 
     public LayoutStyle(Style style) {
-        this(Alignment.LEFT, style.getTextStyle().getDefaultFontSize(), style.getTextStyle().getDefaultTextColor(), false, false, false, false, false, false, false);
+        this(Alignment.LEFT, style.getTextStyle().getDefaultFontSize(), style.getTextStyle().getDefaultTextColor(), false, false, false, false, false, false, false, new HashMap<>());
     }
 
     public LayoutStyle clone() {
-        return new LayoutStyle(alignment, fontSize, new Color(textColor.getRGB()), bold, italic, underlined, strikethrough, partOfLink, partOfCodeBlock, preFormatted);
+        return new LayoutStyle(alignment, fontSize, new Color(textColor.getRGB()), bold, italic, underlined, strikethrough, partOfLink, partOfCodeBlock, preFormatted, (HashMap<StyleType<?>, Object>) customStyles.clone());
     }
 
     public Alignment getAlignment() {
@@ -136,6 +140,22 @@ public class LayoutStyle {
 
     public void setPartOfCodeBlock(boolean partOfCodeBlock) {
         this.partOfCodeBlock = partOfCodeBlock;
+    }
+
+    public <T> void put(StyleType<T> styleType, T value) {
+        customStyles.put(styleType, value);
+    }
+
+    public <T> boolean has(StyleType<T> styleType) {
+        return customStyles.containsKey(styleType);
+    }
+
+    public <T> T get(StyleType<T> styleType) {
+        return styleType.getStyleClass().cast(customStyles.get(styleType));
+    }
+
+    public <T> T getOrDefault(StyleType<T> styleType, T defaultValue) {
+        return styleType.getStyleClass().cast(customStyles.getOrDefault(styleType, defaultValue));
     }
 
     public enum Alignment {
