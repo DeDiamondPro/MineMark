@@ -20,9 +20,9 @@ package dev.dediamondpro.minemark;
 import dev.dediamondpro.minemark.elements.Element;
 import dev.dediamondpro.minemark.elements.EmptyElement;
 import dev.dediamondpro.minemark.elements.MineMarkElement;
-import dev.dediamondpro.minemark.elements.SingleTagMultiElement;
 import dev.dediamondpro.minemark.elements.creators.ElementCreator;
 import dev.dediamondpro.minemark.elements.creators.TextElementCreator;
+import dev.dediamondpro.minemark.elements.formatting.FormattingElement;
 import dev.dediamondpro.minemark.style.Style;
 import org.jetbrains.annotations.NotNull;
 import org.xml.sax.Attributes;
@@ -32,6 +32,7 @@ import java.util.List;
 
 public class MineMarkHtmlParser<S extends Style, R> extends DefaultHandler {
     private final List<ElementCreator<S, R>> elements;
+    private final List<FormattingElement<S, R>> formattingElements;
     private final TextElementCreator<S, R> textElementCreator;
     private MineMarkElement<S, R> markDown;
     private Element<S, R> currentElement;
@@ -40,9 +41,10 @@ public class MineMarkHtmlParser<S extends Style, R> extends DefaultHandler {
     private StringBuilder textBuilder = new StringBuilder();
     private boolean isPreFormatted = false;
 
-    protected MineMarkHtmlParser(TextElementCreator<S, R> textElementCreator, List<ElementCreator<S, R>> elements) {
+    protected MineMarkHtmlParser(TextElementCreator<S, R> textElementCreator, List<ElementCreator<S, R>> elements, List<FormattingElement<S, R>> formattingElements) {
         this.textElementCreator = textElementCreator;
         this.elements = elements;
+        this.formattingElements = formattingElements;
     }
 
     @Override
@@ -59,8 +61,29 @@ public class MineMarkHtmlParser<S extends Style, R> extends DefaultHandler {
                 break;
         }
         addText();
-        Element<S, R> newElement = createElement(style, currentElement.getLayoutStyle(), currentElement, qName, attributes);
-        currentElement = newElement != null ? newElement : new EmptyElement<>(style, currentElement.getLayoutStyle(), currentElement, qName, attributes);
+
+        LayoutStyle originalLayoutStyle = currentElement.getLayoutStyle();
+        LayoutStyle layoutStyle = originalLayoutStyle;
+        boolean canBeInline = true;
+        for (FormattingElement<S, R> element : formattingElements) {
+            if (!element.appliesTo(style, layoutStyle, currentElement, qName, attributes)) {
+                continue;
+            }
+            // If a formatting element applies, clone the layout style. This should only be done once
+            if (layoutStyle == originalLayoutStyle) {
+                layoutStyle = layoutStyle.clone();
+            }
+
+            element.applyStyle(style, layoutStyle, currentElement, qName, attributes);
+
+            canBeInline = canBeInline && element.canBeInline(style, layoutStyle, currentElement, qName, attributes);
+        }
+
+        Element<S, R> newElement = createElement(style, layoutStyle, currentElement, qName, attributes);
+        currentElement = newElement != null ? newElement : new EmptyElement<>(style, layoutStyle, currentElement, qName, attributes);
+        if (!canBeInline) {
+            currentElement.setInline(false);
+        }
     }
 
     @Override
@@ -121,31 +144,16 @@ public class MineMarkHtmlParser<S extends Style, R> extends DefaultHandler {
      * @param parent      The parent element, null if top level element
      * @param qName       The name of the HTML tag
      * @param attributes  The attributes of the HTML tag, null for text
-     * @return If only one element applies to the given parameters, return that element,
-     * otherwise return a TagMultiElement with all elements that apply. If no element applies, return null.
+     * @return The first element that applies to the parameters, if none apply returns null
      */
     private Element<S, R> createElement(S style, LayoutStyle layoutStyle, @NotNull Element<S, R> parent, @NotNull String qName, @NotNull Attributes attributes) {
-        ElementCreator<S, R> elementCreator = null;
-        SingleTagMultiElement<S, R> multipleElement = null;
-
         for (ElementCreator<S, R> element : elements) {
             if (!element.appliesTo(style, layoutStyle, parent, qName, attributes)) {
                 continue;
             }
-
-            if (elementCreator == null) {
-                elementCreator = element;
-                continue;
-            }
-
-            if (multipleElement == null) {
-                multipleElement = new SingleTagMultiElement<>(style, layoutStyle, parent, qName, attributes);
-                multipleElement.addElement(elementCreator);
-            }
-            multipleElement.addElement(element);
-
+            return element.createElement(style, layoutStyle, parent, qName, attributes);
         }
-        return multipleElement != null ? multipleElement : elementCreator != null ? elementCreator.createElement(style, layoutStyle, parent, qName, attributes) : null;
+        return null;
     }
 
     protected void setStyle(S style, LayoutStyle layoutStyle) {

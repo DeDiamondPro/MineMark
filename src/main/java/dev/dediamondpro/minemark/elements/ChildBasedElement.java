@@ -20,7 +20,6 @@ package dev.dediamondpro.minemark.elements;
 import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.style.Style;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
@@ -31,21 +30,13 @@ public abstract class ChildBasedElement<S extends Style, R> extends Element<S, R
     }
 
     @Override
-    @ApiStatus.Internal
     public void generateLayout(LayoutData layoutData, R renderData) {
-        boolean inline = this instanceof Inline && (((Inline) this).isInline());
-        if (!inline && layoutData.isLineOccupied()) {
-            layoutData.nextLine();
-        }
         float padding = getPadding(layoutData, renderData);
         layoutData.updateTopSpacing(padding);
         for (Element<S, R> child : children) {
-            child.generateLayout(layoutData, renderData);
+            child.generateLayoutInternal(layoutData, renderData);
         }
         layoutData.updateBottomSpacing(padding);
-        if (!inline) {
-            layoutData.nextLine();
-        }
     }
 
     protected float getPadding(LayoutData layoutData, R renderData) {

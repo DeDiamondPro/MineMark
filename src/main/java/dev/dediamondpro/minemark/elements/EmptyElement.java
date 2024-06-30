@@ -27,7 +27,7 @@ import org.xml.sax.Attributes;
 /**
  * An element that is used when no element is found for an HTML tag
  */
-public class EmptyElement<S extends Style, R> extends Element<S, R> {
+public class EmptyElement<S extends Style, R> extends Element<S, R> implements Inline {
     public EmptyElement(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
         super(style, layoutStyle, parent, qName, attributes);
     }
@@ -35,7 +35,7 @@ public class EmptyElement<S extends Style, R> extends Element<S, R> {
     @Override
     public void generateLayout(LayoutData layoutData, R renderData) {
         for (Element<S, R> child : children) {
-            child.generateLayout(layoutData, renderData);
+            child.generateLayoutInternal(layoutData, renderData);
         }
     }
 }

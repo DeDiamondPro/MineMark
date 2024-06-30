@@ -20,7 +20,7 @@ package dev.dediamondpro.minemark.elementa.elements
 import dev.dediamondpro.minemark.LayoutStyle
 import dev.dediamondpro.minemark.elementa.style.MarkdownStyle
 import dev.dediamondpro.minemark.elements.Element
-import dev.dediamondpro.minemark.elements.impl.formatting.HeadingElement
+import dev.dediamondpro.minemark.elements.impl.HeadingElement
 import gg.essential.elementa.components.UIBlock
 import gg.essential.universal.UMatrixStack
 import org.xml.sax.Attributes

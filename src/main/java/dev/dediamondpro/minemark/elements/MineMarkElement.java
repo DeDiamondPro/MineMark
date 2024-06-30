@@ -74,7 +74,7 @@ public class MineMarkElement<S extends Style, R> extends ChildBasedElement<S, R>
             throw new IllegalArgumentException("Width cannot be zero or negative!");
         }
         if (width != lastWidth) {
-            generateLayout(new LayoutData(width), renderData);
+            generateLayoutInternal(new LayoutData(width), renderData);
             lastWidth = width;
         }
         this.beforeDrawInternal(x, y, mouseX - x, mouseY - y, renderData);

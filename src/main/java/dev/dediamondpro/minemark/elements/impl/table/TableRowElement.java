@@ -71,18 +71,14 @@ public class TableRowElement<S extends Style, R> extends Element<S, R> {
     @Override
     public void generateLayout(LayoutData layoutData, R renderData) {
         if (children.isEmpty()) return;
-        if (layoutData.isLineOccupied()) {
-            layoutData.nextLine();
-        }
         cellWidth = layoutData.getMaxWidth() / (children.isEmpty() ? 1 : children.size());
         cellHeight = 0;
         for (Element<S, R> child : children) {
             LayoutData newLayoutData = new LayoutData(cellWidth);
-            child.generateLayout(newLayoutData, renderData);
+            child.generateLayoutInternal(newLayoutData, renderData);
             cellHeight = Math.max(cellHeight, newLayoutData.getY() + newLayoutData.getCurrentLine().getHeight());
         }
         position = layoutData.addElement(LayoutStyle.Alignment.LEFT, layoutData.getMaxWidth(), cellHeight);
-        layoutData.nextLine();
     }
 }
 

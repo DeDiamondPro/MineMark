@@ -20,6 +20,7 @@ package dev.dediamondpro.minemark;
 import dev.dediamondpro.minemark.elements.MineMarkElement;
 import dev.dediamondpro.minemark.elements.creators.ElementCreator;
 import dev.dediamondpro.minemark.elements.creators.TextElementCreator;
+import dev.dediamondpro.minemark.elements.formatting.FormattingElement;
 import dev.dediamondpro.minemark.style.Style;
 import org.commonmark.Extension;
 import org.commonmark.node.Node;
@@ -51,19 +52,20 @@ public class MineMarkCore<S extends Style, R> {
     private final ReentrantLock parsingLock = new ReentrantLock();
 
     /**
-     * @param textElement  The text element for this core
-     * @param elements     Elements supported to create a layout and render
-     * @param extensions   Markdown extensions that should be used when parsing
-     * @param urlSanitizer An optional urlSanitizer
+     * @param textElement        The text element for this core
+     * @param elements           Elements supported to create a layout and render
+     * @param formattingElements Elements that apply a formatting style
+     * @param extensions         Markdown extensions that should be used when parsing
+     * @param urlSanitizer       An optional urlSanitizer
      */
-    protected MineMarkCore(TextElementCreator<S, R> textElement, List<ElementCreator<S, R>> elements, Iterable<? extends Extension> extensions, @Nullable UrlSanitizer urlSanitizer) {
+    protected MineMarkCore(TextElementCreator<S, R> textElement, List<ElementCreator<S, R>> elements, List<FormattingElement<S, R>> formattingElements, Iterable<? extends Extension> extensions, @Nullable UrlSanitizer urlSanitizer) {
         this.markdownParser = Parser.builder().extensions(extensions).build();
         HtmlRenderer.Builder htmlRendererBuilder = HtmlRenderer.builder().extensions(extensions);
         if (urlSanitizer != null) {
             htmlRendererBuilder.urlSanitizer(urlSanitizer).sanitizeUrls(true);
         }
         this.htmlRenderer = htmlRendererBuilder.build();
-        this.htmlParser = new MineMarkHtmlParser<>(textElement, elements);
+        this.htmlParser = new MineMarkHtmlParser<>(textElement, elements, formattingElements);
         xmlParser = new org.ccil.cowan.tagsoup.Parser();
         xmlParser.setContentHandler(htmlParser);
     }
@@ -71,14 +73,14 @@ public class MineMarkCore<S extends Style, R> {
     /**
      * Parse markdown to an element used to render it
      *
-     * @param markdown The markdown text to parse
+     * @param markdown The Markdown text to parse
      * @param style    The style passed to all elements
      * @param charSet  The charset to use when parsing the markdown
      * @return The parsed markdown element
      * @throws SAXException An exception during SAX parsing
      * @throws IOException  An IOException during parsing
      */
-    public MineMarkElement<S, R> parse(@NotNull S style, @NotNull String markdown, Charset charSet) throws SAXException, IOException {
+    public MineMarkElement<S, R> parse(@NotNull S style, @NotNull String markdown, @NotNull Charset charSet) throws SAXException, IOException {
         Node document = markdownParser.parse(markdown);
         return parseDocument(style, document, charSet);
     }
@@ -86,7 +88,7 @@ public class MineMarkCore<S extends Style, R> {
     /**
      * Parse markdown to an element used to render it
      *
-     * @param markdown The markdown text to parse
+     * @param markdown The Markdown text to parse
      * @param style    The style passed to all elements
      * @return The parsed markdown element
      * @throws SAXException An exception during SAX parsing
@@ -99,14 +101,14 @@ public class MineMarkCore<S extends Style, R> {
     /**
      * Parse markdown to an element used to render it
      *
-     * @param markdown The markdown text to parse
+     * @param markdown The Markdown text to parse
      * @param style    The style passed to all elements
      * @param charSet  The charset to use when parsing the markdown
      * @return The parsed markdown element
      * @throws SAXException An exception during SAX parsing
      * @throws IOException  An IOException during parsing
      */
-    public MineMarkElement<S, R> parse(@NotNull S style, @NotNull Reader markdown, Charset charSet) throws SAXException, IOException {
+    public MineMarkElement<S, R> parse(@NotNull S style, @NotNull Reader markdown, @NotNull Charset charSet) throws SAXException, IOException {
         Node document = markdownParser.parseReader(markdown);
         return parseDocument(style, document, charSet);
     }
@@ -114,7 +116,7 @@ public class MineMarkCore<S extends Style, R> {
     /**
      * Parse markdown to an element used to render it
      *
-     * @param markdown The markdown text to parse
+     * @param markdown The Markdown text to parse
      * @param style    The style passed to all elements
      * @return The parsed markdown element
      * @throws SAXException An exception during SAX parsing
@@ -124,7 +126,7 @@ public class MineMarkCore<S extends Style, R> {
         return parse(style, markdown, StandardCharsets.UTF_8);
     }
 
-    private MineMarkElement<S, R> parseDocument(@NotNull S style, Node document, Charset charSet) throws SAXException, IOException {
+    private MineMarkElement<S, R> parseDocument(@NotNull S style, Node document, @NotNull Charset charSet) throws SAXException, IOException {
         String html = "<minemark>\n" + htmlRenderer.render(document) + "</minemark>";
         // Acquire the lock to make sure this thread is the only one using the parser
         parsingLock.lock();

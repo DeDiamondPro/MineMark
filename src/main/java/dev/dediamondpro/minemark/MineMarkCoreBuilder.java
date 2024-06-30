@@ -18,11 +18,12 @@
 package dev.dediamondpro.minemark;
 
 import dev.dediamondpro.minemark.elements.Elements;
+import dev.dediamondpro.minemark.elements.formatting.FormattingElement;
 import dev.dediamondpro.minemark.elements.impl.LinkElement;
 import dev.dediamondpro.minemark.elements.impl.ParagraphElement;
-import dev.dediamondpro.minemark.elements.impl.formatting.AlignmentElement;
-import dev.dediamondpro.minemark.elements.impl.formatting.CssStyleElement;
-import dev.dediamondpro.minemark.elements.impl.formatting.FormattingElement;
+import dev.dediamondpro.minemark.elements.formatting.impl.AlignmentElement;
+import dev.dediamondpro.minemark.elements.formatting.impl.CssStyleElement;
+import dev.dediamondpro.minemark.elements.formatting.impl.TextFormattingElement;
 import dev.dediamondpro.minemark.elements.impl.list.ListHolderElement;
 import dev.dediamondpro.minemark.elements.impl.table.TableHolderElement;
 import dev.dediamondpro.minemark.elements.impl.table.TableRowElement;
@@ -40,8 +41,10 @@ public class MineMarkCoreBuilder<S extends Style, R> {
     protected MineMarkCoreBuilder() {
     }
 
+    private final ArrayList<FormattingElement<S, R>> formattingElements = new ArrayList<>();
     private final ArrayList<ElementCreator<S, R>> elements = new ArrayList<>();
     private final ArrayList<Extension> extensions = new ArrayList<>();
+    private boolean withDefaultFormattingElements = true;
     private TextElementCreator<S, R> textElement = null;
     private boolean withDefaultElements = true;
     private UrlSanitizer urlSanitizer = null;
@@ -143,11 +146,44 @@ public class MineMarkCoreBuilder<S extends Style, R> {
     /**
      * Add supported elements to be used
      *
-     * @param elements A Map with all elements that should be added
+     * @param elements A List with all elements that should be added
      */
     public MineMarkCoreBuilder<S, R> addElements(@NotNull List<ElementCreator<S, R>> elements) {
         for (ElementCreator<S, R> element : elements) {
             addElement(element);
+        }
+        return this;
+    }
+
+    /**
+     * Add a formatting element to be used
+     *
+     * @param element The formatting element
+     */
+    public MineMarkCoreBuilder<S, R> addFormatingElement(@NotNull FormattingElement<S, R> element) {
+        this.formattingElements.add(element);
+        return this;
+    }
+
+    /**
+     * Add a formatting element to be used
+     *
+     * @param position The position the element should be added at
+     * @param element  The formatting element
+     */
+    public MineMarkCoreBuilder<S, R> addFormatingElement(int position, @NotNull FormattingElement<S, R> element) {
+        this.formattingElements.add(position, element);
+        return this;
+    }
+
+    /**
+     * Add formatting elements to be used
+     *
+     * @param elements A List of formatting elements that should be added
+     */
+    public MineMarkCoreBuilder<S, R> addFormatingElements(@NotNull List<FormattingElement<S, R>> elements) {
+        for (FormattingElement<S, R> element : elements) {
+            addFormatingElement(element);
         }
         return this;
     }
@@ -171,6 +207,14 @@ public class MineMarkCoreBuilder<S extends Style, R> {
     }
 
     /**
+     * Disable default formatting elements
+     */
+    public MineMarkCoreBuilder<S, R> withoutDefaultFormattingElements() {
+        withDefaultFormattingElements = false;
+        return this;
+    }
+
+    /**
      * Make the core use an url sanitizer and enable url sanitization
      *
      * @param urlSanitizer The url sanitizer
@@ -188,16 +232,17 @@ public class MineMarkCoreBuilder<S extends Style, R> {
             throw new IllegalArgumentException("A text element has to be provided by using \"setTextElement(textElement\"");
         }
         if (withDefaultElements) {
-            // Add default (formatting) elements, these are added first so they take priority and their formatting applies properly
-            addElement(0, Elements.PARAGRAPH, ParagraphElement::new);
-            addElement(0, Elements.FORMATTING, FormattingElement::new);
-            addElement(0, Elements.LINK, LinkElement::new);
-            addElement(0, Elements.LIST_PARENT, ListHolderElement::new);
-            addElement(0, Elements.TABLE, TableHolderElement::new);
-            addElement(0, Elements.TABLE_ROW, TableRowElement::new);
-            addElement(0, new AlignmentElement.AlignmentElementCreator<>());
-            addElement(0, new CssStyleElement.CssStyleElementCreator<>());
+            addElement(Elements.PARAGRAPH, ParagraphElement::new);
+            addElement(Elements.LINK, LinkElement::new);
+            addElement(Elements.LIST_PARENT, ListHolderElement::new);
+            addElement(Elements.TABLE, TableHolderElement::new);
+            addElement(Elements.TABLE_ROW, TableRowElement::new);
         }
-        return new MineMarkCore<>(textElement, elements, extensions, urlSanitizer);
+        if (withDefaultFormattingElements) {
+            addFormatingElement(new AlignmentElement<>());
+            addFormatingElement(new CssStyleElement<>());
+            addFormatingElement(new TextFormattingElement<>());
+        }
+        return new MineMarkCore<>(textElement, elements, formattingElements, extensions, urlSanitizer);
     }
 }

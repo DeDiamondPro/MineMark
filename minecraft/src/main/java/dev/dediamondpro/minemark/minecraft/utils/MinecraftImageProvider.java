@@ -24,6 +24,8 @@ import net.minecraft.util.Util;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -43,14 +45,10 @@ public class MinecraftImageProvider implements ImageProvider<MarkdownDynamicImag
                 BufferedImage bufferedImage = ImageIO.read(getInputStream(src));
                 dimensionCallback.accept(new Dimension(bufferedImage.getWidth(), bufferedImage.getHeight()));
 
-                NativeImage image = new NativeImage(bufferedImage.getWidth(), bufferedImage.getHeight(), true);
-                for (int y = 0; y < bufferedImage.getHeight(); y++) {
-                    for (int x = 0; x < bufferedImage.getWidth(); x++) {
-                        image.setColor(x, y, bufferedImage.getRGB(x, y));
-                    }
-                }
-
-                imageCallback.accept(MarkdownDynamicImage.of(image));
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                ImageIO.write(bufferedImage, "png", out);
+                NativeImage nativeImage = NativeImage.read(new ByteArrayInputStream(out.toByteArray()));
+                imageCallback.accept(MarkdownDynamicImage.of(nativeImage));
             } catch (IOException e) {
                 e.printStackTrace();
             }

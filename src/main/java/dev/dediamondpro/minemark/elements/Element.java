@@ -31,6 +31,9 @@ import org.xml.sax.Attributes;
 import java.io.Closeable;
 import java.util.ArrayList;
 
+/**
+ * Base class for an element that should render content, only one can apply per HTML tag.
+ */
 public abstract class Element<S extends Style, R> implements Closeable {
     protected final @Nullable Element<S, R> parent;
     protected final ArrayList<Element<S, R>> children = new ArrayList<>();
@@ -38,6 +41,7 @@ public abstract class Element<S extends Style, R> implements Closeable {
     protected final Attributes attributes;
     protected final S style;
     protected LayoutStyle layoutStyle;
+    protected boolean isInline = (this instanceof Inline) && ((Inline) this).isInline();
 
     /**
      * Base Element Constructor used by {@link ElementCreator}
@@ -87,10 +91,23 @@ public abstract class Element<S extends Style, R> implements Closeable {
     }
 
     /**
-     * Internal method for generating the layout of this element, should never be used directly.
+     * Internal method for doing layout generation and handling if this element is inline or not.
      */
     @ApiStatus.Internal
-    public abstract void generateLayout(LayoutData layoutData, R renderData);
+    public void generateLayoutInternal(LayoutData layoutData, R renderData) {
+        if (!isInline && layoutData.isLineOccupied()) {
+            layoutData.nextLine();
+        }
+        generateLayout(layoutData, renderData);
+        if (!isInline && layoutData.isLineOccupied()) {
+            layoutData.nextLine();
+        }
+    }
+
+    /**
+     * Method for generating the layout of this element, should never be used directly.
+     */
+    protected abstract void generateLayout(LayoutData layoutData, R renderData);
 
     /**
      * Call this method to regenerate the layout of all associated elements
@@ -137,5 +154,9 @@ public abstract class Element<S extends Style, R> implements Closeable {
 
     public LayoutStyle getLayoutStyle() {
         return layoutStyle;
+    }
+
+    public void setInline(boolean inline) {
+        this.isInline = inline;
     }
 }

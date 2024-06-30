@@ -20,7 +20,6 @@ package dev.dediamondpro.minemark.elements;
 import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.style.Style;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
@@ -41,20 +40,15 @@ public abstract class BasicElement<S extends Style, R> extends Element<S, R> {
     }
 
     @Override
-    @ApiStatus.Internal
     public void generateLayout(LayoutData layoutData, R renderData) {
         float width = getWidth(layoutData, renderData);
         float height = getHeight(layoutData, renderData);
         float padding = getPadding(layoutData, renderData);
-        boolean inline = this instanceof Inline && (((Inline) this).isInline());
-        if ((!inline && layoutData.isLineOccupied()) || layoutData.getX() + width > layoutData.getMaxWidth()) {
+        if (layoutData.getX() + width > layoutData.getMaxWidth()) {
             layoutData.nextLine();
         }
         layoutData.updatePadding(padding);
         position = layoutData.addElement(layoutStyle.getAlignment(), width, height);
-        if (!inline && layoutData.isLineOccupied()) {
-            layoutData.nextLine();
-        }
     }
 
     protected abstract void drawElement(float x, float y, float width, float height, R renderData);

@@ -44,7 +44,6 @@ public class MarkdownDynamicImage implements Closeable {
     public static MarkdownDynamicImage of(NativeImage image) throws IOException {
         NativeImageBackedTexture texture = new NativeImageBackedTexture(image);
         Identifier identifier = MinecraftClient.getInstance().getTextureManager().registerDynamicTexture("minemark", texture);
-        System.out.println("Created dynamic image " + identifier);
         return new MarkdownDynamicImage(identifier);
     }
 }

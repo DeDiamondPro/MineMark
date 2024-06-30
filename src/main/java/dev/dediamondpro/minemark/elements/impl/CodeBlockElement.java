@@ -21,6 +21,7 @@ import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.elements.ChildMovingElement;
 import dev.dediamondpro.minemark.elements.Element;
+import dev.dediamondpro.minemark.elements.Inline;
 import dev.dediamondpro.minemark.style.Style;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +30,7 @@ import org.xml.sax.Attributes;
 
 import java.awt.*;
 
-public abstract class CodeBlockElement<S extends Style, R> extends ChildMovingElement<S, R> {
+public abstract class CodeBlockElement<S extends Style, R> extends ChildMovingElement<S, R> implements Inline {
     protected final CodeBlockType codeBlockType;
 
     public CodeBlockElement(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
@@ -77,6 +78,11 @@ public abstract class CodeBlockElement<S extends Style, R> extends ChildMovingEl
     @Override
     protected MarkerType getMarkerType() {
         return MarkerType.BLOCK;
+    }
+
+    @Override
+    public boolean isInline() {
+        return codeBlockType == CodeBlockType.INLINE;
     }
 
     public enum CodeBlockType {

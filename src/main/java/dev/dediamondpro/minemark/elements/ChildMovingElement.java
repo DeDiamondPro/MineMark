@@ -41,7 +41,6 @@ public abstract class ChildMovingElement<S extends Style, R> extends Element<S, 
     }
 
     @Override
-    @ApiStatus.Internal
     public void generateLayout(LayoutData layoutData, R renderData) {
         if (layoutData.isLineOccupied()) {
             layoutData.nextLine();
@@ -91,7 +90,7 @@ public abstract class ChildMovingElement<S extends Style, R> extends Element<S, 
 
     protected void generateNewLayout(LayoutData layoutData, R renderData) {
         for (Element<S, R> child : children) {
-            child.generateLayout(layoutData, renderData);
+            child.generateLayoutInternal(layoutData, renderData);
         }
     }
 
