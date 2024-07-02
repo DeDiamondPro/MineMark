@@ -146,6 +146,10 @@ public class LayoutStyle {
         customStyles.put(styleType, value);
     }
 
+    public <T> void remove(StyleType<T> styleType) {
+        customStyles.remove(styleType);
+    }
+
     public <T> boolean has(StyleType<T> styleType) {
         return customStyles.containsKey(styleType);
     }

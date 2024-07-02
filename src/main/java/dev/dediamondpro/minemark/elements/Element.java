@@ -61,9 +61,17 @@ public abstract class Element<S extends Style, R> implements Closeable {
     }
 
     /**
+     * Called when an element is ended and all children are created.
+     */
+    @ApiStatus.OverrideOnly
+    public void complete() {
+
+    }
+
+    /**
      * Internal method for drawing an element, should never be used directly.
      */
-    @ApiStatus.Internal
+    @ApiStatus.OverrideOnly
     public void drawInternal(float xOffset, float yOffset, float mouseX, float mouseY, R renderData){
         for (Element<S, R> child : children) {
             child.drawInternal(xOffset, yOffset, mouseX, mouseY, renderData);
@@ -73,7 +81,7 @@ public abstract class Element<S extends Style, R> implements Closeable {
     /**
      * Internal method called before drawing an element, should never be used directly.
      */
-    @ApiStatus.Internal
+    @ApiStatus.OverrideOnly
     public void beforeDrawInternal(float xOffset, float yOffset, float mouseX, float mouseY, R renderData) {
         for (Element<S, R> child : children) {
             child.beforeDrawInternal(xOffset, yOffset, mouseX, mouseY, renderData);
@@ -83,7 +91,7 @@ public abstract class Element<S extends Style, R> implements Closeable {
     /**
      * Internal method for called when the mouse is clicked, should never be used directly.
      */
-    @ApiStatus.Internal
+    @ApiStatus.OverrideOnly
     public void onMouseClickedInternal(MouseButton button, float mouseX, float mouseY) {
         for (Element<S, R> child : children) {
             child.onMouseClickedInternal(button, mouseX, mouseY);
@@ -131,7 +139,10 @@ public abstract class Element<S extends Style, R> implements Closeable {
 
     /**
      * Build a tree of elements for debugging purposes
+     * <p>
+     * Use {@link MineMarkElement#getTree()} to get the full tree
      */
+    @ApiStatus.Internal
     public String buildTree(int depth) {
         StringBuilder builder = new StringBuilder();
         builder.append(this);
