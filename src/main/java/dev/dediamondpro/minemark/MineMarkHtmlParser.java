@@ -97,6 +97,7 @@ public class MineMarkHtmlParser<S extends Style, R> extends DefaultHandler {
                 break;
         }
         addText();
+        currentElement.complete();
         currentElement = currentElement.getParent();
     }
 
