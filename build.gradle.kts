@@ -21,7 +21,7 @@ plugins {
 }
 
 group = "dev.dediamondpro"
-version = "1.2.2+localtest"
+version = "1.2.2"
 
 repositories {
     mavenCentral()
