@@ -36,6 +36,7 @@ import net.minecraft.client.gui.DrawContext;
 //#endif
 
 import java.io.IOException;
+import java.io.Reader;
 
 public class MineMarkDrawable {
     public static final MineMarkCore<MarkdownStyle, MarkdownRenderer> DEFAULT_CORE = addMinecraftExtensions(MineMarkCore.builder())
@@ -57,6 +58,18 @@ public class MineMarkDrawable {
     }
 
     public MineMarkDrawable(String markdown) throws IOException, SAXException {
+        this(markdown, new MarkdownStyle());
+    }
+
+    public MineMarkDrawable(Reader markdown, MarkdownStyle style, MineMarkCore<MarkdownStyle, MarkdownRenderer> core) throws IOException, SAXException {
+        this(core.parse(style, markdown));
+    }
+
+    public MineMarkDrawable(Reader markdown, MarkdownStyle style) throws IOException, SAXException {
+        this(markdown, style, DEFAULT_CORE);
+    }
+
+    public MineMarkDrawable(Reader markdown) throws IOException, SAXException {
         this(markdown, new MarkdownStyle());
     }
 

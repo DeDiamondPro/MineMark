@@ -30,17 +30,26 @@ import gg.essential.elementa.dsl.pixels
 import gg.essential.universal.UMatrixStack
 import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension
 import org.commonmark.ext.gfm.tables.TablesExtension
+import java.io.Reader
 
 
 /**
  * A component to rendering markdown powered by MineMark
  */
-class MineMarkComponent(
-    markdown: String,
-    style: MarkdownStyle = MarkdownStyle(),
-    core: MineMarkCore<MarkdownStyle, UMatrixStack> = defaultCore
-) : UIComponent() {
-    val parsedMarkdown: MineMarkElement<MarkdownStyle, UMatrixStack> = core.parse(style, markdown).apply {
+class MineMarkComponent(markdown: MineMarkElement<MarkdownStyle, UMatrixStack>) : UIComponent() {
+    constructor(
+        markdown: String,
+        style: MarkdownStyle = MarkdownStyle(),
+        core: MineMarkCore<MarkdownStyle, UMatrixStack> = defaultCore
+    ) : this(core.parse(style, markdown))
+
+    constructor(
+        markdown: Reader,
+        style: MarkdownStyle = MarkdownStyle(),
+        core: MineMarkCore<MarkdownStyle, UMatrixStack> = defaultCore
+    ) : this(core.parse(style, markdown))
+
+    val parsedMarkdown: MineMarkElement<MarkdownStyle, UMatrixStack> = markdown.apply {
         addLayoutCallback(this@MineMarkComponent::layoutCallback)
     }
 
