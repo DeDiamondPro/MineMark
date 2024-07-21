@@ -163,8 +163,20 @@ public abstract class Element<S extends Style, R> implements Closeable {
         return children;
     }
 
+    public S getStyle() {
+        return style;
+    }
+
     public LayoutStyle getLayoutStyle() {
         return layoutStyle;
+    }
+
+    public String getQName() {
+        return qName;
+    }
+
+    public Attributes getAttributes() {
+        return attributes;
     }
 
     public void setInline(boolean inline) {
