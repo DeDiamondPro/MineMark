@@ -37,6 +37,7 @@ public class MineMarkHtmlParser<S extends Style, R> extends DefaultHandler {
     private MineMarkElement<S, R> markDown;
     private Element<S, R> currentElement;
     private LayoutStyle layoutStyle;
+    private String wrapper = "minemark";
     private S style;
     private StringBuilder textBuilder = new StringBuilder();
     private boolean isPreFormatted = false;
@@ -50,15 +51,16 @@ public class MineMarkHtmlParser<S extends Style, R> extends DefaultHandler {
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         switch (qName) {
-            case "minemark":
-                currentElement = markDown = new MineMarkElement<>(style, layoutStyle, attributes);
-                return;
             case "br":
                 textBuilder.append("\n");
                 return;
             case "pre":
                 isPreFormatted = true;
                 break;
+        }
+        if (qName.equals(wrapper)) {
+            currentElement = markDown = new MineMarkElement<>(style, layoutStyle, attributes);
+            return;
         }
         addText();
 
@@ -89,7 +91,6 @@ public class MineMarkHtmlParser<S extends Style, R> extends DefaultHandler {
     @Override
     public void endElement(String uri, String localName, String qName) {
         switch (qName) {
-            case "minemark":
             case "br":
                 return;
             case "pre":
@@ -98,6 +99,9 @@ public class MineMarkHtmlParser<S extends Style, R> extends DefaultHandler {
         }
         addText();
         currentElement.complete();
+        if (qName.equals(wrapper)) {
+            return; // We are done parsing
+        }
         currentElement = currentElement.getParent();
     }
 
@@ -160,6 +164,10 @@ public class MineMarkHtmlParser<S extends Style, R> extends DefaultHandler {
     protected void setStyle(S style, LayoutStyle layoutStyle) {
         this.style = style;
         this.layoutStyle = layoutStyle;
+    }
+
+    protected void setWrapper(String wrapper) {
+        this.wrapper = wrapper;
     }
 
     protected MineMarkElement<S, R> getParsedResult() {

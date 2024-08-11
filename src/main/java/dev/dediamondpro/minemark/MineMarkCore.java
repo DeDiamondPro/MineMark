@@ -140,12 +140,15 @@ public class MineMarkCore<S extends Style, R> {
         String html = htmlRenderer.render(document);
         // Remove the markdown activation part
         html = ACTIVATION_PATTERN.matcher(html).replaceFirst("");
+        // Get the wrapper to wrap the content with, make sure the html does not include it
+        String wrapper = getMineMarkWrapper(html);
         // Prepare the HTML for parsing
-        html = "<minemark>\n" + html + "</minemark>";
+        html = "<" + wrapper + ">" + html + "</" + wrapper + ">";
         // Acquire the lock to make sure this thread is the only one using the parser
         parsingLock.lock();
         try (InputStream stream = new ByteArrayInputStream(html.getBytes(charSet))) {
             htmlParser.setStyle(style, new LayoutStyle(style));
+            htmlParser.setWrapper(wrapper);
             InputSource source = new InputSource(stream);
             source.setEncoding(charSet.name());
             xmlParser.parse(source);
@@ -154,6 +157,16 @@ public class MineMarkCore<S extends Style, R> {
             htmlParser.cleanUp();
             parsingLock.unlock();
         }
+    }
+
+    private String getMineMarkWrapper(String html) {
+        String wrapper = "minemark";
+        int num = 0;
+        while (html.contains(wrapper)) {
+            wrapper = "minemark-" + num;
+            num++;
+        }
+        return wrapper;
     }
 
     /**
