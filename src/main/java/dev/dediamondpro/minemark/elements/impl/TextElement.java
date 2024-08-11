@@ -31,8 +31,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public abstract class TextElement<S extends Style, R> extends Element<S, R> implements Inline {
+    protected final Pattern LEADING_WHITESPACE = Pattern.compile("^ +");
     protected final HashMap<LayoutData.MarkDownElementPosition, String> lines = new HashMap<>();
     protected final String text;
     protected float baseLineHeight;
@@ -48,18 +50,10 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
     public void generateLayout(LayoutData layoutData, R renderData) {
         lines.clear();
         ArrayList<String> allLines = new ArrayList<>();
-        String actualText = text;
-        if (!getLayoutStyle().isPreFormatted()) {
-            actualText = actualText.replaceAll(" +", " ");
-        }
-        String[] predefinedLines = actualText.split("\n", -1);
+        String[] predefinedLines = text.split("\n", -1);
         for (int i = 0; i < predefinedLines.length; i++) {
             String line = predefinedLines[i].replace("\n", "");
-            if (layoutStyle.isPreFormatted()) {
-                allLines.add(line);
-            } else {
-                allLines.addAll(wrapText(line, i == 0 ? layoutData.getX() : 0f, layoutData.getMaxWidth(), renderData));
-            }
+            allLines.addAll(wrapText(line, i == 0 ? layoutData.getX() : 0f, layoutData.getMaxWidth(), renderData));
         }
         float codeBlockPadding = layoutStyle.isPartOfCodeBlock() ? style.getCodeBlockStyle().getInlinePaddingTopBottom() : 0f;
         float padding = Math.max(style.getTextStyle().getPadding(), codeBlockPadding);
@@ -115,8 +109,14 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
 
         String[] words = text.split("(?= )");
         float actualMaxWidth = maxWidth - startX;
+        boolean firstOfLine = actualMaxWidth == maxWidth;
         for (String word : words) {
             word = word.replace('\u00A0', ' ');
+            // If this is the first word on the line, replace all leading whitespace chars (unless this is preformatted)
+            if (firstOfLine && !layoutStyle.isPreFormatted()) {
+                word = LEADING_WHITESPACE.matcher(word).replaceAll("");
+                firstOfLine = false;
+            }
             if (getAdjustedTextWidth(currentLine + word, fontSize, renderData) <= actualMaxWidth) {
                 currentLine.append(word);
             } else {
@@ -124,7 +124,8 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
                 if (!finishedText.isEmpty() || actualMaxWidth != maxWidth) {
                     lines.add(finishedText);
                 }
-                String cleanedWord = word.replaceAll("^ ", "");
+                // This is the first word after wrapping, replace all leading whitespace chars
+                String cleanedWord = LEADING_WHITESPACE.matcher(word).replaceAll("");
                 currentLine = new StringBuilder();
                 actualMaxWidth = maxWidth;
                 if (getAdjustedTextWidth(cleanedWord, fontSize, renderData) > actualMaxWidth) {

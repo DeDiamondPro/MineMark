@@ -22,7 +22,7 @@ import dev.dediamondpro.minemark.elements.creators.ElementCreator;
 import dev.dediamondpro.minemark.elements.creators.TextElementCreator;
 import dev.dediamondpro.minemark.elements.formatting.FormattingElement;
 import dev.dediamondpro.minemark.style.Style;
-import dev.dediamondpro.minemark.utils.PrefixedReader;
+import dev.dediamondpro.minemark.utils.HtmlWhiteSpaceUtil;
 import org.commonmark.Extension;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
@@ -38,7 +38,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.regex.Pattern;
 
 /**
  * Class responsible for integrating parsing, layout and rendering
@@ -47,7 +46,6 @@ import java.util.regex.Pattern;
  * @param <R> The class passed to the rendering implementation at render time
  */
 public class MineMarkCore<S extends Style, R> {
-    private static final Pattern ACTIVATION_PATTERN = Pattern.compile("<minemark-activator>.*?</minemark-activator>", Pattern.DOTALL);
     private final Parser markdownParser;
     private final HtmlRenderer htmlRenderer;
     private final MineMarkHtmlParser<S, R> htmlParser;
@@ -69,8 +67,8 @@ public class MineMarkCore<S extends Style, R> {
         }
         this.htmlRenderer = htmlRendererBuilder.build();
         this.htmlParser = new MineMarkHtmlParser<>(textElement, elements, formattingElements);
-        xmlParser = new org.ccil.cowan.tagsoup.Parser();
-        xmlParser.setContentHandler(htmlParser);
+        this.xmlParser = new org.ccil.cowan.tagsoup.Parser();
+        this.xmlParser.setContentHandler(htmlParser);
     }
 
     /**
@@ -84,9 +82,6 @@ public class MineMarkCore<S extends Style, R> {
      * @throws IOException  An IOException during parsing
      */
     public MineMarkElement<S, R> parse(@NotNull S style, @NotNull String markdown, @NotNull Charset charSet) throws SAXException, IOException {
-        // Trick the markdown renderer to activate early,
-        // this makes it so some problematic whitespaces are handled for us
-        markdown = "<minemark-activator>\n\n**MineMark-activation**\n\n</minemark-activator>" + markdown;
         Node document = markdownParser.parse(markdown);
         return parseDocument(style, document, charSet);
     }
@@ -115,9 +110,6 @@ public class MineMarkCore<S extends Style, R> {
      * @throws IOException  An IOException during parsing
      */
     public MineMarkElement<S, R> parse(@NotNull S style, @NotNull Reader markdown, @NotNull Charset charSet) throws SAXException, IOException {
-        // Trick the markdown renderer to activate early,
-        // this makes it so some problematic whitespaces are handled for us
-        markdown = new PrefixedReader("<minemark-activator>\n\n**MineMark-activation**\n\n</minemark-activator>", markdown);
         Node document = markdownParser.parseReader(markdown);
         return parseDocument(style, document, charSet);
     }
@@ -138,12 +130,12 @@ public class MineMarkCore<S extends Style, R> {
     private MineMarkElement<S, R> parseDocument(@NotNull S style, Node document, @NotNull Charset charSet) throws SAXException, IOException {
         // Render the document to HTML
         String html = htmlRenderer.render(document);
-        // Remove the markdown activation part
-        html = ACTIVATION_PATTERN.matcher(html).replaceFirst("");
         // Get the wrapper to wrap the content with, make sure the html does not include it
         String wrapper = getMineMarkWrapper(html);
         // Prepare the HTML for parsing
         html = "<" + wrapper + ">" + html + "</" + wrapper + ">";
+        // Remove unnecessary whitespaces from the html
+        html = HtmlWhiteSpaceUtil.INSTANCE.removeUnnecessaryWhiteSpace(html);
         // Acquire the lock to make sure this thread is the only one using the parser
         parsingLock.lock();
         try (InputStream stream = new ByteArrayInputStream(html.getBytes(charSet))) {

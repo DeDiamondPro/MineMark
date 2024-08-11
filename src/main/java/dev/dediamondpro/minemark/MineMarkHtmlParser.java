@@ -107,31 +107,26 @@ public class MineMarkHtmlParser<S extends Style, R> extends DefaultHandler {
 
     @Override
     public void characters(char[] ch, int start, int length) {
-        // All newlines are ignored unless this element is preformatted
-        int newLength = length;
-        if (isPreFormatted) {
-            if (ch[start] == '\n') {
-                newLength--;
-            }
-            if (ch[start + length - 1] == '\n') {
-                newLength--;
-            }
-        } else {
+        // Remove leading and trailing newlines
+        if (length > 0 && ch[start] == '\n') {
+            start++;
+            length--;
+        }
+        if (length > 0 && ch[start + length - 1] == '\n') {
+            length--;
+        }
+        // Replace all other newlines with a space if the current text isn't preformatted
+        if (!isPreFormatted) {
             for (int i = start; i < start + length; i++) {
                 if (ch[i] == '\n') {
-                    newLength--;
+                    ch[i] = ' ';
                 }
             }
         }
 
-        char[] modifiedCh = new char[newLength];
-        int index = 0;
-        for (int i = start; i < start + length; i++) {
-            if (ch[i] != '\n' || (isPreFormatted && i != start && i != start + length - 1)) {
-                modifiedCh[index++] = ch[i];
-            }
+        if (length > 0) {
+            textBuilder.append(ch, start, length);
         }
-        textBuilder.append(modifiedCh);
     }
 
     private void addText() {
