@@ -25,4 +25,4 @@ include(":elementa")
 includeBuild("minecraft")
 includeBuild(".")
 
-rootProject.name = "MineMark"
+rootProject.name = "minemark"

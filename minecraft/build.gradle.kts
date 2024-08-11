@@ -121,7 +121,7 @@ dependencies {
         "neoForge"("net.neoforged:neoforge:$neoforgeVersion")
     }
 
-    api("dev.dediamondpro:MineMark")
+    implementation("dev.dediamondpro:minemark:${mod_version}")
     implementation(libs.commonmark.ext.striketrough)
     implementation(libs.commonmark.ext.tables)
 }
