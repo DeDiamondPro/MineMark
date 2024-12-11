@@ -160,14 +160,11 @@ tasks {
         inputs.properties(properties)
         filesMatching(listOf("fabric.mod.json", "META-INF/mods.toml")) {
             expand(properties)
-            if (!loadExampleMod) filter {
-                it.replace("\"com.example.examplemod.ExampleMod\"", "")
-            }
         }
         if (modPlatform.isFabric || !loadExampleMod) {
             exclude("META-INF/mods.toml", "pack.mcmeta")
         }
-        if (modPlatform.isForgeLike) {
+        if (modPlatform.isForgeLike || !loadExampleMod) {
             exclude("fabric.mod.json")
         }
     }
