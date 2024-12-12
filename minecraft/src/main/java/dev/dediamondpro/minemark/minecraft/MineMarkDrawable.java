@@ -38,7 +38,7 @@ import net.minecraft.client.gui.DrawContext;
 import java.io.IOException;
 import java.io.Reader;
 
-public class MineMarkDrawable {
+public class MineMarkDrawable implements AutoCloseable {
     public static final MineMarkCore<MarkdownStyle, MarkdownRenderer> DEFAULT_CORE = addMinecraftExtensions(MineMarkCore.builder())
             .addExtension(StrikethroughExtension.create())
             .addExtension(TablesExtension.create())

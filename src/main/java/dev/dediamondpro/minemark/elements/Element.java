@@ -28,13 +28,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
 
-import java.io.Closeable;
 import java.util.ArrayList;
 
 /**
  * Base class for an element that should render content, only one can apply per HTML tag.
  */
-public abstract class Element<S extends Style, R> implements Closeable {
+public abstract class Element<S extends Style, R> implements AutoCloseable {
     protected final @Nullable Element<S, R> parent;
     protected final ArrayList<Element<S, R>> children = new ArrayList<>();
     protected final String qName;
