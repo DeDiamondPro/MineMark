@@ -35,7 +35,8 @@ public abstract class BasicElement<S extends Style, R> extends Element<S, R> {
     public void drawInternal(float xOffset, float yOffset, float mouseX, float mouseY, R renderData) {
         drawElement(
                 position.getX() + xOffset, position.getY() + yOffset,
-                position.getWidth(), position.getHeight(), renderData
+                position.getWidth(), position.getHeight(),
+                mouseX, mouseY, renderData
         );
     }
 
@@ -51,7 +52,7 @@ public abstract class BasicElement<S extends Style, R> extends Element<S, R> {
         position = layoutData.addElement(layoutStyle.getAlignment(), width, height);
     }
 
-    protected abstract void drawElement(float x, float y, float width, float height, R renderData);
+    protected abstract void drawElement(float x, float y, float width, float height, float mouseX, float mouseY, R renderData);
 
     protected abstract float getWidth(LayoutData layoutData, R renderData);
 

@@ -73,7 +73,7 @@ public abstract class ImageElement<S extends Style, R, I> extends BasicElement<S
     }
 
     @Override
-    protected void drawElement(float x, float y, float width, float height, R renderData) {
+    protected void drawElement(float x, float y, float width, float height, float mouseX, float mouseY, R renderData) {
         if (image == null) return;
         drawImage(image, x, y, width, height, renderData);
     }

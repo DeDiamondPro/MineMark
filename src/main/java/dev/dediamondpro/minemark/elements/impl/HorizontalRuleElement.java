@@ -35,7 +35,7 @@ public abstract class HorizontalRuleElement<S extends Style, R> extends BasicEle
     }
 
     @Override
-    protected void drawElement(float x, float y, float width, float height, R renderData) {
+    protected void drawElement(float x, float y, float width, float height, float mouseX, float mouseY, R renderData) {
         drawLine(x, y, width, height, style.getHorizontalRuleStyle().getColor(), renderData);
     }
 
