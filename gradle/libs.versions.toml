@@ -9,6 +9,9 @@ jetbrains_annotations = "24.0.0"
 # Elementa
 elementa = "619"
 
+# PolyUI
+polyui = "1.7.29"
+
 [libraries]
 # Commonmark
 commonmark = { module = "org.commonmark:commonmark", version.ref = "commonmark" }
@@ -23,3 +26,6 @@ jetbrains_annotations = { module = "org.jetbrains:annotations", version.ref = "j
 
 # Elementa
 elementa = { module = "gg.essential:elementa-1.8.9-forge", version.ref = "elementa" }
+
+# PolyUI
+polyui = { module = "org.polyfrost:polyui", version.ref = "polyui" }

@@ -94,6 +94,16 @@ public class MineMarkElement<S extends Style, R> extends ChildBasedElement<S, R>
     }
 
     /**
+     * Function to see if this element needs to regenerate its layout
+     *
+     * @param width The width the element should draw at
+     * @return If the current layout is out of date and needs to be regenerated
+     */
+    public boolean needsLayoutRegeneration(float width) {
+        return width != lastWidth;
+    }
+
+    /**
      * Method to call if you want the layout to regenerate the next time
      * {@link MineMarkElement#beforeDraw(float, float, float, float, float, Object)} is called.
      */

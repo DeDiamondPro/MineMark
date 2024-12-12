@@ -15,15 +15,18 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-dependencyResolutionManagement {
-    versionCatalogs {
-        create("libs")
+package dev.dediamondpro.minemark.polyui
+
+import dev.dediamondpro.minemark.providers.ImageProvider
+import org.polyfrost.polyui.data.PolyImage
+import java.util.function.Consumer
+
+object MarkdownImageProvider : ImageProvider<PolyImage> {
+    override fun getImage(
+        src: String,
+        dimensionCallback: Consumer<ImageProvider.Dimension>,
+        imageCallback: Consumer<PolyImage>,
+    ) {
+        imageCallback.accept(PolyImage(src))
     }
 }
-
-include(":elementa")
-include(":polyui")
-includeBuild("minecraft")
-includeBuild(".")
-
-rootProject.name = "minemark"
