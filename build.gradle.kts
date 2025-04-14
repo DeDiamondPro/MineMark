@@ -36,62 +36,81 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-//tasks {
-//    register("chiseledBuild") {
-//        project.subprojects.forEach { subProject ->
-//            if (!subProject.name.contains("minecraft")) {
-//                dependsOn(subProject.tasks.named("build"))
-//            }
-//        }
-//    }
-//}
+tasks {
+    register("chiseledBuild") {
+        project.allprojects.forEach { subProject ->
+            if (!subProject.name.contains("minecraft")) {
+                dependsOn(subProject.tasks.named("build"))
+            }
+        }
+    }
+    register("chiseledPublish") {
+        project.allprojects.forEach { subProject ->
+            if (!subProject.name.contains("minecraft")) {
+                dependsOn(subProject.tasks.named("publish"))
+            }
+        }
+    }
+    register("chiseledPublishToMavenLocal") {
+        project.allprojects.forEach { subProject ->
+            if (!subProject.name.contains("minecraft")) {
+                dependsOn(subProject.tasks.named("publishToMavenLocal"))
+            }
+        }
+    }
+}
 
-//allprojects {
-//    apply(plugin = "java-library")
-//    apply(plugin = "maven-publish")
-//
-//    java {
-//        withSourcesJar()
-//        withJavadocJar()
-//    }
-//
-//    repositories {
-//        mavenCentral()
-//    }
-//
-//    publishing {
-//        publications {
-//            var name = project.name.lowercase()
-//            name = if (name != "minemark") "minemark-$name" else "minemark-core"
-//            register<MavenPublication>(name) {
-//                groupId = "dev.dediamondpro"
-//                artifactId = name
-//
-//                from(components["java"])
-//            }
-//        }
-//        repositories {
-//            maven {
-//                name = "diamond"
-//
-//                url = uri("https://maven.dediamondpro.dev/releases")
-//
-//                credentials {
-//                    username = System.getenv("MAVEN_DIAMOND_USER")
-//                    password = System.getenv("MAVEN_DIAMOND_PASSWORD")
-//                }
-//
-//                version = rootProject.version
-//            }
-//        }
-//    }
-//}
+allprojects {
+    apply(plugin = "java-library")
+    apply(plugin = "maven-publish")
 
-//subprojects {
-//    dependencies {
-//        implementation(project.rootProject)
-//    }
-//}
+    java {
+        withSourcesJar()
+        withJavadocJar()
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    publishing {
+        publications {
+            var name = project.name.lowercase()
+            name = if (project.parent?.name == "minecraft") {
+                "minemark-minecraft-$name"
+            } else if (name != "minemark") {
+                "minemark-$name"
+            } else "minemark-core"
+
+            register<MavenPublication>(name) {
+                groupId = "dev.dediamondpro"
+                artifactId = name
+
+                from(components["java"])
+            }
+        }
+        repositories {
+            maven {
+                name = "diamond"
+
+                url = uri("https://maven.dediamondpro.dev/releases")
+
+                credentials {
+                    username = System.getenv("MAVEN_DIAMOND_USER")
+                    password = System.getenv("MAVEN_DIAMOND_PASSWORD")
+                }
+
+                version = rootProject.version
+            }
+        }
+    }
+}
+
+subprojects {
+    dependencies {
+        implementation(project.rootProject)
+    }
+}
 
 tasks.test {
     useJUnitPlatform()

@@ -20,7 +20,6 @@ import dev.dediamondpro.buildsource.VersionDefinition
 
 plugins {
     id("dev.architectury.loom") version "1.10-SNAPSHOT"
-    id("dev.kikugie.stonecutter")
 }
 
 buildscript {
@@ -54,6 +53,16 @@ val forgeVersion = VersionDefinition(
     "1.21.4" to "1.21.4-54.1.0",
     "1.21.5" to "1.21.5-55.0.4"
 )
+val neoForgeVersion = VersionDefinition(
+    "1.21.1" to "21.1.95",
+    "1.21.4" to "21.4.124",
+    "1.21.5" to "21.5.34-beta"
+)
+
+repositories {
+    mavenCentral()
+    maven("https://maven.neoforged.net/releases/")
+}
 
 dependencies {
     minecraft("com.mojang:minecraft:${mcPlatform.versionString}")
@@ -61,12 +70,13 @@ dependencies {
 
     implementation(libs.commonmark.ext.striketrough)
     implementation(libs.commonmark.ext.tables)
-    implementation(project.rootProject)
 
     if (mcPlatform.isFabric) {
         modImplementation("net.fabricmc:fabric-loader:0.16.10")
     } else if (mcPlatform.isForge) {
         "forge"("net.minecraftforge:forge:${forgeVersion.get(mcPlatform)}")
+    } else if (mcPlatform.isNeoForge) {
+        "neoForge"("net.neoforged:neoforge:${neoForgeVersion.get(mcPlatform)}")
     }
 
     if (buildTestMod) {

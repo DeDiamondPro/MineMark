@@ -33,7 +33,7 @@ pluginManagement {
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version "0.7-alpha.6"
+    id("dev.kikugie.stonecutter") version "0.5.2"
 }
 
 include(":elementa")
@@ -41,6 +41,12 @@ include(":elementa")
 val mcPlatforms = listOf(
     "1.20.1-fabric",
     "1.20.1-forge",
+    "1.21.1-fabric",
+    "1.21.1-forge",
+    "1.21.1-neoforge",
+    "1.21.5-fabric",
+    "1.21.5-forge",
+    "1.21.5-neoforge",
 )
 
 include(":minecraft")
@@ -52,7 +58,7 @@ stonecutter {
         for (version in mcPlatforms) {
             vers(version, version.split("-")[0])
         }
-        vcsVersion = "1.20.1-fabric"
+        vcsVersion = "1.21.5-fabric"
     }
 }
 

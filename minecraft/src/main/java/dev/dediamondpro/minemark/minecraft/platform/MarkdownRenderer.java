@@ -21,6 +21,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
 
 public class MarkdownRenderer {
     private final GuiGraphics context;
@@ -59,7 +60,7 @@ public class MarkdownRenderer {
     }
 
     public void drawTexture(ResourceLocation identifier, int x, int y, int width, int height) {
-        context.blit(identifier, x, y, 0, 0, width, height, width, height);
+        context.blit(/*? >=1.21.2 {*/ RenderType::guiTextured, /*?}*/ identifier, x, y, 0, 0, width, height, width, height);
     }
 
     public GuiGraphics getDrawContext() {

@@ -48,7 +48,7 @@ public class MinecraftImageProvider implements ImageProvider<MarkdownDynamicImag
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 ImageIO.write(bufferedImage, "png", out);
                 NativeImage nativeImage = NativeImage.read(new ByteArrayInputStream(out.toByteArray()));
-                imageCallback.accept(MarkdownDynamicImage.of(nativeImage));
+                imageCallback.accept(new MarkdownDynamicImage(nativeImage));
             } catch (IOException e) {
                 e.printStackTrace();
             }

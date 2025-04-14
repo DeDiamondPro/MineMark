@@ -36,5 +36,4 @@ dependencies {
     implementation(libs.elementa)
     implementation(libs.commonmark.ext.striketrough)
     implementation(libs.commonmark.ext.tables)
-    implementation(project.rootProject)
 }

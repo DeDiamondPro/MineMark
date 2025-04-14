@@ -90,3 +90,21 @@ MineMarkCore<MyStyle, MyRenderObject> core = MineMarkCore.<MyStyle, MyRenderObje
 Then you have to call `core.parse(myStyle, markdown)` to parse the markdown, this will return a `MineMarkElement`.
 This element has a `draw`, `beforeDraw` and `onMouseClick` method that should be called by your rendering
 implementation.
+
+## Building
+
+To build MineMark, you should run the `chiseledBuild` task or build a specific subproject, the root `build` task will
+throw errors!
+
+Example to build everything:
+```shell
+./gradlew chiseledBuild
+```
+Example to build the root project:
+```shell
+./gradlew :build
+```
+Example to build the elementa subproject project:
+```shell
+./gradlew elementa:build
+```

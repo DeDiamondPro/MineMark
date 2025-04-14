@@ -39,7 +39,9 @@ public class MarkdownImageElement extends ImageElement<MarkdownStyle, MarkdownRe
 
     @Override
     public void close() {
-        image.close();
+        if (image != null) {
+            image.close();
+        }
         super.close();
     }
 }

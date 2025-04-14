@@ -26,24 +26,32 @@ import java.io.Closeable;
 import java.io.IOException;
 
 public class MarkdownDynamicImage implements Closeable {
-    private final ResourceLocation identifier;
+    private static long identifierCounter = 0;
 
-    public MarkdownDynamicImage(ResourceLocation identifier) {
-        this.identifier = identifier;
+    private NativeImage image;
+    private ResourceLocation identifier = null;
+
+    public MarkdownDynamicImage(NativeImage image) {
+        this.image = image;
     }
 
     public void draw(int x, int y, int width, int height, MarkdownRenderer renderer) {
+        if (identifier == null) {
+            // Upload here to make sure we are on the correct thread, this can be an issue on 1.21.5 for some reason
+            DynamicTexture texture = new DynamicTexture(/*? if >=1.21.5 {*/ null, /*?}*/ image);
+            //? if <1.21 {
+            /*ResourceLocation identifier = new ResourceLocation("minemark", "dynamic-image-" + (identifierCounter++));
+             *///?} else
+            ResourceLocation identifier = ResourceLocation.fromNamespaceAndPath("minemark", "dynamic-image-" + (identifierCounter++));
+            Minecraft.getInstance().getTextureManager().register(identifier, texture);
+            this.identifier = identifier;
+            image = null;
+        }
         renderer.drawTexture(identifier, x, y, width, height);
     }
 
     @Override
     public void close() {
         Minecraft.getInstance().getTextureManager().release(identifier);
-    }
-
-    public static MarkdownDynamicImage of(NativeImage image) throws IOException {
-        DynamicTexture texture = new DynamicTexture(image);
-        ResourceLocation identifier = Minecraft.getInstance().getTextureManager().register("minemark", texture);
-        return new MarkdownDynamicImage(identifier);
     }
 }
