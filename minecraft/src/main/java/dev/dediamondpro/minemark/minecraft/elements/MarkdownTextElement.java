@@ -51,10 +51,10 @@ public class MarkdownTextElement extends TextElement<MarkdownStyle, MarkdownRend
 
     private String getPrefix(boolean hovered) {
         StringBuilder prefixBuilder = new StringBuilder();
-        if (layoutStyle.isBold()) prefixBuilder.append("§l");
-        if (layoutStyle.isItalic()) prefixBuilder.append("§o");
-        if (layoutStyle.isStrikethrough()) prefixBuilder.append("§m");
-        if (layoutStyle.isUnderlined() || layoutStyle.isPartOfLink() && hovered) prefixBuilder.append("§n");
+        if (layoutStyle.get(LayoutStyle.BOLD)) prefixBuilder.append("§l");
+        if (layoutStyle.get(LayoutStyle.ITALIC)) prefixBuilder.append("§o");
+        if (layoutStyle.get(LayoutStyle.STRIKETHROUGH)) prefixBuilder.append("§m");
+        if (layoutStyle.get(LayoutStyle.UNDERLINED) || layoutStyle.get(LayoutStyle.PART_OF_LINK) && hovered) prefixBuilder.append("§n");
         return prefixBuilder.toString();
     }
 

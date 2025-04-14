@@ -38,19 +38,19 @@ public abstract class TableCellElement<S extends Style, R> extends ChildMovingEl
         super(style, layoutStyle, parent, qName, attributes);
         this.layoutStyle = this.layoutStyle.clone();
         if (qName.equals("th")) {
-            this.layoutStyle.setBold(true);
-            this.layoutStyle.setAlignment(LayoutStyle.Alignment.CENTER);
+            this.layoutStyle.set(LayoutStyle.BOLD, true);
+            this.layoutStyle.set(LayoutStyle.ALIGNMENT, LayoutStyle.Alignment.CENTER);
         }
         if (attributes != null && attributes.getValue("align") != null) {
             switch (attributes.getValue("align")) {
                 case "left":
-                    this.layoutStyle.setAlignment(LayoutStyle.Alignment.LEFT);
+                    this.layoutStyle.set(LayoutStyle.ALIGNMENT, LayoutStyle.Alignment.LEFT);
                     break;
                 case "center":
-                    this.layoutStyle.setAlignment(LayoutStyle.Alignment.CENTER);
+                    this.layoutStyle.set(LayoutStyle.ALIGNMENT, LayoutStyle.Alignment.CENTER);
                     break;
                 case "right":
-                    this.layoutStyle.setAlignment(LayoutStyle.Alignment.RIGHT);
+                    this.layoutStyle.set(LayoutStyle.ALIGNMENT, LayoutStyle.Alignment.RIGHT);
                     break;
             }
         }

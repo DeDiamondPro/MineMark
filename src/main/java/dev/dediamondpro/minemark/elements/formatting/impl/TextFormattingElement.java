@@ -36,22 +36,22 @@ public class TextFormattingElement<S extends Style, R> extends TagBasedFormattin
         switch (qName) {
             case "strong":
             case "b":
-                layoutStyle.setBold(true);
+                layoutStyle.set(LayoutStyle.BOLD, true);
                 break;
             case "em":
             case "i":
-                layoutStyle.setItalic(true);
+                layoutStyle.set(LayoutStyle.ITALIC, true);
                 break;
             case "ins":
             case "u":
-                layoutStyle.setUnderlined(true);
+                layoutStyle.set(LayoutStyle.UNDERLINED, true);
                 break;
             case "del":
             case "s":
-                layoutStyle.setStrikethrough(true);
+                layoutStyle.set(LayoutStyle.STRIKETHROUGH, true);
                 break;
             case "pre":
-                layoutStyle.setPreFormatted(true);
+                layoutStyle.set(LayoutStyle.PRE_FORMATTED, true);
                 break;
         }
     }

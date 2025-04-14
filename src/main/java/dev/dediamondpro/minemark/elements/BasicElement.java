@@ -49,7 +49,7 @@ public abstract class BasicElement<S extends Style, R> extends Element<S, R> {
             layoutData.nextLine();
         }
         layoutData.updatePadding(padding);
-        position = layoutData.addElement(layoutStyle.getAlignment(), width, height);
+        position = layoutData.addElement(layoutStyle.get(LayoutStyle.ALIGNMENT), width, height);
     }
 
     protected abstract void drawElement(float x, float y, float width, float height, float mouseX, float mouseY, R renderData);

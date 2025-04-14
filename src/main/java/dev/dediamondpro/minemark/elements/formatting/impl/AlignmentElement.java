@@ -34,13 +34,13 @@ public class AlignmentElement<S extends Style, R> implements FormattingElement<S
         if (alignment == null) return;
         switch (alignment) {
             case "left":
-                layoutStyle.setAlignment(LayoutStyle.Alignment.LEFT);
+                layoutStyle.set(LayoutStyle.ALIGNMENT, LayoutStyle.Alignment.LEFT);
                 break;
             case "center":
-                layoutStyle.setAlignment(LayoutStyle.Alignment.CENTER);
+                layoutStyle.set(LayoutStyle.ALIGNMENT, LayoutStyle.Alignment.CENTER);
                 break;
             case "right":
-                layoutStyle.setAlignment(LayoutStyle.Alignment.RIGHT);
+                layoutStyle.set(LayoutStyle.ALIGNMENT, LayoutStyle.Alignment.RIGHT);
                 break;
         }
     }

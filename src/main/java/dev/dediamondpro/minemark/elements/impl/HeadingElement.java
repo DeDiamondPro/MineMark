@@ -41,7 +41,7 @@ public abstract class HeadingElement<S extends Style, R> extends ChildBasedEleme
         this.headingType = HeadingType.getFromHtmlTag(qName);
         this.headingStyle = headingType.getHeadingStyle(style);
         this.layoutStyle = this.layoutStyle.clone();
-        this.layoutStyle.setFontSize(headingStyle.getFontSize());
+        this.layoutStyle.put(LayoutStyle.FONT_SIZE, headingStyle.getFontSize());
     }
 
     @Override
@@ -65,7 +65,7 @@ public abstract class HeadingElement<S extends Style, R> extends ChildBasedEleme
         if (headingStyle.hasDivider()) {
             layoutData.setBottomSpacing(headingStyle.getSpaceBeforeDivider());
             layoutData.nextLine();
-            dividerPosition = layoutData.addElement(layoutStyle.getAlignment(), layoutData.getMaxWidth(), headingStyle.getDividerHeight());
+            dividerPosition = layoutData.addElement(layoutStyle.get(LayoutStyle.ALIGNMENT), layoutData.getMaxWidth(), headingStyle.getDividerHeight());
             layoutData.setBottomSpacing(headingStyle.getPadding());
         }
         layoutData.nextLine();

@@ -45,16 +45,16 @@ public class MarkdownListElement extends ListElement<MarkdownStyle, MarkdownRend
 
     @Override
     protected void drawMarker(float x, float y, MarkdownRenderer renderer) {
-        renderer.drawText(markerStr, (int) x, (int) y, layoutStyle.getFontSize(), layoutStyle.getTextColor().getRGB(), style.getTextStyle().hasShadow());
+        renderer.drawText(markerStr, (int) x, (int) y, layoutStyle.get(LayoutStyle.FONT_SIZE), layoutStyle.get(LayoutStyle.TEXT_COLOR).getRGB(), style.getTextStyle().hasShadow());
     }
 
     @Override
     protected float getListMarkerWidth(LayoutData layoutData, MarkdownRenderer renderer) {
-        return renderer.getTextWidth(markerStr, layoutStyle.getFontSize());
+        return renderer.getTextWidth(markerStr, layoutStyle.get(LayoutStyle.FONT_SIZE));
     }
 
     @Override
     protected float getMarkerHeight(LayoutData layoutData, MarkdownRenderer renderData) {
-        return 8f * layoutStyle.getFontSize();
+        return 8f * layoutStyle.get(LayoutStyle.FONT_SIZE);
     }
 }

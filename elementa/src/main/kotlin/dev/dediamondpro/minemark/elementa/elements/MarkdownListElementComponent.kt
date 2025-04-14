@@ -40,13 +40,13 @@ class MarkdownListElementComponent(
     }
 
     override fun drawMarker(x: Float, y: Float, matrixStack: UMatrixStack) {
-        val scale = layoutStyle.fontSize
+        val scale = layoutStyle.get(LayoutStyle.FONT_SIZE)
         matrixStack.push()
         matrixStack.scale(scale, scale, 1f)
         fontProvider.drawString(
             matrixStack,
             markerStr,
-            layoutStyle.textColor,
+            layoutStyle.get(LayoutStyle.TEXT_COLOR),
             x / scale, y / scale,
             1f, 1f
         )
@@ -54,10 +54,10 @@ class MarkdownListElementComponent(
     }
 
     override fun getListMarkerWidth(layoutData: LayoutData?, matrixStack: UMatrixStack): Float {
-        return fontProvider.getStringWidth(markerStr, 1f) * layoutStyle.fontSize
+        return fontProvider.getStringWidth(markerStr, 1f) * layoutStyle.get(LayoutStyle.FONT_SIZE)
     }
 
     override fun getMarkerHeight(layoutData: LayoutData?, matrixStack: UMatrixStack): Float {
-        return (fontProvider.getBaseLineHeight() + fontProvider.getShadowHeight()) * layoutStyle.fontSize
+        return (fontProvider.getBaseLineHeight() + fontProvider.getShadowHeight()) * layoutStyle.get(LayoutStyle.FONT_SIZE)
     }
 }

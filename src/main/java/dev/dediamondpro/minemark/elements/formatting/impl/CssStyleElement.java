@@ -49,18 +49,18 @@ public class CssStyleElement<S extends Style, R> implements FormattingElement<S,
             String value = propertyValue[1].trim();
             switch (property) {
                 case "color":
-                    layoutStyle.setTextColor(ColorFactory.web(value));
+                    layoutStyle.set(LayoutStyle.TEXT_COLOR, ColorFactory.web(value));
                     break;
                 case "text-align":
                     switch (value.toLowerCase()) {
                         case "left":
-                            layoutStyle.setAlignment(LayoutStyle.Alignment.LEFT);
+                            layoutStyle.set(LayoutStyle.ALIGNMENT, LayoutStyle.Alignment.LEFT);
                             break;
                         case "center":
-                            layoutStyle.setAlignment(LayoutStyle.Alignment.CENTER);
+                            layoutStyle.set(LayoutStyle.ALIGNMENT, LayoutStyle.Alignment.CENTER);
                             break;
                         case "right":
-                            layoutStyle.setAlignment(LayoutStyle.Alignment.RIGHT);
+                            layoutStyle.set(LayoutStyle.ALIGNMENT, LayoutStyle.Alignment.RIGHT);
                             break;
                     }
                     break;
@@ -68,10 +68,10 @@ public class CssStyleElement<S extends Style, R> implements FormattingElement<S,
                     for (String decoration : value.split(" ")) {
                         switch (decoration) {
                             case "underline":
-                                layoutStyle.setUnderlined(true);
+                                layoutStyle.set(LayoutStyle.UNDERLINED, true);
                                 break;
                             case "line-through":
-                                layoutStyle.setStrikethrough(true);
+                                layoutStyle.set(LayoutStyle.STRIKETHROUGH, true);
                                 break;
                         }
                     }
@@ -81,10 +81,10 @@ public class CssStyleElement<S extends Style, R> implements FormattingElement<S,
                     if (value.endsWith("px")) {
                         fontSize = style.getTextStyle().adaptFontSize(Float.parseFloat(value.substring(0, value.length() - 2)));
                     } else if (value.endsWith("%")) {
-                        fontSize = layoutStyle.getFontSize() * (Float.parseFloat(value.substring(0, value.length() - 1)) / 100);
+                        fontSize = layoutStyle.get(LayoutStyle.FONT_SIZE) * (Float.parseFloat(value.substring(0, value.length() - 1)) / 100);
                     }
                     if (fontSize != null) {
-                        layoutStyle.setFontSize(fontSize);
+                        layoutStyle.set(LayoutStyle.FONT_SIZE, fontSize);
                     }
                     break;
             }

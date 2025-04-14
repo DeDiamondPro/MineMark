@@ -55,16 +55,16 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
             String line = predefinedLines[i].replace("\n", "");
             allLines.addAll(wrapText(line, i == 0 ? layoutData.getX() : 0f, layoutData.getMaxWidth(), renderData));
         }
-        float codeBlockPadding = layoutStyle.isPartOfCodeBlock() ? style.getCodeBlockStyle().getInlinePaddingTopBottom() : 0f;
+        float codeBlockPadding = layoutStyle.get(LayoutStyle.PART_OF_CODE_BLOCK) ? style.getCodeBlockStyle().getInlinePaddingTopBottom() : 0f;
         float padding = Math.max(style.getTextStyle().getPadding(), codeBlockPadding);
-        float fontSize = layoutStyle.getFontSize();
+        float fontSize = layoutStyle.get(LayoutStyle.FONT_SIZE);
         baseLineHeight = getBaselineHeight(fontSize, renderData);
         ascender = getAscender(fontSize, renderData);
         descender = getDescender(fontSize, renderData);
         for (int i = 0; i < allLines.size(); i++) {
             String line = allLines.get(i);
             layoutData.updatePadding(padding);
-            lines.put(layoutData.addElement(layoutStyle.getAlignment(), getAdjustedTextWidth(line, fontSize, renderData), baseLineHeight), line);
+            lines.put(layoutData.addElement(layoutStyle.get(LayoutStyle.ALIGNMENT), getAdjustedTextWidth(line, fontSize, renderData), baseLineHeight), line);
             if (i != allLines.size() - 1) {
                 layoutData.nextLine();
             }
@@ -80,13 +80,16 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
                 break;
             }
         }
-        float paddingLeftRight = layoutStyle.isPartOfCodeBlock() ? style.getCodeBlockStyle().getInlinePaddingLeftRight() : 0f;
-        float paddingTopBottom = layoutStyle.isPartOfCodeBlock() ? style.getCodeBlockStyle().getInlinePaddingTopBottom() : 0f;
+
+        boolean partOfCodeBlock = layoutStyle.get(LayoutStyle.PART_OF_CODE_BLOCK);
+
+        float paddingLeftRight = partOfCodeBlock ? style.getCodeBlockStyle().getInlinePaddingLeftRight() : 0f;
+        float paddingTopBottom = partOfCodeBlock ? style.getCodeBlockStyle().getInlinePaddingTopBottom() : 0f;
         for (Map.Entry<LayoutData.MarkDownElementPosition, String> line : lines.entrySet()) {
             LayoutData.MarkDownElementPosition position = line.getKey();
             String text = line.getValue();
             // preformatted = non-inline code block
-            if (layoutStyle.isPartOfCodeBlock() && !layoutStyle.isPreFormatted()) {
+            if (partOfCodeBlock && !layoutStyle.get(LayoutStyle.PRE_FORMATTED)) {
                 drawInlineCodeBlock(
                         position.getX() + xOffset, position.getY() + yOffset - paddingTopBottom,
                         position.getWidth(), position.getHeight() + paddingTopBottom * 2,
@@ -95,8 +98,8 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
             }
             drawText(
                     text, position.getX() + xOffset + paddingLeftRight,
-                    position.getY() + yOffset - ascender, layoutStyle.getFontSize(),
-                    layoutStyle.getTextColor(), hovered, position, renderData
+                    position.getY() + yOffset - ascender, layoutStyle.get(LayoutStyle.FONT_SIZE),
+                    layoutStyle.get(LayoutStyle.TEXT_COLOR), hovered, position, renderData
             );
         }
     }
@@ -105,7 +108,7 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
     protected List<String> wrapText(String text, float startX, float maxWidth, R renderData) {
         ArrayList<String> lines = new ArrayList<>();
         StringBuilder currentLine = new StringBuilder();
-        float fontSize = layoutStyle.getFontSize();
+        float fontSize = layoutStyle.get(LayoutStyle.FONT_SIZE);
 
         String[] words = text.split("(?= )");
         float actualMaxWidth = maxWidth - startX;
@@ -113,7 +116,7 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
         for (String word : words) {
             word = word.replace('\u00A0', ' ');
             // If this is the first word on the line, replace all leading whitespace chars (unless this is preformatted)
-            if (firstOfLine && !layoutStyle.isPreFormatted()) {
+            if (firstOfLine && !layoutStyle.get(LayoutStyle.PRE_FORMATTED)) {
                 word = LEADING_WHITESPACE.matcher(word).replaceAll("");
                 firstOfLine = false;
             }
@@ -149,7 +152,7 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
     }
 
     protected float getAdjustedTextWidth(@NotNull String text, float fontSize, R renderData) {
-        return getTextWidth(text, fontSize, renderData) + (layoutStyle.isPartOfCodeBlock() ? (style.getCodeBlockStyle().getInlinePaddingLeftRight() * 2f) : 0);
+        return getTextWidth(text, fontSize, renderData) + (layoutStyle.get(LayoutStyle.PART_OF_CODE_BLOCK) ? (style.getCodeBlockStyle().getInlinePaddingLeftRight() * 2f) : 0);
     }
 
     protected abstract void drawText(@NotNull String text, float x, float y, float fontSize, Color color, boolean hovered, LayoutData.MarkDownElementPosition position, @NotNull R renderData);

@@ -37,17 +37,17 @@ class MarkdownTextComponent(
     qName: String, attributes: Attributes?
 ) : TextElement<MarkdownStyle, UMatrixStack>(text, style, layoutStyle, parent, qName, attributes) {
     private val font = style.textStyle.font
-    private var scale = layoutStyle.fontSize
+    private var scale = layoutStyle.get(LayoutStyle.FONT_SIZE)
     private var prefix = buildString {
-        if (layoutStyle.isBold) append("§l")
-        if (layoutStyle.isItalic) append("§o")
-        if (layoutStyle.isUnderlined) append("§n")
-        if (layoutStyle.isStrikethrough) append("§m")
+        if (layoutStyle.get(LayoutStyle.BOLD)) append("§l")
+        if (layoutStyle.get(LayoutStyle.ITALIC)) append("§o")
+        if (layoutStyle.get(LayoutStyle.UNDERLINED)) append("§n")
+        if (layoutStyle.get(LayoutStyle.STRIKETHROUGH)) append("§m")
     }
 
     override fun generateLayout(layoutData: LayoutData?, matrixStack: UMatrixStack) {
         val mcScale = UResolution.scaleFactor.toFloat()
-        scale = round(layoutStyle.fontSize * mcScale) / mcScale
+        scale = round(layoutStyle.get(LayoutStyle.FONT_SIZE) * mcScale) / mcScale
         super.generateLayout(layoutData, matrixStack)
     }
 
@@ -62,10 +62,10 @@ class MarkdownTextComponent(
         matrixStack: UMatrixStack
     ) {
         prefix = buildString {
-            if (layoutStyle.isBold) append("§l")
-            if (layoutStyle.isItalic) append("§o")
-            if (layoutStyle.isStrikethrough) append("§m")
-            if (layoutStyle.isUnderlined || layoutStyle.isPartOfLink && hovered) append("§n")
+            if (layoutStyle.get(LayoutStyle.BOLD)) append("§l")
+            if (layoutStyle.get(LayoutStyle.ITALIC)) append("§o")
+            if (layoutStyle.get(LayoutStyle.STRIKETHROUGH)) append("§m")
+            if (layoutStyle.get(LayoutStyle.UNDERLINED) || layoutStyle.get(LayoutStyle.PART_OF_LINK) && hovered) append("§n")
         }
 
         matrixStack.push()
@@ -73,7 +73,7 @@ class MarkdownTextComponent(
         font.drawString(
             matrixStack,
             prefix + text,
-            layoutStyle.textColor,
+            layoutStyle.get(LayoutStyle.TEXT_COLOR),
             x / scale, y / scale,
             1f, 1f
         )
