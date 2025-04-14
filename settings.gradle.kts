@@ -21,8 +21,39 @@ dependencyResolutionManagement {
     }
 }
 
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+        maven("https://maven.fabricmc.net")
+        maven("https://maven.architectury.dev/")
+        maven("https://maven.minecraftforge.net")
+        maven("https://maven.kikugie.dev/snapshots")
+    }
+}
+
+plugins {
+    id("dev.kikugie.stonecutter") version "0.7-alpha.6"
+}
+
 include(":elementa")
-includeBuild("minecraft")
-includeBuild(".")
+
+val mcPlatforms = listOf(
+    "1.20.1-fabric",
+    "1.20.1-forge",
+)
+
+include(":minecraft")
+stonecutter {
+    centralScript = "build.gradle.kts"
+    kotlinController = true
+
+    create(project(":minecraft")) {
+        for (version in mcPlatforms) {
+            vers(version, version.split("-")[0])
+        }
+        vcsVersion = "1.20.1-fabric"
+    }
+}
 
 rootProject.name = "minemark"

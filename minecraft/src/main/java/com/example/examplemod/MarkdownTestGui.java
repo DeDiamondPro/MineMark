@@ -18,15 +18,11 @@
 package com.example.examplemod;
 
 import dev.dediamondpro.minemark.minecraft.MineMarkDrawable;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import org.xml.sax.SAXException;
 
-//#if MC >= 12000
-import net.minecraft.client.gui.DrawContext;
-//#else
-//$$ import net.minecraft.client.util.math.MatrixStack;
-//#endif
 
 import java.io.IOException;
 
@@ -34,7 +30,7 @@ public class MarkdownTestGui extends Screen {
     private final MineMarkDrawable markdown;
 
     protected MarkdownTestGui() {
-        super(Text.of("Markdown Test GUI"));
+        super(Component.literal("Markdown Test GUI"));
         try {
             String markdownString = "Test **string** *with* a<br>newline <u>because</u> ~~why~~ not and also a [link](https://example.com), this should also automatically wrap if I make this text long enough<br>"
                     + "Image: ![](https://picsum.photos/2000/1000)"
@@ -64,18 +60,8 @@ public class MarkdownTestGui extends Screen {
     }
 
     @Override
-    public void render(
-            //#if MC >= 12000
-            DrawContext context,
-            //#else
-            //$$ MatrixStack context,
-            //#endif
-            int mouseX, int mouseY, float delta) {
-        //#if MC >= 12000
+    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
-        //#else
-        //$$ super.renderBackground(context);
-        //#endif
         markdown.draw(20, 20, 300, mouseX, mouseY, context);
     }
 
@@ -86,8 +72,8 @@ public class MarkdownTestGui extends Screen {
     }
 
     @Override
-    public void close() {
+    public void onClose() {
         markdown.close();
-        super.close();
+        super.onClose();
     }
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of MineMark
- * Copyright (C) 2024 DeDiamondPro
+ * Copyright (C) 2024-2025 DeDiamondPro
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,18 +17,18 @@
 
 package dev.dediamondpro.minemark.minecraft.platform;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.texture.NativeImageBackedTexture;
-import net.minecraft.util.Identifier;
+import com.mojang.blaze3d.platform.NativeImage;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.resources.ResourceLocation;
 
 import java.io.Closeable;
 import java.io.IOException;
 
 public class MarkdownDynamicImage implements Closeable {
-    private final Identifier identifier;
+    private final ResourceLocation identifier;
 
-    public MarkdownDynamicImage(Identifier identifier) {
+    public MarkdownDynamicImage(ResourceLocation identifier) {
         this.identifier = identifier;
     }
 
@@ -38,12 +38,12 @@ public class MarkdownDynamicImage implements Closeable {
 
     @Override
     public void close() {
-        MinecraftClient.getInstance().getTextureManager().destroyTexture(identifier);
+        Minecraft.getInstance().getTextureManager().release(identifier);
     }
 
     public static MarkdownDynamicImage of(NativeImage image) throws IOException {
-        NativeImageBackedTexture texture = new NativeImageBackedTexture(image);
-        Identifier identifier = MinecraftClient.getInstance().getTextureManager().registerDynamicTexture("minemark", texture);
+        DynamicTexture texture = new DynamicTexture(image);
+        ResourceLocation identifier = Minecraft.getInstance().getTextureManager().register("minemark", texture);
         return new MarkdownDynamicImage(identifier);
     }
 }

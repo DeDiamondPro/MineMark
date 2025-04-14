@@ -25,15 +25,10 @@ import dev.dediamondpro.minemark.minecraft.elements.*;
 import dev.dediamondpro.minemark.minecraft.platform.MarkdownRenderer;
 import dev.dediamondpro.minemark.minecraft.style.MarkdownStyle;
 import dev.dediamondpro.minemark.utils.MouseButton;
+import net.minecraft.client.gui.GuiGraphics;
 import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension;
 import org.commonmark.ext.gfm.tables.TablesExtension;
 import org.xml.sax.SAXException;
-
-//#if MC >= 12000
-import net.minecraft.client.gui.DrawContext;
-//#else
-//$$ import net.minecraft.client.util.math.MatrixStack;
-//#endif
 
 import java.io.IOException;
 import java.io.Reader;
@@ -73,23 +68,11 @@ public class MineMarkDrawable implements AutoCloseable {
         this(markdown, new MarkdownStyle());
     }
 
-    public void draw(float x, float y, float width, float mouseX, float mouseY,
-                     //#if MC >= 12000
-                     DrawContext drawContext
-                     //#else
-                     //$$ MatrixStack drawContext
-                     //#endif
-    ) {
+    public void draw(float x, float y, float width, float mouseX, float mouseY, GuiGraphics drawContext) {
         parsedMarkdown.draw(x, y, width, mouseX, mouseY, new MarkdownRenderer(drawContext));
     }
 
-    public void beforeDraw(float x, float y, float width, float mouseX, float mouseY,
-                           //#if MC >= 12000
-                           DrawContext drawContext
-                           //#else
-                           //$$ MatrixStack drawContext
-                           //#endif
-    ) {
+    public void beforeDraw(float x, float y, float width, float mouseX, float mouseY, GuiGraphics drawContext) {
         parsedMarkdown.beforeDraw(x, y, width, mouseX, mouseY, new MarkdownRenderer(drawContext));
     }
 

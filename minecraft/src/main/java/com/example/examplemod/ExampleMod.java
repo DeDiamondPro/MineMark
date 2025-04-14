@@ -17,45 +17,43 @@
 
 package com.example.examplemod;
 
-import net.minecraft.client.MinecraftClient;
 
-//#if FABRIC
+import net.minecraft.client.Minecraft;
+
+//? if fabric {
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+//?} else if forge {
+/*import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.fml.common.Mod;
+*///?}
 
-//#else
-//$$ import net.minecraftforge.common.MinecraftForge;
-//$$ import net.minecraftforge.event.TickEvent;
-//$$ import net.minecraftforge.fml.common.Mod;
-//$$
-//$$ @Mod("@ID@")
-//#endif
-public class ExampleMod
-        //#if FABRIC == 1
-        implements ClientModInitializer
-        //#endif
-{
+//? if forge
+/*@Mod("examplemod")*/
+public class ExampleMod /*? if fabric {*/ implements ClientModInitializer /*?}*/ {
 
-    //#if FABRIC == 1
+    //? if fabric {
     @Override
     public void onInitializeClient() {
         ClientTickEvents.START_CLIENT_TICK.register(event -> tick());
     }
-    //#else
-    //$$ public ExampleMod() {
-    //$$     MinecraftForge.EVENT_BUS.addListener(this::event);
-    //$$ }
-    //$$
-    //$$ private void event(TickEvent.ClientTickEvent event) {
-    //$$     if (event.phase != TickEvent.Phase.START) return;
-    //$$     tick();
-    //$$ }
-    //#endif
+    //?}
 
+    //? if forge {
+    /*public ExampleMod() {
+        MinecraftForge.EVENT_BUS.addListener(this::event);
+    }
+
+    private void event(TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.START) return;
+        tick();
+    }
+    *///?}
 
     private void tick() {
-        MinecraftClient mc = MinecraftClient.getInstance();
-        if (!(mc.currentScreen instanceof MarkdownTestGui)) {
+        Minecraft mc = Minecraft.getInstance();
+        if (!(mc.screen instanceof MarkdownTestGui)) {
             mc.setScreen(new MarkdownTestGui());
         }
     }

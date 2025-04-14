@@ -1,11 +1,11 @@
 modLoader = "javafml"
 loaderVersion = "[1,)"
-license = "${license}"
+license = "LGPL"
 showAsResourcePack=false
 
 [[mods]]
-modId = "${id}"
-displayName = "${name}"
-version = "${version}"
+modId = "examplemod"
+displayName = "examplemod"
+version = "1.0.0"
 authors = "DeDiamondPro"
-description = "${description}"
+description = ""

@@ -1,3 +1,0 @@
-net.neoforged.fml.common.Mod net.minecraftforge.fml.common.Mod
-net.neoforged.neoforge.common.NeoForge net.minecraftforge.common.MinecraftForge
-net.neoforged.neoforge.event.TickEvent net.minecraftforge.event.TickEvent

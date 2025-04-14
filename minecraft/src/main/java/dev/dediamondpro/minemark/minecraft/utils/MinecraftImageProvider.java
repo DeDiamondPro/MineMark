@@ -17,10 +17,10 @@
 
 package dev.dediamondpro.minemark.minecraft.utils;
 
+import com.mojang.blaze3d.platform.NativeImage;
 import dev.dediamondpro.minemark.minecraft.platform.MarkdownDynamicImage;
 import dev.dediamondpro.minemark.providers.ImageProvider;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -52,7 +52,7 @@ public class MinecraftImageProvider implements ImageProvider<MarkdownDynamicImag
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }, Util.getIoWorkerExecutor());
+        }, Util.ioPool());
     }
 
     public InputStream getInputStream(String src) throws IOException {

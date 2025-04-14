@@ -18,7 +18,7 @@
 package dev.dediamondpro.minemark.minecraft.utils;
 
 import dev.dediamondpro.minemark.providers.BrowserProvider;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 
 public class MinecraftBrowserProvider implements BrowserProvider {
     public static MinecraftBrowserProvider INSTANCE = new MinecraftBrowserProvider();
@@ -28,6 +28,6 @@ public class MinecraftBrowserProvider implements BrowserProvider {
 
     @Override
     public void browse(String url) {
-        Util.getOperatingSystem().open(url);
+        Util.getPlatform().openUri(url);
     }
 }

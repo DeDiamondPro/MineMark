@@ -1,6 +1,6 @@
 /*
  * This file is part of MineMark
- * Copyright (C) 2024 DeDiamondPro
+ * Copyright (C) 2025 DeDiamondPro
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,26 +15,14 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    // Lowest kotlin version that elementa supports
-    kotlin("jvm") version "1.6.10"
-}
+package dev.dediamondpro.buildsource;
 
-tasks.compileKotlin.configure {
-    kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs.filterNot {
-            it.startsWith("-Xjvm-default=")
-        } + listOf("-Xjvm-default=" + "all-compatibility")
+public enum Loader {
+    FABRIC,
+    FORGE,
+    NEOFORGE;
+
+    boolean isForgeLike() {
+        return this == FORGE || this == NEOFORGE;
     }
-}
-
-repositories {
-    maven("https://repo.essential.gg/repository/maven-public")
-}
-
-dependencies {
-    implementation(libs.elementa)
-    implementation(libs.commonmark.ext.striketrough)
-    implementation(libs.commonmark.ext.tables)
-    implementation(project.rootProject)
 }

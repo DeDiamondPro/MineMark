@@ -1,6 +1,6 @@
 /*
  * This file is part of MineMark
- * Copyright (C) 2024 DeDiamondPro
+ * Copyright (C) 2025 DeDiamondPro
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,26 +15,21 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    // Lowest kotlin version that elementa supports
-    kotlin("jvm") version "1.6.10"
-}
+package dev.dediamondpro.buildsource
 
-tasks.compileKotlin.configure {
-    kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs.filterNot {
-            it.startsWith("-Xjvm-default=")
-        } + listOf("-Xjvm-default=" + "all-compatibility")
+class VersionDefinition<T>(vararg pairs: Pair<String, T>, private val default: T? = null) {
+    private val versions = mapOf(*pairs)
+
+    fun getOrNull(platform: Platform): T? {
+        // Try full platform first, then mc version
+        return versions[platform.name] ?: versions[platform.versionString] ?: default
     }
-}
 
-repositories {
-    maven("https://repo.essential.gg/repository/maven-public")
-}
+    fun get(platform: Platform): T {
+        return this.getOrNull(platform) ?: error("No version for ${platform.name}")
+    }
 
-dependencies {
-    implementation(libs.elementa)
-    implementation(libs.commonmark.ext.striketrough)
-    implementation(libs.commonmark.ext.tables)
-    implementation(project.rootProject)
+    fun hasForPlatform(platform: Platform): Boolean {
+        return this.getOrNull(platform) != null
+    }
 }

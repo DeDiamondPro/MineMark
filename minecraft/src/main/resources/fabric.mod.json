@@ -1,10 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "${id}",
-  "name": "${name}",
-  "version": "${version}",
-  "description": "${description}",
-  "license": "${license}",
+  "id": "examplemod",
+  "name": "examplemod",
+  "version": "1.0.0",
   "authors": [
     "DeDiamondPro"
   ],
@@ -18,12 +16,5 @@
     "client": [
       "com.example.examplemod.ExampleMod"
     ]
-  },
-  "custom": {
-    "modmenu": {
-      "badges": [
-        "library"
-      ]
-    }
   }
 }
