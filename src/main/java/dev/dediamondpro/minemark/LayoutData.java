@@ -41,9 +41,13 @@ public class LayoutData {
         return currentLine.width != 0f;
     }
 
+    public boolean isLineModified() {
+        return isLineOccupied() || currentLine.bottomSpacing != 0f || currentLine.height != 0f || currentLine.topSpacing != 0f;
+    }
+
     public void nextLine() {
         // Only set previous line if there was a meaningful change
-        if (isLineOccupied() || currentLine.bottomSpacing != 0f || currentLine.height != 0f || currentLine.topSpacing != 0f) {
+        if (isLineModified()) {
             lineListeners.forEach(listener -> listener.accept(currentLine));
             previousLine = currentLine;
         }

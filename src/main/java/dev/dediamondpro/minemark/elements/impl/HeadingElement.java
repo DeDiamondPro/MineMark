@@ -58,7 +58,7 @@ public abstract class HeadingElement<S extends Style, R> extends ChildBasedEleme
     @Override
     @ApiStatus.Internal
     public void generateLayout(LayoutData layoutData, R renderData) {
-        if (layoutData.isLineOccupied()) {
+        if (layoutData.isLineModified()) {
             layoutData.nextLine();
         }
         super.generateLayout(layoutData, renderData);

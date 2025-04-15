@@ -102,11 +102,11 @@ public abstract class Element<S extends Style, R> implements AutoCloseable {
      */
     @ApiStatus.Internal
     public void generateLayoutInternal(LayoutData layoutData, R renderData) {
-        if (!isInline && layoutData.isLineOccupied()) {
+        if (!isInline && layoutData.isLineModified()) {
             layoutData.nextLine();
         }
         generateLayout(layoutData, renderData);
-        if (!isInline && layoutData.isLineOccupied()) {
+        if (!isInline && layoutData.isLineModified()) {
             layoutData.nextLine();
         }
     }

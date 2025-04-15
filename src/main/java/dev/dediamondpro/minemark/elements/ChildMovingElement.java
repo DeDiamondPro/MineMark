@@ -42,7 +42,7 @@ public abstract class ChildMovingElement<S extends Style, R> extends Element<S, 
 
     @Override
     public void generateLayout(LayoutData layoutData, R renderData) {
-        if (layoutData.isLineOccupied()) {
+        if (layoutData.isLineModified()) {
             layoutData.nextLine();
         }
 
