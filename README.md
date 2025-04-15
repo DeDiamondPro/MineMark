@@ -13,8 +13,8 @@ Currently, there is a Minecraft and Elementa rendering implementation available,
 your own if you wish!
 
 Adding MineMark as a dependency (latest MineMark
-version: ![](https://img.shields.io/badge/dynamic/xml?label=%20&query=/metadata/versioning/versions/version[not(contains(text(),%27%2B%27))][last()]
-&url=https://maven.dediamondpro.dev/releases/dev/dediamondpro/minemark-core/maven-metadata.xml)):
+version:
+![](https://img.shields.io/badge/dynamic/xml?label=%20&query=/metadata/versioning/versions/version[not(contains(text(),%27%2B%27))][last()]&url=https://maven.dediamondpro.dev/releases/dev/dediamondpro/minemark-core/maven-metadata.xml)):
 
 ```kt
 repositories {
