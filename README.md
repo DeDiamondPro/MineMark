@@ -23,7 +23,7 @@ repositories {
 
 dependencies {
     // Add the core as a dependency, replace {version} with the most recent version of MineMark
-    implementation("dev.dediamondpro:minemark-core:1{version}")
+    implementation("dev.dediamondpro:minemark-core:{version}")
 
     // Example to add the Minecraft rendering implementation as a dependency,
     // replace {platform} with the Minecraft version and mod loader (example: 1.20.4-fabric)
@@ -36,6 +36,9 @@ dependencies {
 
 It is recommended to **shade and relocate MineMark** if you are using it in a Minecraft mod since no guarantees will be
 provided regarding backwards compatibility.
+
+Javadocs are made available in
+the [repo](https://maven.dediamondpro.dev/javadoc/releases/dev/dediamondpro/minemark-core/latest).
 
 ## Minecraft rendering implementation
 
@@ -97,14 +100,19 @@ To build MineMark, you should run the `chiseledBuild` task or build a specific s
 throw errors!
 
 Example to build everything:
+
 ```shell
 ./gradlew chiseledBuild
 ```
+
 Example to build the root project:
+
 ```shell
 ./gradlew :build
 ```
+
 Example to build the elementa subproject project:
+
 ```shell
 ./gradlew elementa:build
 ```
