@@ -43,6 +43,10 @@ public class ListHolderElement<S extends Style, R> extends ChildBasedElement<S, 
 
     @Override
     protected float getPadding(LayoutData layoutData, R renderData) {
+        // Padding was already applied
+        if (parent instanceof ListHolderElement || parent instanceof ListElement) {
+            return 0f;
+        }
         return style.getListStyle().getPadding();
     }
 
