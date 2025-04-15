@@ -31,11 +31,6 @@ dependencies {
     compileOnly(libs.jetbrains.annotations)
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
 tasks {
     register("chiseledBuild") {
         project.allprojects.forEach { subProject ->
@@ -65,6 +60,11 @@ allprojects {
     apply(plugin = "maven-publish")
 
     java {
+        // Apply java 8 to everything except the mc project
+        if (project.parent?.name != "minecraft") {
+            sourceCompatibility = JavaVersion.VERSION_1_8
+            targetCompatibility = JavaVersion.VERSION_1_8
+        }
         withSourcesJar()
         withJavadocJar()
     }
