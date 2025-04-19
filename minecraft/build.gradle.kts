@@ -92,6 +92,14 @@ dependencies {
     }
 }
 
+if (mcPlatform.isFabric) {
+    tasks.jar {
+        manifest {
+            attributes("Fabric-Loom-Remap" to "true")
+        }
+    }
+}
+
 tasks.processResources {
     if (!buildTestMod) {
         exclude("META-INF/mods.toml", "pack.mcmeta")
