@@ -116,6 +116,9 @@ tasks.compileJava {
 tasks.javadoc {
     exclude("com/example/examplemod/**")
 }
+tasks.sourcesJar {
+    exclude("com/example/examplemod/**")
+}
 
 configure<JavaPluginExtension> {
     toolchain.languageVersion.set(JavaLanguageVersion.of(javaVersion.get(mcPlatform)))
