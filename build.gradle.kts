@@ -1,5 +1,3 @@
-import kotlin.system.exitProcess
-
 /*
  * This file is part of MineMark
  * Copyright (C) 2024 DeDiamondPro
@@ -26,7 +24,7 @@ group = "dev.dediamondpro"
 version = "1.3.1"
 
 dependencies {
-    implementation(libs.commonmark)
+    api(libs.commonmark)
     implementation(libs.tagsoup)
     compileOnly(libs.jetbrains.annotations)
 }
@@ -94,7 +92,7 @@ subprojects {
     }
 
     dependencies {
-        implementation(project.rootProject)
+        api(project.rootProject)
     }
 }
 

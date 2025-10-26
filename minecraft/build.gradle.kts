@@ -68,8 +68,8 @@ dependencies {
     minecraft("com.mojang:minecraft:${mcPlatform.versionString}")
     mappings(loom.officialMojangMappings())
 
-    implementation(libs.commonmark.ext.striketrough)
-    implementation(libs.commonmark.ext.tables)
+    api(libs.commonmark.ext.striketrough)
+    api(libs.commonmark.ext.tables)
 
     if (mcPlatform.isFabric) {
         modImplementation("net.fabricmc:fabric-loader:0.16.10")
