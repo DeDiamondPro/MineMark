@@ -31,10 +31,10 @@ val mcPlatform = Platform.fromProject(project)
 val buildTestMod = false
 
 stonecutter {
-    const("fabric", mcPlatform.isFabric)
-    const("forge", mcPlatform.isForge)
-    const("neoforge", mcPlatform.isNeoForge)
-    const("forgelike", mcPlatform.isForgeLike)
+    constants["fabric"] = mcPlatform.isFabric
+    constants["forge"] = mcPlatform.isForge
+    constants["neoforge"] = mcPlatform.isNeoForge
+    constants["forgelike"] = mcPlatform.isForgeLike
 }
 
 val javaVersion = VersionDefinition(
@@ -108,14 +108,17 @@ tasks.processResources {
         exclude("fabric.mod.json")
     }
 }
+
 tasks.compileJava {
     if (!buildTestMod) {
         exclude("com/example/examplemod/**")
     }
 }
+
 tasks.javadoc {
     exclude("com/example/examplemod/**")
 }
+
 tasks.sourcesJar {
     exclude("com/example/examplemod/**")
 }

@@ -31,31 +31,11 @@ dependencies {
     compileOnly(libs.jetbrains.annotations)
 }
 
-tasks {
-    register("chiseledBuild") {
-        project.allprojects.forEach { subProject ->
-            if (!subProject.name.contains("minecraft")) {
-                dependsOn(subProject.tasks.named("build"))
-            }
-        }
-    }
-    register("chiseledPublish") {
-        project.allprojects.forEach { subProject ->
-            if (!subProject.name.contains("minecraft")) {
-                dependsOn(subProject.tasks.named("publish"))
-            }
-        }
-    }
-    register("chiseledPublishToMavenLocal") {
-        project.allprojects.forEach { subProject ->
-            if (!subProject.name.contains("minecraft")) {
-                dependsOn(subProject.tasks.named("publishToMavenLocal"))
-            }
-        }
-    }
-}
-
 allprojects {
+    if (project.path == ":minecraft") { // Prevent setting the root mc project up to build
+        return@allprojects
+    }
+
     apply(plugin = "java-library")
     apply(plugin = "maven-publish")
 
@@ -80,7 +60,9 @@ allprojects {
                 "minemark-minecraft-$name"
             } else if (name != "minemark") {
                 "minemark-$name"
-            } else "minemark-core"
+            } else {
+                "minemark-core"
+            }
 
             register<MavenPublication>(name) {
                 groupId = "dev.dediamondpro"
@@ -107,6 +89,10 @@ allprojects {
 }
 
 subprojects {
+    if (project.path == ":minecraft") { // Prevent setting the root mc project up to build
+        return@subprojects
+    }
+
     dependencies {
         implementation(project.rootProject)
     }
