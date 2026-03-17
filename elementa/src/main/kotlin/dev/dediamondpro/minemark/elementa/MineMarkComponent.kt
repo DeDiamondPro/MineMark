@@ -19,6 +19,7 @@ package dev.dediamondpro.minemark.elementa
 
 import dev.dediamondpro.minemark.MineMarkCore
 import dev.dediamondpro.minemark.MineMarkCoreBuilder
+import dev.dediamondpro.minemark.data.ViewPort
 import dev.dediamondpro.minemark.elementa.elements.*
 import dev.dediamondpro.minemark.elementa.style.MarkdownStyle
 import dev.dediamondpro.minemark.elements.Elements
@@ -28,6 +29,7 @@ import gg.essential.elementa.UIComponent
 import gg.essential.elementa.dsl.constrain
 import gg.essential.elementa.dsl.pixels
 import gg.essential.universal.UMatrixStack
+import gg.essential.universal.UResolution
 import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension
 import org.commonmark.ext.gfm.tables.TablesExtension
 import java.io.Reader
@@ -51,6 +53,13 @@ class MineMarkComponent(markdown: MineMarkElement<MarkdownStyle, UMatrixStack>) 
 
     val parsedMarkdown: MineMarkElement<MarkdownStyle, UMatrixStack> = markdown.apply {
         addLayoutCallback(this@MineMarkComponent::layoutCallback)
+    }
+    private var viewPort: ViewPort =
+        ViewPort(0f, 0f, UResolution.scaledWidth.toFloat(), UResolution.scaledHeight.toFloat())
+
+    override fun onWindowResize() {
+        viewPort = ViewPort(0f, 0f, UResolution.scaledWidth.toFloat(), UResolution.scaledHeight.toFloat())
+        super.onWindowResize()
     }
 
     override fun afterInitialization() {
@@ -89,6 +98,7 @@ class MineMarkComponent(markdown: MineMarkElement<MarkdownStyle, UMatrixStack>) 
             this.getWidth(),
             mouse.first,
             mouse.second,
+            viewPort,
             matrixStack
         )
         super.draw(matrixStack)

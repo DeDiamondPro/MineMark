@@ -19,6 +19,7 @@ package dev.dediamondpro.minemark.elements;
 
 import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.LayoutStyle;
+import dev.dediamondpro.minemark.data.ViewPort;
 import dev.dediamondpro.minemark.style.Style;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,7 +33,7 @@ public abstract class BasicElement<S extends Style, R> extends Element<S, R> {
     }
 
     @Override
-    public void drawInternal(float xOffset, float yOffset, float mouseX, float mouseY, R renderData) {
+    public void drawInternal(float xOffset, float yOffset, float mouseX, float mouseY, @Nullable ViewPort viewPort, R renderData) {
         drawElement(
                 position.getX() + xOffset, position.getY() + yOffset,
                 position.getWidth(), position.getHeight(),
@@ -50,6 +51,12 @@ public abstract class BasicElement<S extends Style, R> extends Element<S, R> {
         }
         layoutData.updatePadding(padding);
         position = layoutData.addElement(layoutStyle.get(LayoutStyle.ALIGNMENT), width, height);
+    }
+
+    @Override
+    public boolean shouldDraw(@NotNull ViewPort viewPort, float xOffset, float yOffset) {
+        return viewPort.isInViewPort(position.getX() + xOffset, position.getY() + yOffset,
+                position.getRightX() + xOffset, position.getBottomY() + yOffset);
     }
 
     protected abstract void drawElement(float x, float y, float width, float height, float mouseX, float mouseY, R renderData);

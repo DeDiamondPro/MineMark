@@ -19,9 +19,11 @@ package dev.dediamondpro.minemark.elements;
 
 import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.LayoutStyle;
+import dev.dediamondpro.minemark.data.ViewPort;
 import dev.dediamondpro.minemark.style.Style;
 import dev.dediamondpro.minemark.utils.MouseButton;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
 
 import java.util.ArrayList;
@@ -45,16 +47,31 @@ public class MineMarkElement<S extends Style, R> extends ChildBasedElement<S, R>
      * @param width      The maximum width of the markdown element
      * @param mouseX     The current X-Coordinate of the mouse
      * @param mouseY     The current Y-Coordinate of the mouse
+     * @param viewPort   The currently visible content, content outside the viewport will not be rendered
      * @param renderData Data class passed to all subclassed to aid in rendering
      */
-    public void draw(float x, float y, float width, float mouseX, float mouseY, R renderData) {
+    public void draw(float x, float y, float width, float mouseX, float mouseY, @Nullable ViewPort viewPort, R renderData) {
         if (width <= 0) {
             throw new IllegalArgumentException("Width cannot be zero or negative!");
         }
         if (width != lastWidth) {
             beforeDraw(x, y, width, mouseX, mouseY, renderData);
         }
-        this.drawInternal(x, y, mouseX - x, mouseY - y, renderData);
+        this.drawInternal(x, y, mouseX - x, mouseY - y, viewPort, renderData);
+    }
+
+    /**
+     * Draw the markdown layout
+     *
+     * @param x          X-Coordinate of the top left corner
+     * @param y          Y-Coordinate of the top left corner
+     * @param width      The maximum width of the markdown element
+     * @param mouseX     The current X-Coordinate of the mouse
+     * @param mouseY     The current Y-Coordinate of the mouse
+     * @param renderData Data class passed to all subclassed to aid in rendering
+     */
+    public void draw(float x, float y, float width, float mouseX, float mouseY, R renderData) {
+        this.draw(x, y, width, mouseX, mouseY, null, renderData);
     }
 
 

@@ -19,6 +19,7 @@ package dev.dediamondpro.minemark.elements;
 
 import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.LayoutStyle;
+import dev.dediamondpro.minemark.data.ViewPort;
 import dev.dediamondpro.minemark.elements.impl.TextElement;
 import dev.dediamondpro.minemark.elements.creators.ElementCreator;
 import dev.dediamondpro.minemark.style.Style;
@@ -71,9 +72,11 @@ public abstract class Element<S extends Style, R> implements AutoCloseable {
      * Internal method for drawing an element, should never be used directly.
      */
     @ApiStatus.OverrideOnly
-    public void drawInternal(float xOffset, float yOffset, float mouseX, float mouseY, R renderData){
+    public void drawInternal(float xOffset, float yOffset, float mouseX, float mouseY, @Nullable ViewPort viewPort, R renderData) {
         for (Element<S, R> child : children) {
-            child.drawInternal(xOffset, yOffset, mouseX, mouseY, renderData);
+            if (viewPort == null || child.shouldDraw(viewPort, xOffset, yOffset)) {
+                child.drawInternal(xOffset, yOffset, mouseX, mouseY, viewPort, renderData);
+            }
         }
     }
 
@@ -152,6 +155,14 @@ public abstract class Element<S extends Style, R> implements AutoCloseable {
             builder.append(child.buildTree(depth + 1));
         }
         return builder.toString();
+    }
+
+    /**
+     * Function that decides if an element should be drawn or not given the current view port.
+     * Used to cull elements that would be outside the viewport.
+     */
+    public boolean shouldDraw(@NotNull ViewPort viewPort, float xOffset, float yOffset) {
+        return true;
     }
 
     public @Nullable Element<S, R> getParent() {

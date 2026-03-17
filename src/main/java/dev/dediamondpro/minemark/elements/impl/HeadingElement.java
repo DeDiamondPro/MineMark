@@ -19,6 +19,7 @@ package dev.dediamondpro.minemark.elements.impl;
 
 import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.LayoutStyle;
+import dev.dediamondpro.minemark.data.ViewPort;
 import dev.dediamondpro.minemark.elements.ChildBasedElement;
 import dev.dediamondpro.minemark.elements.Element;
 import dev.dediamondpro.minemark.elements.Inline;
@@ -45,8 +46,8 @@ public abstract class HeadingElement<S extends Style, R> extends ChildBasedEleme
     }
 
     @Override
-    public void drawInternal(float xOffset, float yOffset, float mouseX, float mouseY, R renderData) {
-        super.drawInternal(xOffset, yOffset, mouseX, mouseY, renderData);
+    public void drawInternal(float xOffset, float yOffset, float mouseX, float mouseY, @Nullable ViewPort viewPort, R renderData) {
+        super.drawInternal(xOffset, yOffset, mouseX, mouseY, viewPort, renderData);
         if (headingStyle.hasDivider()) {
             drawDivider(
                     xOffset + dividerPosition.getX(), yOffset + dividerPosition.getY(),

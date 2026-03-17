@@ -17,14 +17,17 @@
 
 package dev.dediamondpro.minemark.minecraft;
 
+import com.mojang.blaze3d.platform.Window;
 import dev.dediamondpro.minemark.MineMarkCore;
 import dev.dediamondpro.minemark.MineMarkCoreBuilder;
+import dev.dediamondpro.minemark.data.ViewPort;
 import dev.dediamondpro.minemark.elements.Elements;
 import dev.dediamondpro.minemark.elements.MineMarkElement;
 import dev.dediamondpro.minemark.minecraft.elements.*;
 import dev.dediamondpro.minemark.minecraft.platform.MarkdownRenderer;
 import dev.dediamondpro.minemark.minecraft.style.MarkdownStyle;
 import dev.dediamondpro.minemark.utils.MouseButton;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension;
 import org.commonmark.ext.gfm.tables.TablesExtension;
@@ -39,6 +42,7 @@ public class MineMarkDrawable implements AutoCloseable {
             .addExtension(TablesExtension.create())
             .build();
     private final MineMarkElement<MarkdownStyle, MarkdownRenderer> parsedMarkdown;
+    private final Window window = Minecraft.getInstance().getWindow();
 
     public MineMarkDrawable(MineMarkElement<MarkdownStyle, MarkdownRenderer> parsedMarkdown) {
         this.parsedMarkdown = parsedMarkdown;
@@ -69,7 +73,8 @@ public class MineMarkDrawable implements AutoCloseable {
     }
 
     public void draw(float x, float y, float width, float mouseX, float mouseY, GuiGraphics drawContext) {
-        parsedMarkdown.draw(x, y, width, mouseX, mouseY, new MarkdownRenderer(drawContext));
+        ViewPort viewPort = new ViewPort(0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight());
+        parsedMarkdown.draw(x, y, width, mouseX, mouseY, viewPort, new MarkdownRenderer(drawContext));
     }
 
     public void beforeDraw(float x, float y, float width, float mouseX, float mouseY, GuiGraphics drawContext) {

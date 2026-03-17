@@ -19,6 +19,7 @@ package dev.dediamondpro.minemark.elements.impl.table;
 
 import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.LayoutStyle;
+import dev.dediamondpro.minemark.data.ViewPort;
 import dev.dediamondpro.minemark.elements.Element;
 import dev.dediamondpro.minemark.style.Style;
 import dev.dediamondpro.minemark.utils.MouseButton;
@@ -36,14 +37,21 @@ public class TableRowElement<S extends Style, R> extends Element<S, R> {
     }
 
     @Override
-    public void drawInternal(float xOffset, float yOffset, float mouseX, float mouseY, R renderData) {
+    public void drawInternal(float xOffset, float yOffset, float mouseX, float mouseY, @Nullable ViewPort viewPort, R renderData) {
         for (int i = 0; i < children.size(); i++) {
             float x = cellWidth * i;
             float y = position.getY();
-            children.get(i).drawInternal(
-                    xOffset + x, yOffset + y,
-                    mouseX - x, mouseY - y, renderData
-            );
+
+            float newXOffset = xOffset + x;
+            float newYOffset = yOffset + y;
+            Element<S, R> child = children.get(i);
+            if (viewPort != null && child.shouldDraw(viewPort, newXOffset, newYOffset)) {
+                child.drawInternal(
+                        newXOffset, newYOffset,
+                        mouseX - x, mouseY - y,
+                        viewPort, renderData
+                );
+            }
         }
     }
 

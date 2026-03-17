@@ -19,6 +19,7 @@ package dev.dediamondpro.minemark.elements;
 
 import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.LayoutStyle;
+import dev.dediamondpro.minemark.data.ViewPort;
 import dev.dediamondpro.minemark.style.Style;
 import dev.dediamondpro.minemark.utils.MouseButton;
 import org.jetbrains.annotations.ApiStatus;
@@ -35,6 +36,8 @@ public abstract class ChildMovingElement<S extends Style, R> extends Element<S, 
     protected float totalHeight;
     protected float extraXOffset;
     protected float extraYOffset;
+    float top = Float.NEGATIVE_INFINITY;
+    float bottom = Float.POSITIVE_INFINITY;
 
     public ChildMovingElement(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
         super(style, layoutStyle, parent, qName, attributes);
@@ -45,6 +48,7 @@ public abstract class ChildMovingElement<S extends Style, R> extends Element<S, 
         if (layoutData.isLineModified()) {
             layoutData.nextLine();
         }
+        top = layoutData.getCurrentLine().getY();
 
         float markerWidth = getMarkerWidth(layoutData, renderData);
         float outsidePadding = getOutsidePadding(layoutData, renderData);
@@ -82,6 +86,7 @@ public abstract class ChildMovingElement<S extends Style, R> extends Element<S, 
                     totalHeight + insidePadding * 2
             );
         }
+        bottom = layoutData.getCurrentLine().getBottomY();
         layoutData.nextLine();
 
         extraXOffset = (markerType == MarkerType.BLOCK ? 0f : marker.getRightX()) + insidePadding;
@@ -96,15 +101,23 @@ public abstract class ChildMovingElement<S extends Style, R> extends Element<S, 
 
     @Override
     @ApiStatus.Internal
-    public void drawInternal(float xOffset, float yOffset, float mouseX, float mouseY, R renderData) {
+    public void drawInternal(float xOffset, float yOffset, float mouseX, float mouseY, @Nullable ViewPort viewPort, R renderData) {
         if (marker != null) {
             drawMarker(marker.getX() + xOffset, marker.getY() + yOffset, marker.getWidth(), marker.getHeight(), renderData);
         }
+
+        float newXOffset = xOffset + extraXOffset;
+        float newYOffset = yOffset + extraYOffset;
+        float newMouseX = mouseX - extraXOffset;
+        float newMouseY = mouseY - extraYOffset;
         for (Element<S, R> child : children) {
-            child.drawInternal(
-                    xOffset + extraXOffset, yOffset + extraYOffset,
-                    mouseX - extraXOffset, mouseY - extraYOffset, renderData
-            );
+            if (viewPort != null && child.shouldDraw(viewPort, newXOffset, newYOffset)) {
+                child.drawInternal(
+                        newXOffset, newYOffset,
+                        newMouseX, newMouseY,
+                        viewPort, renderData
+                );
+            }
         }
     }
 
@@ -150,5 +163,10 @@ public abstract class ChildMovingElement<S extends Style, R> extends Element<S, 
         ONE_LINE,
         FULL,
         BLOCK
+    }
+
+    @Override
+    public boolean shouldDraw(@NotNull ViewPort viewPort, float xOffset, float yOffset) {
+        return viewPort.isInViewPortVertical(top + yOffset, bottom + yOffset);
     }
 }

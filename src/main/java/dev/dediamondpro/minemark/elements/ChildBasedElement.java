@@ -19,27 +19,38 @@ package dev.dediamondpro.minemark.elements;
 
 import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.LayoutStyle;
+import dev.dediamondpro.minemark.data.ViewPort;
 import dev.dediamondpro.minemark.style.Style;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
 
 public abstract class ChildBasedElement<S extends Style, R> extends Element<S, R> {
+    private float top = Float.NEGATIVE_INFINITY;
+    private float bottom = Float.POSITIVE_INFINITY;
+
     public ChildBasedElement(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
         super(style, layoutStyle, parent, qName, attributes);
     }
 
     @Override
     public void generateLayout(LayoutData layoutData, R renderData) {
+        top = layoutData.getCurrentLine().getY();
         float padding = getPadding(layoutData, renderData);
         layoutData.updateTopSpacing(padding);
         for (Element<S, R> child : children) {
             child.generateLayoutInternal(layoutData, renderData);
         }
         layoutData.updateBottomSpacing(padding);
+        bottom = layoutData.getCurrentLine().getBottomY();
     }
 
     protected float getPadding(LayoutData layoutData, R renderData) {
         return 0f;
+    }
+
+    @Override
+    public boolean shouldDraw(@NotNull ViewPort viewPort, float xOffset, float yOffset) {
+        return viewPort.isInViewPortVertical(top + yOffset, bottom + yOffset);
     }
 }

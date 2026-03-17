@@ -19,6 +19,7 @@ package dev.dediamondpro.minemark.elements.impl;
 
 import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.LayoutStyle;
+import dev.dediamondpro.minemark.data.ViewPort;
 import dev.dediamondpro.minemark.elements.Element;
 import dev.dediamondpro.minemark.elements.Inline;
 import dev.dediamondpro.minemark.style.Style;
@@ -40,6 +41,10 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
     protected float baseLineHeight;
     protected float ascender;
     protected float descender;
+    protected float leftX = Float.POSITIVE_INFINITY;
+    protected float topY = Float.POSITIVE_INFINITY;
+    protected float rightX = Float.NEGATIVE_INFINITY;
+    protected float bottomY = Float.NEGATIVE_INFINITY;
 
     public TextElement(@NotNull String text, @NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
         super(style, layoutStyle, parent, qName, attributes);
@@ -48,23 +53,38 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
 
     @Override
     public void generateLayout(LayoutData layoutData, R renderData) {
+        // Reset values
         lines.clear();
         ArrayList<String> allLines = new ArrayList<>();
+        leftX = Float.POSITIVE_INFINITY;
+        topY = Float.POSITIVE_INFINITY;
+        rightX = Float.NEGATIVE_INFINITY;
+        bottomY = Float.NEGATIVE_INFINITY;
+
         String[] predefinedLines = text.split("\n", -1);
         for (int i = 0; i < predefinedLines.length; i++) {
             String line = predefinedLines[i].replace("\n", "");
             allLines.addAll(wrapText(line, i == 0 ? layoutData.getX() : 0f, layoutData.getMaxWidth(), renderData));
         }
+
         float codeBlockPadding = layoutStyle.get(LayoutStyle.PART_OF_CODE_BLOCK) ? style.getCodeBlockStyle().getInlinePaddingTopBottom() : 0f;
         float padding = Math.max(style.getTextStyle().getPadding(), codeBlockPadding);
         float fontSize = layoutStyle.get(LayoutStyle.FONT_SIZE);
         baseLineHeight = getBaselineHeight(fontSize, renderData);
         ascender = getAscender(fontSize, renderData);
         descender = getDescender(fontSize, renderData);
+
         for (int i = 0; i < allLines.size(); i++) {
             String line = allLines.get(i);
             layoutData.updatePadding(padding);
-            lines.put(layoutData.addElement(layoutStyle.get(LayoutStyle.ALIGNMENT), getAdjustedTextWidth(line, fontSize, renderData), baseLineHeight), line);
+            LayoutData.MarkDownElementPosition position = layoutData.addElement(layoutStyle.get(LayoutStyle.ALIGNMENT), getAdjustedTextWidth(line, fontSize, renderData), baseLineHeight);
+            lines.put(position, line);
+            // Update text bounds
+            leftX = Math.min(leftX, position.getX());
+            rightX = Math.max(rightX, position.getRightX());
+            topY = Math.min(topY, position.getY() - ascender);
+            bottomY = Math.max(bottomY, position.getBottomY() - descender);
+
             if (i != allLines.size() - 1) {
                 layoutData.nextLine();
             }
@@ -72,7 +92,7 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
     }
 
     @Override
-    public void drawInternal(float xOffset, float yOffset, float mouseX, float mouseY, R renderData) {
+    public void drawInternal(float xOffset, float yOffset, float mouseX, float mouseY, @Nullable ViewPort viewPort, R renderData) {
         boolean hovered = false;
         for (LayoutData.MarkDownElementPosition position : lines.keySet()) {
             if (position.isInside(mouseX, mouseY)) {
@@ -169,6 +189,11 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
 
     protected float getDescender(float fontSize, R renderData) {
         return 0f;
+    }
+
+    @Override
+    public boolean shouldDraw(@NotNull ViewPort viewPort, float xOffset, float yOffset) {
+        return viewPort.isInViewPort(leftX + xOffset, topY + yOffset, rightX + xOffset, bottomY + yOffset);
     }
 
     @Override
