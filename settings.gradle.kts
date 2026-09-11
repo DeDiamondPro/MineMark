@@ -1,6 +1,6 @@
 /*
  * This file is part of MineMark
- * Copyright (C) 2024 DeDiamondPro
+ * Copyright (C) 2024-2026 DeDiamondPro
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -33,7 +33,7 @@ pluginManagement {
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version "0.7.10"
+    id("dev.kikugie.stonecutter") version "0.9.8"
 }
 
 include(":elementa")
@@ -49,12 +49,11 @@ val mcPlatforms = listOf(
     "1.21.5-neoforge",
 )
 
-include(":minecraft")
 stonecutter {
     centralScript = "build.gradle.kts"
     kotlinController = true
 
-    create(project(":minecraft")) {
+    create(":minecraft") {
         for (version in mcPlatforms) {
             version(version, version.split("-")[0])
         }

@@ -1,6 +1,6 @@
 /*
  * This file is part of MineMark
- * Copyright (C) 2024 DeDiamondPro
+ * Copyright (C) 2024-2026 DeDiamondPro
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,16 +15,19 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+
 plugins {
-    // Lowest kotlin version that elementa supports
-    kotlin("jvm") version "1.6.10"
+    kotlin("jvm") version "2.2.20"
 }
 
-tasks.compileKotlin.configure {
-    kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs.filterNot {
-            it.startsWith("-Xjvm-default=")
-        } + listOf("-Xjvm-default=" + "all-compatibility")
+kotlin {
+    compilerOptions {
+        languageVersion = KotlinVersion.KOTLIN_1_9
+        apiVersion = KotlinVersion.KOTLIN_1_9
+        jvmTarget = JvmTarget.JVM_1_8
+        freeCompilerArgs.add("-Xjvm-default=all-compatibility")
     }
 }
 
@@ -33,6 +36,9 @@ repositories {
 }
 
 dependencies {
+    // Lowest kotlin version that elementa supports.
+    api(kotlin("stdlib", "1.6.10"))
+
     implementation(libs.elementa)
     api(libs.commonmark.ext.striketrough)
     api(libs.commonmark.ext.tables)
