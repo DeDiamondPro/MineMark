@@ -68,6 +68,8 @@ public abstract class HeadingElement<S extends Style, R> extends ChildBasedEleme
             layoutData.nextLine();
             dividerPosition = layoutData.addElement(layoutStyle.get(LayoutStyle.ALIGNMENT), layoutData.getMaxWidth(), headingStyle.getDividerHeight());
             layoutData.setBottomSpacing(headingStyle.getPadding());
+            // Extend bottom for divider
+            bottom = layoutData.getCurrentLine().getBottomY();
         }
         layoutData.nextLine();
     }

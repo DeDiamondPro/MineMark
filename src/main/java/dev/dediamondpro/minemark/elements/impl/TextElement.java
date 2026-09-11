@@ -1,6 +1,6 @@
 /*
  * This file is part of MineMark
- * Copyright (C) 2024 DeDiamondPro
+ * Copyright (C) 2024-2026 DeDiamondPro
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -73,6 +73,10 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
         baseLineHeight = getBaselineHeight(fontSize, renderData);
         ascender = getAscender(fontSize, renderData);
         descender = getDescender(fontSize, renderData);
+        // The inline code block bg is drawn bigger than the line, needs to be part of culling bounds
+        float backgroundPadding = getInlineCodeBlockPadding();
+        float topBound = Math.max(ascender, backgroundPadding);
+        float bottomBound = Math.max(descender, backgroundPadding);
 
         for (int i = 0; i < allLines.size(); i++) {
             String line = allLines.get(i);
@@ -82,8 +86,8 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
             // Update text bounds
             leftX = Math.min(leftX, position.getX());
             rightX = Math.max(rightX, position.getRightX());
-            topY = Math.min(topY, position.getY() - ascender);
-            bottomY = Math.max(bottomY, position.getBottomY() - descender);
+            topY = Math.min(topY, position.getY() - topBound);
+            bottomY = Math.max(bottomY, position.getBottomY() + bottomBound);
 
             if (i != allLines.size() - 1) {
                 layoutData.nextLine();
@@ -104,9 +108,18 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
         boolean partOfCodeBlock = layoutStyle.get(LayoutStyle.PART_OF_CODE_BLOCK);
 
         float paddingLeftRight = partOfCodeBlock ? style.getCodeBlockStyle().getInlinePaddingLeftRight() : 0f;
-        float paddingTopBottom = partOfCodeBlock ? style.getCodeBlockStyle().getInlinePaddingTopBottom() : 0f;
+        float paddingTopBottom = getInlineCodeBlockPadding();
+        float topBound = Math.max(ascender, paddingTopBottom);
+        float bottomBound = Math.max(descender, paddingTopBottom);
         for (Map.Entry<LayoutData.MarkDownElementPosition, String> line : lines.entrySet()) {
             LayoutData.MarkDownElementPosition position = line.getKey();
+            // Cull text per line
+            if (viewPort != null && !viewPort.isInViewPort(
+                    position.getX() + xOffset, position.getY() + yOffset - topBound,
+                    position.getRightX() + xOffset, position.getBottomY() + yOffset + bottomBound
+            )) {
+                continue;
+            }
             String text = line.getValue();
             // preformatted = non-inline code block
             if (partOfCodeBlock && !layoutStyle.get(LayoutStyle.PRE_FORMATTED)) {
@@ -189,6 +202,14 @@ public abstract class TextElement<S extends Style, R> extends Element<S, R> impl
 
     protected float getDescender(float fontSize, R renderData) {
         return 0f;
+    }
+
+    /**
+     * @return Padding of the inline code block background, 0 if no background
+     */
+    protected float getInlineCodeBlockPadding() {
+        return layoutStyle.get(LayoutStyle.PART_OF_CODE_BLOCK) && !layoutStyle.get(LayoutStyle.PRE_FORMATTED)
+                ? style.getCodeBlockStyle().getInlinePaddingTopBottom() : 0f;
     }
 
     @Override

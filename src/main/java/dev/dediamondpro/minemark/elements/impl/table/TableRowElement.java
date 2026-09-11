@@ -1,6 +1,6 @@
 /*
  * This file is part of MineMark
- * Copyright (C) 2024 DeDiamondPro
+ * Copyright (C) 2024-2026 DeDiamondPro
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -45,7 +45,7 @@ public class TableRowElement<S extends Style, R> extends Element<S, R> {
             float newXOffset = xOffset + x;
             float newYOffset = yOffset + y;
             Element<S, R> child = children.get(i);
-            if (viewPort != null && child.shouldDraw(viewPort, newXOffset, newYOffset)) {
+            if (viewPort == null || child.shouldDraw(viewPort, newXOffset, newYOffset)) {
                 child.drawInternal(
                         newXOffset, newYOffset,
                         mouseX - x, mouseY - y,
@@ -74,6 +74,12 @@ public class TableRowElement<S extends Style, R> extends Element<S, R> {
             float y = position.getY();
             children.get(i).onMouseClickedInternal(button, mouseX - x, mouseY - y);
         }
+    }
+
+    @Override
+    public boolean shouldDraw(@NotNull ViewPort viewPort, float xOffset, float yOffset) {
+        if (position == null) return false;
+        return viewPort.isInViewPortVertical(position.getY() + yOffset, position.getBottomY() + yOffset);
     }
 
     @Override

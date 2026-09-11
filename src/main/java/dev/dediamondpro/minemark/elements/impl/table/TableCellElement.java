@@ -113,6 +113,11 @@ public abstract class TableCellElement<S extends Style, R> extends ChildMovingEl
     }
 
     @Override
+    protected float getDrawnMarkerHeight() {
+        return cellHeight == -1 ? super.getDrawnMarkerHeight() : cellHeight;
+    }
+
+    @Override
     protected float getMarkerWidth(LayoutData layoutData, R renderData) {
         return 0f;
     }

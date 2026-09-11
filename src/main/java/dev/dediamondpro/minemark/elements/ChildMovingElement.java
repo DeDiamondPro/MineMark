@@ -1,6 +1,6 @@
 /*
  * This file is part of MineMark
- * Copyright (C) 2024 DeDiamondPro
+ * Copyright (C) 2024-2026 DeDiamondPro
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -36,8 +36,8 @@ public abstract class ChildMovingElement<S extends Style, R> extends Element<S, 
     protected float totalHeight;
     protected float extraXOffset;
     protected float extraYOffset;
-    float top = Float.NEGATIVE_INFINITY;
-    float bottom = Float.POSITIVE_INFINITY;
+    protected float top = Float.NEGATIVE_INFINITY;
+    protected float bottom = Float.POSITIVE_INFINITY;
 
     public ChildMovingElement(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
         super(style, layoutStyle, parent, qName, attributes);
@@ -102,7 +102,8 @@ public abstract class ChildMovingElement<S extends Style, R> extends Element<S, 
     @Override
     @ApiStatus.Internal
     public void drawInternal(float xOffset, float yOffset, float mouseX, float mouseY, @Nullable ViewPort viewPort, R renderData) {
-        if (marker != null) {
+        if (marker != null && (viewPort == null || viewPort.isInViewPort(marker.getX() + xOffset, marker.getY() + yOffset,
+                marker.getRightX() + xOffset, marker.getY() + getDrawnMarkerHeight() + yOffset))) {
             drawMarker(marker.getX() + xOffset, marker.getY() + yOffset, marker.getWidth(), marker.getHeight(), renderData);
         }
 
@@ -111,7 +112,7 @@ public abstract class ChildMovingElement<S extends Style, R> extends Element<S, 
         float newMouseX = mouseX - extraXOffset;
         float newMouseY = mouseY - extraYOffset;
         for (Element<S, R> child : children) {
-            if (viewPort != null && child.shouldDraw(viewPort, newXOffset, newYOffset)) {
+            if (viewPort == null || child.shouldDraw(viewPort, newXOffset, newYOffset)) {
                 child.drawInternal(
                         newXOffset, newYOffset,
                         newMouseX, newMouseY,
@@ -165,8 +166,19 @@ public abstract class ChildMovingElement<S extends Style, R> extends Element<S, 
         BLOCK
     }
 
+    /**
+     * @return The height of the marker, override this if the marker is taller than its layout (like for table cells).
+     */
+    protected float getDrawnMarkerHeight() {
+        return marker == null ? 0f : marker.getHeight();
+    }
+
     @Override
     public boolean shouldDraw(@NotNull ViewPort viewPort, float xOffset, float yOffset) {
+        float bottom = this.bottom;
+        if (marker != null) {
+            bottom = Math.max(bottom, marker.getY() + getDrawnMarkerHeight());
+        }
         return viewPort.isInViewPortVertical(top + yOffset, bottom + yOffset);
     }
 }

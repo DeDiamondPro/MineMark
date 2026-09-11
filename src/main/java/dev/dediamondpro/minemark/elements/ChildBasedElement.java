@@ -26,8 +26,8 @@ import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
 
 public abstract class ChildBasedElement<S extends Style, R> extends Element<S, R> {
-    private float top = Float.NEGATIVE_INFINITY;
-    private float bottom = Float.POSITIVE_INFINITY;
+    protected float top = Float.NEGATIVE_INFINITY;
+    protected float bottom = Float.POSITIVE_INFINITY;
 
     public ChildBasedElement(@NotNull S style, @NotNull LayoutStyle layoutStyle, @Nullable Element<S, R> parent, @NotNull String qName, @Nullable Attributes attributes) {
         super(style, layoutStyle, parent, qName, attributes);
