@@ -112,6 +112,7 @@ class MineMarkTestScreen : WindowScreen(ElementaVersion.V11) {
         } else {
             null
         }
+        markdown?.onWindowResize()
     }
 
     override fun onKeyPressed(keyCode: Int, typedChar: Char, modifiers: UKeyboard.Modifiers?) {
