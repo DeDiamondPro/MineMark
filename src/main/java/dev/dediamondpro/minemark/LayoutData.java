@@ -1,6 +1,6 @@
 /*
  * This file is part of MineMark
- * Copyright (C) 2024 DeDiamondPro
+ * Copyright (C) 2024-2026 DeDiamondPro
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@ public class LayoutData {
     private final float maxWidth;
     private boolean topSpacingLocked = false;
     private boolean bottomSpacingLocked = false;
+    private boolean lineModified = false;
 
     public LayoutData(float maxWidth) {
         this.maxWidth = maxWidth;
@@ -41,19 +42,25 @@ public class LayoutData {
         return currentLine.width != 0f;
     }
 
+    /**
+     * @return If anything was added to the current line, values inherited from a parent layout
+     * (see {@link #setTopSpacing(float)}, {@link #setLineHeight(float)} and {@link #setBottomSpacing(float)})
+     * do not count as a modification.
+     */
     public boolean isLineModified() {
-        return isLineOccupied() || currentLine.bottomSpacing != 0f || currentLine.height != 0f || currentLine.topSpacing != 0f;
+        return lineModified || isLineOccupied();
     }
 
     public void nextLine() {
         // Only set previous line if there was a meaningful change
-        if (isLineModified()) {
+        if (isLineModified() || currentLine.getHeight() != 0f) {
             lineListeners.forEach(listener -> listener.accept(currentLine));
             previousLine = currentLine;
         }
         currentLine = new MarkDownLine(currentLine.getBottomY());
         topSpacingLocked = false;
         bottomSpacingLocked = false;
+        lineModified = false;
     }
 
     public MarkDownElementPosition addElement(LayoutStyle.Alignment alignment, float width, float height) {
@@ -106,6 +113,7 @@ public class LayoutData {
 
     public void addX(float xMovement) {
         currentLine.width += xMovement;
+        if (xMovement != 0f) lineModified = true;
     }
 
     public float getY() {
@@ -122,6 +130,7 @@ public class LayoutData {
 
     public void updateLineHeight(float lineHeight) {
         currentLine.height = Math.max(currentLine.height, lineHeight);
+        if (lineHeight != 0f) lineModified = true;
     }
 
     public float getMaxWidth() {
@@ -139,11 +148,13 @@ public class LayoutData {
     public void updateTopSpacing(float spacing) {
         if (topSpacingLocked) return;
         currentLine.topSpacing = Math.max(currentLine.topSpacing, spacing);
+        if (spacing != 0f) lineModified = true;
     }
 
     public void updateBottomSpacing(float spacing) {
         if (bottomSpacingLocked) return;
         currentLine.bottomSpacing = Math.max(currentLine.bottomSpacing, spacing);
+        if (spacing != 0f) lineModified = true;
     }
 
     public void updatePadding(float padding) {
