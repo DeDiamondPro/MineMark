@@ -1,6 +1,6 @@
 /*
  * This file is part of MineMark
- * Copyright (C) 2024 DeDiamondPro
+ * Copyright (C) 2024-2026 DeDiamondPro
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,7 +31,6 @@ import java.util.function.Consumer;
 
 public class MineMarkElement<S extends Style, R> extends ChildBasedElement<S, R> {
     private final ArrayList<Consumer<Float>> layoutCallbacks = new ArrayList<>();
-    private final ArrayList<LayoutData.MarkDownLine> lines = new ArrayList<>();
     private float lastWidth = -1;
     private float height;
 
@@ -127,9 +126,7 @@ public class MineMarkElement<S extends Style, R> extends ChildBasedElement<S, R>
     @ApiStatus.Internal
     public void generateLayout(LayoutData layoutData, R renderData) {
         layoutData.lockTopSpacing();
-        layoutData.addLineListener(lines::add);
         super.generateLayout(layoutData, renderData);
-        layoutData.removeLineListener();
         float bottomSpacing = layoutData.getCurrentLine().getBottomSpacing();
         if (bottomSpacing == 0f && layoutData.isLineEmpty() && layoutData.getPreviousLine() != null) {
             bottomSpacing = layoutData.getPreviousLine().getBottomSpacing();
@@ -158,13 +155,6 @@ public class MineMarkElement<S extends Style, R> extends ChildBasedElement<S, R>
      */
     public float getHeight() {
         return height;
-    }
-
-    /**
-     * @return Data related to all lines in this element
-     */
-    public ArrayList<LayoutData.MarkDownLine> getLines() {
-        return lines;
     }
 
     /**
