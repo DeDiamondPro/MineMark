@@ -1,6 +1,6 @@
 /*
  * This file is part of MineMark
- * Copyright (C) 2024 DeDiamondPro
+ * Copyright (C) 2024-2026 DeDiamondPro
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,8 @@ import dev.dediamondpro.minemark.utils.MouseButton
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.dsl.constrain
 import gg.essential.elementa.dsl.pixels
+import gg.essential.elementa.renderer.ElementaExtractor
+import gg.essential.elementa.renderer.ImmediateElementaExtractor
 import gg.essential.universal.UMatrixStack
 import gg.essential.universal.UResolution
 import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension
@@ -36,22 +38,22 @@ import java.io.Reader
 
 
 /**
- * A component to rendering markdown powered by MineMark
+ * A component to rendering Markdown powered by MineMark
  */
-class MineMarkComponent(markdown: MineMarkElement<MarkdownStyle, UMatrixStack>) : UIComponent() {
+class MineMarkComponent(markdown: MineMarkElement<MarkdownStyle, ElementaExtractor>) : UIComponent() {
     constructor(
         markdown: String,
         style: MarkdownStyle = MarkdownStyle(),
-        core: MineMarkCore<MarkdownStyle, UMatrixStack> = defaultCore
+        core: MineMarkCore<MarkdownStyle, ElementaExtractor> = defaultCore
     ) : this(core.parse(style, markdown))
 
     constructor(
         markdown: Reader,
         style: MarkdownStyle = MarkdownStyle(),
-        core: MineMarkCore<MarkdownStyle, UMatrixStack> = defaultCore
+        core: MineMarkCore<MarkdownStyle, ElementaExtractor> = defaultCore
     ) : this(core.parse(style, markdown))
 
-    val parsedMarkdown: MineMarkElement<MarkdownStyle, UMatrixStack> = markdown.apply {
+    val parsedMarkdown: MineMarkElement<MarkdownStyle, ElementaExtractor> = markdown.apply {
         addLayoutCallback(this@MineMarkComponent::layoutCallback)
     }
 
@@ -82,7 +84,7 @@ class MineMarkComponent(markdown: MineMarkElement<MarkdownStyle, UMatrixStack>) 
         }
     }
 
-    override fun beforeDraw(matrixStack: UMatrixStack) {
+    override fun extractComponent(extractor: ElementaExtractor) {
         val mouse = this.getMousePosition()
         parsedMarkdown.beforeDraw(
             this.getLeft(),
@@ -90,14 +92,9 @@ class MineMarkComponent(markdown: MineMarkElement<MarkdownStyle, UMatrixStack>) 
             this.getWidth(),
             mouse.first,
             mouse.second,
-            matrixStack
+            extractor
         )
-        super.beforeDraw(matrixStack)
-    }
 
-    override fun draw(matrixStack: UMatrixStack) {
-        beforeDraw(matrixStack)
-        val mouse = this.getMousePosition()
         parsedMarkdown.draw(
             this.getLeft(),
             this.getTop(),
@@ -105,8 +102,22 @@ class MineMarkComponent(markdown: MineMarkElement<MarkdownStyle, UMatrixStack>) 
             mouse.first,
             mouse.second,
             viewPort ?: screenViewPort,
-            matrixStack
+            extractor
         )
+    }
+
+    @Deprecated(
+        "`draw`-style rendering is deprecated. " +
+                "Override `extractComponent` instead. " +
+                "Call `extract` to extract this component, its effects, and its children.",
+        replaceWith = ReplaceWith("extract(extractor)")
+    )
+    override fun draw(matrixStack: UMatrixStack) {
+        beforeDrawCompat(matrixStack)
+
+        extractComponent(ImmediateElementaExtractor(matrixStack))
+
+        @Suppress("DEPRECATION")
         super.draw(matrixStack)
     }
 
@@ -118,7 +129,7 @@ class MineMarkComponent(markdown: MineMarkElement<MarkdownStyle, UMatrixStack>) 
 
     companion object {
         private val defaultCore = MineMarkCore
-            .builder<MarkdownStyle, UMatrixStack>()
+            .builder<MarkdownStyle, ElementaExtractor>()
             .addExtension(StrikethroughExtension.create())
             .addExtension(TablesExtension.create())
             .addElementaExtensions()
@@ -126,7 +137,7 @@ class MineMarkComponent(markdown: MineMarkElement<MarkdownStyle, UMatrixStack>) 
     }
 }
 
-fun MineMarkCoreBuilder<MarkdownStyle, UMatrixStack>.addElementaExtensions(): MineMarkCoreBuilder<MarkdownStyle, UMatrixStack> {
+fun MineMarkCoreBuilder<MarkdownStyle, ElementaExtractor>.addElementaExtensions(): MineMarkCoreBuilder<MarkdownStyle, ElementaExtractor> {
     return this.setTextElement(::MarkdownTextComponent)
         .addElement(Elements.HEADING, ::MarkdownHeadingComponent)
         .addElement(Elements.IMAGE, ::MarkdownImageComponent)

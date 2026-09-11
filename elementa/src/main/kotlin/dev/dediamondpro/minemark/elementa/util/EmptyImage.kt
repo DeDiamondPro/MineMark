@@ -1,6 +1,6 @@
 /*
  * This file is part of MineMark
- * Copyright (C) 2024 DeDiamondPro
+ * Copyright (C) 2024-2026 DeDiamondPro
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,17 +18,5 @@
 package dev.dediamondpro.minemark.elementa.util
 
 import gg.essential.elementa.components.image.ImageProvider
-import gg.essential.universal.UMatrixStack
-import java.awt.Color
 
-object EmptyImage : ImageProvider {
-    override fun drawImage(
-        matrixStack: UMatrixStack,
-        x: Double,
-        y: Double,
-        width: Double,
-        height: Double,
-        color: Color
-    ) {
-    }
-}
+object EmptyImage : ImageProvider

@@ -1,6 +1,6 @@
 /*
  * This file is part of MineMark
- * Copyright (C) 2024 DeDiamondPro
+ * Copyright (C) 2024-2026 DeDiamondPro
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,9 +22,9 @@ import dev.dediamondpro.minemark.LayoutStyle
 import dev.dediamondpro.minemark.elementa.style.MarkdownStyle
 import dev.dediamondpro.minemark.elements.Element
 import dev.dediamondpro.minemark.elements.impl.TextElement
-import gg.essential.elementa.components.UIBlock
-import gg.essential.universal.UMatrixStack
-import gg.essential.universal.UResolution
+import gg.essential.elementa.font.extractMcScale
+import gg.essential.elementa.renderer.ElementaExtractor
+import gg.essential.elementa.renderer.fillMcScaleXYWH
 import org.xml.sax.Attributes
 import java.awt.Color
 import kotlin.math.round
@@ -33,9 +33,9 @@ class MarkdownTextComponent(
     text: String,
     style: MarkdownStyle,
     layoutStyle: LayoutStyle,
-    parent: Element<MarkdownStyle, UMatrixStack>?,
+    parent: Element<MarkdownStyle, ElementaExtractor>?,
     qName: String, attributes: Attributes?
-) : TextElement<MarkdownStyle, UMatrixStack>(text, style, layoutStyle, parent, qName, attributes) {
+) : TextElement<MarkdownStyle, ElementaExtractor>(text, style, layoutStyle, parent, qName, attributes) {
     private val font = style.textStyle.font
     private var scale = layoutStyle.get(LayoutStyle.FONT_SIZE)
     private var prefix = buildString {
@@ -45,10 +45,10 @@ class MarkdownTextComponent(
         if (layoutStyle.get(LayoutStyle.STRIKETHROUGH)) append("§m")
     }
 
-    override fun generateLayout(layoutData: LayoutData?, matrixStack: UMatrixStack) {
-        val mcScale = UResolution.scaleFactor.toFloat()
+    override fun generateLayout(layoutData: LayoutData?, extractor: ElementaExtractor) {
+        val mcScale = extractor.guiScale
         scale = round(layoutStyle.get(LayoutStyle.FONT_SIZE) * mcScale) / mcScale
-        super.generateLayout(layoutData, matrixStack)
+        super.generateLayout(layoutData, extractor)
     }
 
     override fun drawText(
@@ -59,7 +59,7 @@ class MarkdownTextComponent(
         color: Color,
         hovered: Boolean,
         position: LayoutData.MarkDownElementPosition,
-        matrixStack: UMatrixStack
+        extractor: ElementaExtractor
     ) {
         prefix = buildString {
             if (layoutStyle.get(LayoutStyle.BOLD)) append("§l")
@@ -68,16 +68,13 @@ class MarkdownTextComponent(
             if (layoutStyle.get(LayoutStyle.UNDERLINED) || layoutStyle.get(LayoutStyle.PART_OF_LINK) && hovered) append("§n")
         }
 
-        matrixStack.push()
-        matrixStack.scale(scale, scale, 1f)
-        font.drawString(
-            matrixStack,
+        font.extractMcScale(
+            extractor,
             prefix + text,
             layoutStyle.get(LayoutStyle.TEXT_COLOR),
-            x / scale, y / scale,
-            1f, 1f
+            x, y,
+            scale
         )
-        matrixStack.pop()
     }
 
     override fun drawInlineCodeBlock(
@@ -86,24 +83,20 @@ class MarkdownTextComponent(
         width: Float,
         height: Float,
         color: Color,
-        matrixStack: UMatrixStack
+        extractor: ElementaExtractor
     ) {
-        UIBlock.drawBlockSized(
-            matrixStack, color,
-            x.toDouble(), y.toDouble(),
-            width.toDouble(), height.toDouble()
-        )
+        extractor.fillMcScaleXYWH(x, y, width, height, color)
     }
 
-    override fun getTextWidth(text: String, fontSize: Float, matrixStack: UMatrixStack): Float {
+    override fun getTextWidth(text: String, fontSize: Float, extractor: ElementaExtractor): Float {
         return font.getStringWidth(prefix + text, 1f) * scale
     }
 
-    override fun getBaselineHeight(fontSize: Float, matrixStack: UMatrixStack): Float {
+    override fun getBaselineHeight(fontSize: Float, extractor: ElementaExtractor): Float {
         return (font.getBaseLineHeight() + font.getShadowHeight()) * scale
     }
 
-    override fun getDescender(fontSize: Float, matrixStack: UMatrixStack): Float {
+    override fun getDescender(fontSize: Float, extractor: ElementaExtractor): Float {
         return font.getBelowLineHeight() * scale
     }
 }

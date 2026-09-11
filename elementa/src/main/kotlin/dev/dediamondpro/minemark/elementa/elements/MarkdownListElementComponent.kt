@@ -1,6 +1,6 @@
 /*
  * This file is part of MineMark
- * Copyright (C) 2024 DeDiamondPro
+ * Copyright (C) 2024-2026 DeDiamondPro
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,15 +23,16 @@ import dev.dediamondpro.minemark.elementa.style.MarkdownStyle
 import dev.dediamondpro.minemark.elements.Element
 import dev.dediamondpro.minemark.elements.impl.list.ListElement
 import dev.dediamondpro.minemark.elements.impl.list.ListHolderElement
-import gg.essential.universal.UMatrixStack
+import gg.essential.elementa.font.extractMcScale
+import gg.essential.elementa.renderer.ElementaExtractor
 import org.xml.sax.Attributes
 
 class MarkdownListElementComponent(
     style: MarkdownStyle,
     layoutStyle: LayoutStyle,
-    parent: Element<MarkdownStyle, UMatrixStack>?,
+    parent: Element<MarkdownStyle, ElementaExtractor>?,
     qName: String, attributes: Attributes?
-) : ListElement<MarkdownStyle, UMatrixStack>(style, layoutStyle, parent, qName, attributes) {
+) : ListElement<MarkdownStyle, ElementaExtractor>(style, layoutStyle, parent, qName, attributes) {
     private val fontProvider = style.textStyle.font
     private var markerStr: String = when (listType) {
         ListHolderElement.ListType.ORDERED -> "${elementIndex + 1}. "
@@ -39,25 +40,21 @@ class MarkdownListElementComponent(
         else -> "● "
     }
 
-    override fun drawMarker(x: Float, y: Float, matrixStack: UMatrixStack) {
-        val scale = layoutStyle.get(LayoutStyle.FONT_SIZE)
-        matrixStack.push()
-        matrixStack.scale(scale, scale, 1f)
-        fontProvider.drawString(
-            matrixStack,
+    override fun drawMarker(x: Float, y: Float, extractor: ElementaExtractor) {
+        fontProvider.extractMcScale(
+            extractor,
             markerStr,
             layoutStyle.get(LayoutStyle.TEXT_COLOR),
-            x / scale, y / scale,
-            1f, 1f
+            x, y,
+            layoutStyle.get(LayoutStyle.FONT_SIZE)
         )
-        matrixStack.pop()
     }
 
-    override fun getListMarkerWidth(layoutData: LayoutData?, matrixStack: UMatrixStack): Float {
+    override fun getListMarkerWidth(layoutData: LayoutData?, extractor: ElementaExtractor): Float {
         return fontProvider.getStringWidth(markerStr, 1f) * layoutStyle.get(LayoutStyle.FONT_SIZE)
     }
 
-    override fun getMarkerHeight(layoutData: LayoutData?, matrixStack: UMatrixStack): Float {
+    override fun getMarkerHeight(layoutData: LayoutData?, extractor: ElementaExtractor): Float {
         return (fontProvider.getBaseLineHeight() + fontProvider.getShadowHeight()) * layoutStyle.get(LayoutStyle.FONT_SIZE)
     }
 }
