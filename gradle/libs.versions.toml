@@ -7,7 +7,8 @@ tagsoup = "1.2.1"
 jetbrains_annotations = "24.0.0"
 
 # Elementa
-elementa = "619"
+elementa = "774"
+universalcraft = "530"
 
 [libraries]
 # Commonmark
@@ -22,4 +23,5 @@ tagsoup = { module = "org.ccil.cowan.tagsoup:tagsoup", version.ref = "tagsoup" }
 jetbrains_annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains_annotations" }
 
 # Elementa
-elementa = { module = "gg.essential:elementa-1.8.9-forge", version.ref = "elementa" }
+elementa = { module = "gg.essential:elementa", version.ref = "elementa" }
+universalcraft = { module = "gg.essential:universalcraft-standalone", version.ref = "universalcraft" }

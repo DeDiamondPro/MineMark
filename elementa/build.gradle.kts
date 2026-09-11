@@ -35,11 +35,29 @@ repositories {
     maven("https://repo.essential.gg/repository/maven-public")
 }
 
+val testGui: SourceSet by sourceSets.creating
+configurations["testGuiImplementation"].extendsFrom(configurations["api"], configurations["implementation"])
+
 dependencies {
     // Lowest kotlin version that elementa supports.
     api(kotlin("stdlib", "1.6.10"))
 
     implementation(libs.elementa)
+    compileOnly(libs.universalcraft) { isTransitive = false }
     api(libs.commonmark.ext.striketrough)
     api(libs.commonmark.ext.tables)
+
+    "testGuiImplementation"(sourceSets["main"].output)
+    "testGuiImplementation"(libs.universalcraft)
+    "testGuiRuntimeOnly"(kotlin("stdlib"))
+}
+
+tasks.register<JavaExec>("runTestGui") {
+    group = "verification"
+    description = "Run the Elementa test GUI"
+    mainClass.set("dev.dediamondpro.minemark.elementa.testgui.TestGuiKt")
+    classpath = testGui.runtimeClasspath
+    if (System.getProperty("os.name").startsWith("Mac")) {
+        jvmArgs("-XstartOnFirstThread")
+    }
 }

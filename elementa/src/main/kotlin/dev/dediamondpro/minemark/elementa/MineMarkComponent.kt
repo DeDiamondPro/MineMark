@@ -54,11 +54,17 @@ class MineMarkComponent(markdown: MineMarkElement<MarkdownStyle, UMatrixStack>) 
     val parsedMarkdown: MineMarkElement<MarkdownStyle, UMatrixStack> = markdown.apply {
         addLayoutCallback(this@MineMarkComponent::layoutCallback)
     }
-    private var viewPort: ViewPort =
+
+    private var screenViewPort: ViewPort =
         ViewPort(0f, 0f, UResolution.scaledWidth.toFloat(), UResolution.scaledHeight.toFloat())
 
+    /**
+     * The view port elements are culled against, uses entire screen when null
+     */
+    var viewPort: ViewPort? = null
+
     override fun onWindowResize() {
-        viewPort = ViewPort(0f, 0f, UResolution.scaledWidth.toFloat(), UResolution.scaledHeight.toFloat())
+        screenViewPort = ViewPort(0f, 0f, UResolution.scaledWidth.toFloat(), UResolution.scaledHeight.toFloat())
         super.onWindowResize()
     }
 
@@ -98,7 +104,7 @@ class MineMarkComponent(markdown: MineMarkElement<MarkdownStyle, UMatrixStack>) 
             this.getWidth(),
             mouse.first,
             mouse.second,
-            viewPort,
+            viewPort ?: screenViewPort,
             matrixStack
         )
         super.draw(matrixStack)
