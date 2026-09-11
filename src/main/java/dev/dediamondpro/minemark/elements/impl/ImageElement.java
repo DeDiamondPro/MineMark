@@ -91,8 +91,6 @@ public abstract class ImageElement<S extends Style, R, I> extends BasicElement<S
     }
 
     protected void calculateDimensions(LayoutData layoutData) {
-        // We already have a width and height for this image and don't need to update it
-        if (width > 0 && height > 0) return;
         width = -1;
         height = -1;
         String desiredWidth = attributes.getValue("width");
