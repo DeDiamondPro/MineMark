@@ -1,6 +1,6 @@
 /*
  * This file is part of MineMark
- * Copyright (C) 2024 DeDiamondPro
+ * Copyright (C) 2024-2026 DeDiamondPro
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -30,10 +30,14 @@ import dev.dediamondpro.minemark.elements.impl.table.TableRowElement;
 import dev.dediamondpro.minemark.elements.creators.ElementCreator;
 import dev.dediamondpro.minemark.elements.creators.TagBasedElementCreator;
 import dev.dediamondpro.minemark.elements.creators.TextElementCreator;
+import dev.dediamondpro.minemark.error.DefaultErrorResponseFactory;
+import dev.dediamondpro.minemark.error.ErrorResponseFactory;
+import dev.dediamondpro.minemark.error.ErrorResponseFactoryProvider;
 import dev.dediamondpro.minemark.style.Style;
 import org.commonmark.Extension;
 import org.commonmark.renderer.html.UrlSanitizer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -48,6 +52,7 @@ public class MineMarkCoreBuilder<S extends Style, R> {
     private TextElementCreator<S, R> textElement = null;
     private boolean withDefaultElements = true;
     private UrlSanitizer urlSanitizer = null;
+    private ErrorResponseFactoryProvider<S, R> errorResponseFactory = DefaultErrorResponseFactory::new;
 
     /**
      * Set the text element that should be used.
@@ -225,6 +230,33 @@ public class MineMarkCoreBuilder<S extends Style, R> {
     }
 
     /**
+     * Set the factory that will create elements to be rendered in case of an error
+     *
+     * @param errorResponseFactory The error response factory provider, will be created together with the core
+     */
+    public MineMarkCoreBuilder<S, R> setErrorResponseFactory(@Nullable ErrorResponseFactoryProvider<S, R> errorResponseFactory) {
+        this.errorResponseFactory = errorResponseFactory;
+        return this;
+    }
+
+    /**
+     * Set the factory that will create elements to be rendered in case of an error
+     *
+     * @param errorResponseFactory The error response factory
+     */
+    public MineMarkCoreBuilder<S, R> setErrorResponseFactory(@Nullable ErrorResponseFactory<S, R> errorResponseFactory) {
+        return setErrorResponseFactory((ErrorResponseFactoryProvider<S, R>) c -> errorResponseFactory);
+    }
+
+    /**
+     * Fully disable the error response being rendered, this will cause nothing to be rendered if an error occurs
+     */
+    public MineMarkCoreBuilder<S, R> disableErrorResponse() {
+        this.errorResponseFactory = null;
+        return this;
+    }
+
+    /**
      * @return a MineMarkCore with the given settings
      */
     public MineMarkCore<S, R> build() {
@@ -243,6 +275,6 @@ public class MineMarkCoreBuilder<S extends Style, R> {
             addFormatingElement(new CssStyleElement<>());
             addFormatingElement(new TextFormattingElement<>());
         }
-        return new MineMarkCore<>(textElement, elements, formattingElements, extensions, urlSanitizer);
+        return new MineMarkCore<>(textElement, elements, formattingElements, extensions, urlSanitizer, errorResponseFactory);
     }
 }

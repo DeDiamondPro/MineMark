@@ -20,6 +20,7 @@ package dev.dediamondpro.minemark.elements;
 import dev.dediamondpro.minemark.LayoutData;
 import dev.dediamondpro.minemark.LayoutStyle;
 import dev.dediamondpro.minemark.data.ViewPort;
+import dev.dediamondpro.minemark.error.ErrorResponseFactory;
 import dev.dediamondpro.minemark.style.Style;
 import dev.dediamondpro.minemark.utils.MouseButton;
 import org.jetbrains.annotations.ApiStatus;
@@ -31,11 +32,19 @@ import java.util.function.Consumer;
 
 public class MineMarkElement<S extends Style, R> extends ChildBasedElement<S, R> {
     private final ArrayList<Consumer<Float>> layoutCallbacks = new ArrayList<>();
+    private @Nullable ErrorResponseFactory<S, R> errorResponseFactory;
+    private MineMarkElement<S, R> errorResponse;
+    private boolean errored = false;
     private float lastWidth = -1;
     private float height;
 
-    public MineMarkElement(S style, LayoutStyle layoutStyle, Attributes attributes) {
+    public MineMarkElement(S style, LayoutStyle layoutStyle, Attributes attributes, @Nullable ErrorResponseFactory<S, R> errorResponseFactory) {
         super(style, layoutStyle, null, null, attributes);
+        this.errorResponseFactory = errorResponseFactory;
+    }
+
+    public MineMarkElement(S style, LayoutStyle layoutStyle, Attributes attributes) {
+        this(style, layoutStyle, attributes, null);
     }
 
     /**
@@ -56,7 +65,11 @@ public class MineMarkElement<S extends Style, R> extends ChildBasedElement<S, R>
         if (width != lastWidth) {
             beforeDraw(x, y, width, mouseX, mouseY, renderData);
         }
-        this.drawInternal(x, y, mouseX - x, mouseY - y, viewPort, renderData);
+        this.trySafe(
+                ErrorResponseFactory.Phase.DRAW,
+                () -> this.drawInternal(x, y, mouseX - x, mouseY - y, viewPort, renderData),
+                (errorElement) -> errorElement.draw(x, y, width, mouseX, mouseY, renderData)
+        );
     }
 
     /**
@@ -93,7 +106,11 @@ public class MineMarkElement<S extends Style, R> extends ChildBasedElement<S, R>
             generateLayoutInternal(new LayoutData(width), renderData);
             lastWidth = width;
         }
-        this.beforeDrawInternal(x, y, mouseX - x, mouseY - y, renderData);
+        this.trySafe(
+                ErrorResponseFactory.Phase.BEFORE_DRAW,
+                () -> this.beforeDrawInternal(x, y, mouseX - x, mouseY - y, renderData),
+                (errorElement) -> errorElement.beforeDraw(x, y, width, mouseX, mouseY, renderData)
+        );
     }
 
     /**
@@ -106,7 +123,16 @@ public class MineMarkElement<S extends Style, R> extends ChildBasedElement<S, R>
      * @param mouseY The current Y-Coordinate of the mouse
      */
     public void onMouseClicked(float x, float y, MouseButton button, float mouseX, float mouseY) {
-        this.onMouseClickedInternal(button, mouseX - x, mouseY - y);
+        // Don't use try-safe, since here an error doesn't mean we stop rendering
+        if (errored) {
+            if (errorResponse != null) errorResponse.onMouseClicked(x, y, button, mouseX, mouseY);
+            return;
+        }
+        try {
+            this.onMouseClickedInternal(button, mouseX - x, mouseY - y);
+        } catch (Exception | Error e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -125,16 +151,22 @@ public class MineMarkElement<S extends Style, R> extends ChildBasedElement<S, R>
     @Override
     @ApiStatus.Internal
     public void generateLayout(LayoutData layoutData, R renderData) {
-        layoutData.lockTopSpacing();
-        super.generateLayout(layoutData, renderData);
-        float bottomSpacing = layoutData.getCurrentLine().getBottomSpacing();
-        if (bottomSpacing == 0f && layoutData.isLineEmpty() && layoutData.getPreviousLine() != null) {
-            bottomSpacing = layoutData.getPreviousLine().getBottomSpacing();
-        }
-        height = layoutData.getY() + layoutData.getLineHeight() - bottomSpacing;
-        for (Consumer<Float> callback : layoutCallbacks) {
-            callback.accept(height);
-        }
+        trySafe(
+                ErrorResponseFactory.Phase.LAYOUT,
+                () -> {
+                    layoutData.lockTopSpacing();
+                    super.generateLayout(layoutData, renderData);
+                    float bottomSpacing = layoutData.getCurrentLine().getBottomSpacing();
+                    if (bottomSpacing == 0f && layoutData.isLineEmpty() && layoutData.getPreviousLine() != null) {
+                        bottomSpacing = layoutData.getPreviousLine().getBottomSpacing();
+                    }
+                    height = layoutData.getY() + layoutData.getLineHeight() - bottomSpacing;
+                    for (Consumer<Float> callback : layoutCallbacks) {
+                        callback.accept(height);
+                    }
+                },
+                (errorElement) -> errorElement.generateLayout(layoutData, renderData)
+        );
     }
 
     /**
@@ -154,7 +186,7 @@ public class MineMarkElement<S extends Style, R> extends ChildBasedElement<S, R>
      * @return The height of this markdown element
      */
     public float getHeight() {
-        return height;
+        return errored && errorResponse != null ? errorResponse.getHeight() : height;
     }
 
     /**
@@ -170,5 +202,47 @@ public class MineMarkElement<S extends Style, R> extends ChildBasedElement<S, R>
             if (i + 1 != children.size()) builder.append("\n");
         }
         return builder.toString();
+    }
+
+    /**
+     * Set the factory that creates the element to be rendered in case an error occurs during rendering,
+     * to disable this, set it to null, this will cause nothing to render if an error occured.
+     *
+     * @param errorResponseFactory The response factory
+     */
+    public void setErrorResponseFactory(@Nullable ErrorResponseFactory<S, R> errorResponseFactory) {
+        this.errorResponseFactory = errorResponseFactory;
+    }
+
+    private void trySafe(ErrorResponseFactory.Phase phase, Runnable action, Consumer<MineMarkElement<S, R>> errorAction) {
+        if (!errored) {
+            try {
+                action.run();
+            } catch (Exception | Error e) {
+                errored = true;
+                if (errorResponseFactory != null) {
+                    errorResponse = errorResponseFactory.build(style, phase, e);
+                    if (errorResponse != null) {
+                        // Make the parent aware of the size of the child error element
+                        errorResponse.addLayoutCallback((newHeight) -> {
+                            for (Consumer<Float> callback : layoutCallbacks) {
+                                callback.accept(newHeight);
+                            }
+                        });
+                    }
+                }
+                e.printStackTrace();
+            }
+        }
+
+        if (errored && errorResponse != null) {
+            // Once we are in an errored state propagate everything to the error element.
+            try {
+                errorAction.accept(errorResponse);
+            } catch (Exception | Error e) {
+                errorResponse = null; // Error response also can't render cleanly
+                e.printStackTrace();
+            }
+        }
     }
 }
