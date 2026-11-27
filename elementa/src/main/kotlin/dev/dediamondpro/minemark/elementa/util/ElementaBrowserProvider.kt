@@ -1,6 +1,6 @@
 /*
  * This file is part of MineMark
- * Copyright (C) 2024 DeDiamondPro
+ * Copyright (C) 2024-2026 DeDiamondPro
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,11 +18,20 @@
 package dev.dediamondpro.minemark.elementa.util
 
 import dev.dediamondpro.minemark.providers.BrowserProvider
+import dev.dediamondpro.minemark.providers.DefaultBrowserProvider
 import gg.essential.universal.UDesktop
 import java.net.URI
+import java.net.URISyntaxException
 
 object ElementaBrowserProvider : BrowserProvider {
     override fun browse(url: String) {
-        UDesktop.browse(URI(url))
+        try {
+            // Don't allow things like "file://"
+            val uri = URI(url)
+            if (!DefaultBrowserProvider.isWebUri(uri)) return
+            UDesktop.browse(uri)
+        } catch (e: URISyntaxException) {
+            e.printStackTrace()
+        }
     }
 }

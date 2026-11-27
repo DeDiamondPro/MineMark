@@ -1,6 +1,6 @@
 /*
  * This file is part of MineMark
- * Copyright (C) 2024 DeDiamondPro
+ * Copyright (C) 2024-2026 DeDiamondPro
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,11 @@
 package dev.dediamondpro.minemark.minecraft.utils;
 
 import dev.dediamondpro.minemark.providers.BrowserProvider;
+import dev.dediamondpro.minemark.providers.DefaultBrowserProvider;
 import net.minecraft.Util;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class MinecraftBrowserProvider implements BrowserProvider {
     public static MinecraftBrowserProvider INSTANCE = new MinecraftBrowserProvider();
@@ -28,6 +32,13 @@ public class MinecraftBrowserProvider implements BrowserProvider {
 
     @Override
     public void browse(String url) {
-        Util.getPlatform().openUri(url);
+        try {
+            // Don't allow things like "file://"
+            URI uri = new URI(url);
+            if (!DefaultBrowserProvider.isWebUri(uri)) return;
+            Util.getPlatform().openUri(uri);
+        } catch (URISyntaxException | UnsupportedOperationException e) {
+            e.printStackTrace();
+        }
     }
 }
