@@ -103,9 +103,19 @@ public abstract class TableCellElement<S extends Style, R> extends ChildMovingEl
         assert parent != null;
         assert parent.getParent() != null;
 
-        cellHeight = ((TableRowElement<S, R>) parent).cellHeight;
-        rowIndex = parent.getParent().getChildren().indexOf(parent);
-        cellIndex = parent.getChildren().indexOf(this);
+        if (parent instanceof TableRowElement) {
+            TableRowElement<S, R> row = (TableRowElement<S, R>) parent;
+            Element<S, R> rowParent = row.getParent();
+
+            cellHeight = row.cellHeight;
+            rowIndex = rowParent == null ? 0 : rowParent.getChildren().indexOf(row);
+            cellIndex = row.getChildren().indexOf(this);
+        } else {
+            // Fallback for invalid HTML
+            cellHeight = marker == null ? 0f : marker.getHeight();
+            rowIndex = 0;
+            cellIndex = 0;
+        }
 
         fillColor = rowIndex % 2 == 0
                 ? style.getTableStyle().getEvenFillColor()
